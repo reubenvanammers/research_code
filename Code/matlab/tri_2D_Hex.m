@@ -1,5 +1,5 @@
 function [P,E,T] = tri_2D_Hex()
-N=5;
+N=7;
 x1= (1:N')-(N+1)/2;
 y1= (1:2:N')-(N+1)/2;
 [X1,Y1] = meshgrid(x1,y1);

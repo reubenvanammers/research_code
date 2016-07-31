@@ -1,6 +1,6 @@
 function F = ct_force(t,x)
 alpha = 0.05;
-T = 10;
+T = 15;
 F=0;
 if t<T;
     [R,P] = matricize(x);
