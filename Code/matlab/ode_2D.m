@@ -4,7 +4,7 @@ global gamma alpha s0 F N M E r_rec t_rec T
 %Model Parameters
 gamma = 2;%speed of reference cell remodelling
 T= 10; %time over which length is remembered
-alpha = 0.2; % proportion of reference cell remodelling based on default length
+alpha = 0.4; % proportion of reference cell remodelling based on default length
 s0 = 1; %un-stretch length of cells 
 
 F=@ct_force;
