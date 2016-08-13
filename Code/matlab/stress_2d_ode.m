@@ -1,7 +1,7 @@
 function [Time,Y]=stress_2d_ode(alpha0,gamma0,T0)
 %close all
 
-global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist
+global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 vertex_matrix_2 edge_matrix
 gamma = gamma0;alpha =alpha0;T = T0;
 %Model Parameters
 %gamma = 1;%speed of reference cell remodelling
@@ -22,14 +22,18 @@ movelist =  P(:,1) ==m;
 
 N= length(P);
 M = length(E);
+
+[vertex_matrix_1,vertex_matrix_2,edge_matrix] = edge_matrix_create(E,N);
+
+
 r_rec = s0*ones(100,M);
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
 ref_P = P;
 tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:
 % real x values, real y values, reference x values, reference y values
-
-[Time,Y] = ode113(@cell_forces_stress,[0 tend],tot_P);
+options = odeset('RelTol',1e-4,'AbsTol',1e-7);
+[Time,Y] = ode15s(@cell_forces_stress_vector,0:0.2:tend,tot_P,options);
 
 %tri_vis(Time,Y,Tri)%visualizes system
 
