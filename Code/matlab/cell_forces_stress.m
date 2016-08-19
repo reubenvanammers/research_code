@@ -23,7 +23,7 @@ for i = 1:M;
         r_av = r_rec(end,i);
     end
     
-    ref_force = gamma*((alpha*(norm(r_ij)-s0)+(1-alpha)*(norm(rho_ij)-norm(r_av)))*rho_ij/norm(rho_ij));
+    ref_force = gamma*((alpha*(norm(rho_ij)-s0)+(1-alpha)*(norm(rho_ij)-norm(r_av)))*rho_ij/norm(rho_ij));
     dxdt(edge(1)) = dxdt(edge(1))-real_force(1);%real xvalues
     dxdt(edge(2)) = dxdt(edge(2))+real_force(1);%real xvalues
     dxdt(edge(1)+N) = dxdt(edge(1)+N)-real_force(2);%real yvalues
