@@ -1,5 +1,6 @@
 *.pdf
 *.png
 *.asv
+*.fig
 Thumbs.db
 \strainfigures\
