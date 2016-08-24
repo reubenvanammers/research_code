@@ -1,12 +1,12 @@
 global V C connectivitylist F N A0 C0 lambda beta gamma M
 
-A0=sqrt(3)/2;
+A0=sqrt(3)/2+0.2;
 C0 = 2*sqrt(pi*A0);
 lambda = 1;
-beta = 0.05;
-gamma = 0;
+beta = 1;
+gamma = 1;
 [V,C,connectivitylist] = hexgrid_voronoi();
-V_init = V
+V_init = V;
 N= length(V);
 M = length(C);
 V(3,1) = V(3,1)+0;
@@ -14,7 +14,7 @@ ref_V = V;
 V_vec = columnize(V,ref_V);
 V_vec = V_vec(1:2*N);%ignore reference cells for now
 F=0;
-tend = 28;
+tend = 15;
 
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
@@ -24,7 +24,7 @@ final_hex = Y(end,:)'
 
 
 for i = 1:M
-    cell_areas(i) = cell_area(i,C,V);c
+    cell_areas(i) = cell_area(i,C,V);
     cell_circumferences(i) = cell_circumference(i,C,V);
 end
 area_diff = norm(cell_areas-A0)
