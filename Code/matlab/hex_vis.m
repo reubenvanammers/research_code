@@ -7,6 +7,6 @@ for i = 1:length(Time);
     for j = 1:length(C)
         patch(V(C{j},1),V(C{j},2),j,'FaceColor','w'); % draws hexagons
     end
-    pause(0.03)
+    pause(0.1)
    
 end

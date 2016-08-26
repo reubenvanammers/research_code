@@ -17,5 +17,3 @@ end
 
 dxdt = columnize(-vertex_force,-vertex_force);
 dxdt = dxdt(1:2*N);
-vertex_force;
-t
