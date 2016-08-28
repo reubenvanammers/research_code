@@ -1,8 +1,8 @@
-function [V,C,connectivitylist] = hexgrid_voronoi()
+function [V,C,connectivitylist, neighbouring_cells] = hexgrid_voronoi()
 %creates hexagonal list of vertices V, cell of cells C, and matrix of
 %connetivity between the two
 c = sqrt(3) / 2;
-[X,Y] = meshgrid(0:1:5);
+[X,Y] = meshgrid(0:1:13);
 n = size(X,1);
 X = c * X;
 Y = Y + repmat([0 0.5],[n,n/2]);
@@ -36,6 +36,18 @@ for v = 2:length(V)
         end
     end
 end
+
+for i = 2:length(V);
+    for l = 1:length(C);
+        if connectivitylist(l,i) ==1;
+            j1 = C{l}(circshift(C{l}==i,-1,2));
+            j2 = C{l}(circshift(C{l}==i,0,2));
+            j3 = C{l}(circshift(C{l}==i,1,2));
+            neighbouring_cells{i}{l} = [j1 j2 j3];
+        end
+    end
+end
+        
 % for v=1:length(V) %>?????? Maybe????
 %     if sum(connectivitylist(:,v)) == 1
 %         connectivitylist(:,v) = zeros(N,1);
