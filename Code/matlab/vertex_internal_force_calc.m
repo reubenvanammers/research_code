@@ -3,7 +3,7 @@ function vertex_force = vertex_internal_force_calc(connectivitylist,C,V,neighbou
 N = length(V);
 M = length(C);
 vertex_force = zeros(N,2);
-for  i= 2:N;
+for  i= 1:N;
     for l = 1:M;
         if connectivitylist(l,i) ==1;
             gradilm1 = grad_d_3(i,l,-1,C,V,neighbours);

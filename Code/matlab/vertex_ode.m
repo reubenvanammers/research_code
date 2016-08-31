@@ -1,6 +1,6 @@
 global V C connectivitylist F N A0 C0 lambda beta gamma M
 
-A0=sqrt(3)/2+2;
+A0=sqrt(3)/2;
 C0 = 2*sqrt(pi*A0);
 lambda = 0;
 beta = 1;
@@ -30,4 +30,4 @@ for i = 1:M
 end
 area_diff = norm(cell_areas-A0)
 circumference_diff = norm(cell_circumferences-C0)
-%hex_vis(Time,Y,C)
+hex_vis(Time,Y,C)
