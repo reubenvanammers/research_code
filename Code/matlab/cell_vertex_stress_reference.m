@@ -1,8 +1,8 @@
 function dxdt = cell_vertex_stress_reference(t,x)
 
-global C connectivitylist F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T neighbouring_cells fixlist movelist
+global C connectivitylist F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T neighbouring_cells fixlist movelist eta restoring_rec restoring_t_rec
 
-[V,V_ref] = matricize([x]);
+[V,V_ref] = matricize(x);
 real_cell_areas = zeros(1,M);
 real_cell_circumferences = zeros(1,M);
 reference_cell_areas = zeros(1,M);
@@ -48,7 +48,8 @@ t
 
 
 
-dxdt = columnize(real_force,follow_force+fix_force);
-
-dxdt = dxdt +F(t,x);
+dxdt = columnize(real_force,eta*(follow_force+fix_force));
+external_force = F(t,dxdt);
+dxdt = dxdt - [movelist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt +external_force;
 dxdt = dxdt - [fixlist; zeros(3*N,1)].*dxdt;

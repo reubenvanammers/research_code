@@ -10,7 +10,7 @@ gamma = gamma0;alpha =alpha0;T = T0;
 s0 = 1; %un-stretch length of cells 
 restoring_rec = [];
 restoring_t_rec = [];
-F=@stress_force;
+F=@stress_force_sync;
 
 
 

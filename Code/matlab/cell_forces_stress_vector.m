@@ -30,10 +30,12 @@ ref_force_vector = [ref_force ref_force].*reference_displacement;
 total_force = columnize(real_force_vector,ref_force_vector);
 dxdt = dxdt+edge_matrix*total_force;
 
-restoring_t_rec = [restoring_t_rec; t];
-restoring_rec = [restoring_rec; max(abs(dxdt([movelist; zeros(3*N,1)]==1)))];
+% restoring_t_rec = [restoring_t_rec; t];
+% restoring_rec = [restoring_rec; max(abs(dxdt([movelist; zeros(3*N,1)]==1)))];
 
 
-dxdt = dxdt +F(t,x);
+external_force = F(t,dxdt);
+dxdt = dxdt - [movelist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt +external_force;
 dxdt = dxdt - [fixlist; zeros(3*N,1)].*dxdt;
 end

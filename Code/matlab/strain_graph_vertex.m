@@ -1,13 +1,13 @@
 Tvec = [0 20 100];
-gammavec = [1 0.5 0.1];
+etavec = [1 0.5 0.1];
 alphavec = 0.2:0.2:1;
 tend = 300;
-t = length(Tvec);g = length(gammavec);a = length(alphavec);
+t = length(Tvec);g = length(etavec);a = length(alphavec);
 L = t*a*g;
 straincell = cell(1,L);
 timecell = cell(1,L);
 restoringcell = cell(1,L);
-parfor i = 1:L%index loops over alpha, then gamma, then T
+parfor i = 1:L%index loops over alpha, then eta, then T
     counter = i-1;
     a1 = mod(counter,a);
     counter = (counter-a1)/a;
@@ -16,8 +16,8 @@ parfor i = 1:L%index loops over alpha, then gamma, then T
     t1 = counter;
     alpha = alphavec(a1+1);
     T = Tvec(t1+1);
-    gamma = gammavec(g1+1);%converts linear index to alpha,gamma,T
-    [Time, strain, restoring] =strain_restoring(@stress_2d_ode,alpha,gamma,T,tend);
+    eta = etavec(g1+1);%converts linear index to alpha,eta,T
+    [Time, strain, restoring] =strain_restoring(1,1,0,alpha,eta,T,tend);
     straincell{i} = strain;
     timecell{i} = Time;
     restoringcell{i} = restoring;
@@ -29,28 +29,28 @@ strainmax = max(max(strain_matrix));
 figure %plots strain-time graph and restoringforce-time graphs
 
 for T = 1:t
-    for gamma = 1:g
-        subplot(g,t,T+(t)*(gamma-1))
+    for eta = 1:g
+        subplot(g,t,T+(t)*(eta-1))
         for alpha = 1:a
             hold on
-            i = alpha+(gamma-1)*a+(T-1)*a*g;
+            i = alpha+(eta-1)*a+(T-1)*a*g;
             h(alpha) = plot(time_matrix(:,i),strain_matrix(:,i),'DisplayName',num2str(alphavec(alpha)));
         end
         axis([0 tend 1 (strainmax+0.1)])
-        title([' gamma = ',num2str(gammavec(gamma)),' T = ',num2str(Tvec(T))])
+        title([' eta = ',num2str(etavec(eta)),' T = ',num2str(Tvec(T))])
         legend(h)
     end
 end
 figure            
 for T = 1:t
-    for gamma = 1:g
-        subplot(g,t,T+(t)*(gamma-1))
+    for eta = 1:g
+        subplot(g,t,T+(t)*(eta-1))
         for alpha = 1:a
             hold on
-            i = alpha+(gamma-1)*a+(T-1)*a*g;
+            i = alpha+(eta-1)*a+(T-1)*a*g;
             h(alpha) = plot(time_matrix(:,i),restoring_matrix(:,i),'DisplayName',num2str(alphavec(alpha)));
         end
-        title([' gamma = ',num2str(gammavec(gamma)),' T = ',num2str(Tvec(T))])
+        title([' eta = ',num2str(etavec(eta)),' T = ',num2str(Tvec(T))])
         legend(h)
     end
 end        

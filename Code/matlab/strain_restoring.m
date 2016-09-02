@@ -1,6 +1,6 @@
-function [Time, strain, restoring] =  strain_restoring(alpha,gamma,T,tend)
+function [Time, strain, restoring] =  strain_restoring(fhandle,varargin)
 global external_force restoring_rec restoring_t_rec
-[Time,Y]=stress_2d_ode(alpha,gamma,T,tend);
+[Time,Y]=fhandle(varargin{:});
 N = size(Y,2)/4;
 xvalues = Y(:,1:N);
 strain = max(xvalues,[],2)/(max(xvalues(1,:))-min(xvalues(1,:)));
