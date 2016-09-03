@@ -21,20 +21,20 @@ C_rec = [C_rec;real_cell_circumferences];
 A_rec = [A_rec;real_cell_areas];
 t_rec = [t_rec; t];
 
-valid_t = t_rec>(t-T)&t_rec<=t;
-valid_t = valid_t';
-% while t_rec(1)+T < t
-%     t_rec = t_rec(2:end);
-%     C_rec = C_rec(2:end,:);
-%     A_rec = A_rec(2:end,:);
-% end     %removes entries older than value T
+% valid_t = t_rec>(t-T)&t_rec<=t;
+% valid_t = valid_t';
+while t_rec(1)+T < t
+    t_rec = t_rec(2:end);
+    C_rec = C_rec(2:end,:);
+    A_rec = A_rec(2:end,:);
+end     %removes entries older than value T
 
-C_rec_valid = C_rec(valid_t,:);
-A_rec_valid = A_rec(valid_t,:);
-t_rec_valid = t_rec(valid_t);
-if ~isempty(t_rec_valid) 
-    C_av = trapz(t_rec_valid,C_rec_valid,1)./(max(t_rec_valid)-min(t_rec_valid));
-    A_av = trapz(t_rec_valid,A_rec_valid,1)./(max(t_rec_valid)-min(t_rec_valid));
+% C_rec_valid = C_rec(valid_t,:);
+% A_rec_valid = A_rec(valid_t,:);
+% t_rec_valid = t_rec(valid_t);
+if t_rec(end)>t_rec(1)
+    C_av = trapz(t_rec,C_rec,1)./(t_rec(end)-t_rec(1));
+    A_av = trapz(t_rec,A_rec,1)./(t_rec(end)-t_rec(1));
 else
     C_av = real_cell_circumferences;%if T=0, can't average
     A_av = real_cell_areas;
