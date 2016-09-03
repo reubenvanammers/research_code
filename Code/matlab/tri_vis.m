@@ -14,4 +14,3 @@ for i = 1:length(Time);
     title('Reference Points')
     pause(0.1)
 end
-%asd

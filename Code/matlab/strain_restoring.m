@@ -3,7 +3,7 @@ global external_force restoring_rec restoring_t_rec
 [Time,Y]=fhandle(varargin{:});
 N = size(Y,2)/4;
 xvalues = Y(:,1:N);
-strain = max(xvalues,[],2)/(max(xvalues(1,:))-min(xvalues(1,:)));
+strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
 restoring_temp = restoring_rec./external_force;
 [restoring_t_rec,ia,ic] = unique(restoring_t_rec);
 restoring_temp = restoring_temp(ia);%deletes duplicate time entries for interpolation

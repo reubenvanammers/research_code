@@ -36,7 +36,7 @@ A_rec = A0*ones(100,M);
 restoring_rec = [];
 restoring_t_rec = [];
 
-options = odeset('RelTol',1e-3,'AbsTol',1e-6);
+options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode45(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
 final_hex = Y(end,:)';
 [V,V_ref] = matricize(final_hex);
