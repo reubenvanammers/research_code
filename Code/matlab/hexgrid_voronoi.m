@@ -2,7 +2,7 @@ function [V,C,connectivitylist, neighbouring_cells] = hexgrid_voronoi()
 %creates hexagonal list of vertices V, cell of cells C, and matrix of
 %connetivity between the two
 c = sqrt(3) / 2;
-[X,Y] = meshgrid(0:1:7);
+[X,Y] = meshgrid(0:1:9);
 n = size(X,1);
 X = c * X;
 Y = Y + repmat([0 0.5],[n,n/2]);

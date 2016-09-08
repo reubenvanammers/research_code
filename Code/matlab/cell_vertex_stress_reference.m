@@ -51,5 +51,6 @@ t;
 dxdt = columnize(real_force,eta*(follow_force+fix_force));
 external_force = F(t,dxdt);
 dxdt = dxdt - [movelist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt - [zeros(N,1);movelist;zeros(2*N,1)].*dxdt; %this line fixes y values
 dxdt = dxdt +external_force;
 dxdt = dxdt - [fixlist; zeros(3*N,1)].*dxdt;
