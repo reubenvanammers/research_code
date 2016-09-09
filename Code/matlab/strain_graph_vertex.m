@@ -7,21 +7,29 @@ L = t*a*g;
 straincell = cell(1,L);
 timecell = cell(1,L);
 restoringcell = cell(1,L);
+[t,s,r] = strain_restoring(@vertex_ode_reference,1,1,0,1,0,0,300);
 parfor_progress(L);
-parfor i = 1:L%index loops over alpha, then eta, then T
-    counter = i-1;
+for i = 1:L%index loops over alpha, then eta, then T
+    datetime('now')
+    counter = i-1
     a1 = mod(counter,a);
     counter = (counter-a1)/a;
     g1 = mod(counter,g);
     counter = (counter-g1)/g;
     t1 = counter;
-    alpha = alphavec(a1+1);
-    T = Tvec(t1+1);
-    eta = etavec(g1+1);%converts linear index to alpha,eta,T
-    [Time, strain, restoring] =strain_restoring(@vertex_ode_reference,1,1,0,alpha,eta,T,tend);
-    straincell{i} = strain;
-    timecell{i} = Time;
-    restoringcell{i} = restoring;
+    alpha = alphavec(a1+1)
+    T = Tvec(t1+1)
+    eta = etavec(g1+1)%converts linear index to alpha,eta,T
+    if alpha == 1;
+        straincell{i} = s;
+        timecell{i} = t;
+        restoringcell{i} = r;
+    else
+        [Time, strain, restoring] =strain_restoring(@vertex_ode_reference,1,2,0,alpha,eta,T,tend);
+        straincell{i} = strain;
+        timecell{i} = Time;
+        restoringcell{i} = restoring;
+    end
     parfor_progress;
 end
 parfor_progress(0);

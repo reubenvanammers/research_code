@@ -35,7 +35,8 @@ dxdt = dxdt+edge_matrix*total_force;
 
 
 external_force = F(t,dxdt);
-dxdt = dxdt - [movelist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
+
 dxdt = dxdt +external_force;
-dxdt = dxdt - [fixlist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt - [fixlist; fixlist; zeros(2*N,1)].*dxdt;
 end

@@ -1,7 +1,7 @@
 function hex_vis_2(Time,Y,C)
 %Hex vis will show only real cells, while hex_vis_2 will show both
 figure
-for i = 1:10:length(Time);
+for i = 1:30:length(Time);
     clf
     [V,V_ref] = matricize([Y(i,:)']);
     subplot(2,1,1);

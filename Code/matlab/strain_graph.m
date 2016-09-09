@@ -7,6 +7,7 @@ L = t*a*g;
 straincell = cell(1,L);
 timecell = cell(1,L);
 restoringcell = cell(1,L);
+parfor_progress(L);
 parfor i = 1:L%index loops over alpha, then gamma, then T
     counter = i-1;
     a1 = mod(counter,a);
@@ -21,7 +22,9 @@ parfor i = 1:L%index loops over alpha, then gamma, then T
     straincell{i} = strain;
     timecell{i} = Time;
     restoringcell{i} = restoring;
+    parfor_progress;
 end
+parfor_progress(0);
 strain_matrix = cell2mat(straincell);
 time_matrix = cell2mat(timecell);
 restoring_matrix = cell2mat(restoringcell);

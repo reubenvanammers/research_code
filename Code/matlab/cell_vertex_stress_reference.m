@@ -32,7 +32,7 @@ end     %removes entries older than value T
 % C_rec_valid = C_rec(valid_t,:);
 % A_rec_valid = A_rec(valid_t,:);
 % t_rec_valid = t_rec(valid_t);
-if t_rec(end)>t_rec(1)
+if t_rec(end)>t_rec(1)&&T~=0
     C_av = trapz(t_rec,C_rec,1)./(t_rec(end)-t_rec(1));
     A_av = trapz(t_rec,A_rec,1)./(t_rec(end)-t_rec(1));
 else
@@ -44,13 +44,13 @@ end %calculates average Area and Circumference
 real_force = vertex_internal_force_calc(connectivitylist,C,V,neighbouring_cells,lambda,beta,gamma,reference_cell_areas,reference_cell_circumferences);
 follow_force = (1-alpha).*vertex_internal_force_calc(connectivitylist,C,V_ref,neighbouring_cells,lambda,beta,gamma,A_av,C_av);
 fix_force = alpha*vertex_internal_force_calc(connectivitylist,C,V_ref,neighbouring_cells,lambda,beta,gamma,A0_vec,C0_vec);
-t;
+t
 
 
 
 dxdt = columnize(real_force,eta*(follow_force+fix_force));
 external_force = F(t,dxdt);
-dxdt = dxdt - [movelist; zeros(3*N,1)].*dxdt;
-dxdt = dxdt - [zeros(N,1);movelist;zeros(2*N,1)].*dxdt; %this line fixes y values
+dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
+
 dxdt = dxdt +external_force;
-dxdt = dxdt - [fixlist; zeros(3*N,1)].*dxdt;
+dxdt = dxdt - [fixlist; fixlist; zeros(2*N,1)].*dxdt;
