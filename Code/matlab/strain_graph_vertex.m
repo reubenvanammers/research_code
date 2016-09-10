@@ -1,3 +1,4 @@
+inherent_parameters = {3,3,0}; % alpha =3, beta = 3, gamma = 0
 Tvec = [0 20 100];
 etavec = [1 0.5 0.1];
 alphavec = 0.2:0.2:1;
@@ -7,25 +8,24 @@ L = t*a*g;
 straincell = cell(1,L);
 timecell = cell(1,L);
 restoringcell = cell(1,L);
-[t,s,r] = strain_restoring(@vertex_ode_reference,1,1,0,1,0,0,300);
+[default_time,default_strain,default_restoring] = strain_restoring(@vertex_ode_reference,inherent_parameters{:},1,0,0,tend);
 parfor_progress(L);
-for i = 1:L%index loops over alpha, then eta, then T
-    datetime('now')
-    counter = i-1
+parfor i = 1:L%index loops over alpha, then eta, then T
+    counter = i-1;
     a1 = mod(counter,a);
     counter = (counter-a1)/a;
     g1 = mod(counter,g);
     counter = (counter-g1)/g;
     t1 = counter;
-    alpha = alphavec(a1+1)
-    T = Tvec(t1+1)
+    alpha = alphavec(a1+1);
+    T = Tvec(t1+1);
     eta = etavec(g1+1)%converts linear index to alpha,eta,T
     if alpha == 1;
-        straincell{i} = s;
-        timecell{i} = t;
-        restoringcell{i} = r;
+        straincell{i} = default_strain;
+        timecell{i} = default_time;
+        restoringcell{i} = default_restoring;
     else
-        [Time, strain, restoring] =strain_restoring(@vertex_ode_reference,1,2,0,alpha,eta,T,tend);
+        [Time, strain, restoring] =strain_restoring(@vertex_ode_reference,inherent_parameters{:},alpha,eta,T,tend);
         straincell{i} = strain;
         timecell{i} = Time;
         restoringcell{i} = restoring;
