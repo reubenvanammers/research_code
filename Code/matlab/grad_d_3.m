@@ -1,4 +1,6 @@
 function d_vec = grad_d_3(i,l,index,C,V,neighbouring_cells)
+%implements gradient of cell distance for use in vertex forces based on
+%circumference. 
 if index == -1;
     j2 = neighbouring_cells{i}{l}(1);
     i2 = neighbouring_cells{i}{l}(2);

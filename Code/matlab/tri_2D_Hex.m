@@ -1,4 +1,5 @@
 function [P,E,T] = tri_2D_Hex()
+%creates hexagonal mesh for use in spring models
 N=7;
 x1= (1:N')-(N+1)/2;
 y1= (1:2:N')-(N+1)/2;

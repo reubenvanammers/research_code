@@ -1,4 +1,7 @@
 function hex_vis_2(Time,Y,C)
+%given an output from ode45/15s as [Time,Y], with real and reference data,
+%and the connectivity data for the real (and thus reference) state as 
+%C, displays output as a video of how system evolved
 %Hex vis will show only real cells, while hex_vis_2 will show both
 figure
 for i = 1:30:length(Time);

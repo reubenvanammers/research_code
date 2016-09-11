@@ -1,4 +1,5 @@
 function [Time,Y]=ode_2D
+%implements tension/compression test with remodelling.
 close all
 global gamma alpha s0 F N M E r_rec t_rec T
 %Model Parameters

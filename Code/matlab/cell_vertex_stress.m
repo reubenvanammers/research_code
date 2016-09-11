@@ -1,5 +1,5 @@
 function dxdt = cell_vertex_stress(t,x);
-
+%used in simulation without remodelling. Can probably ignore
 global C connectivitylist F N A0 C0 lambda beta gamma M
 dxdt = zeros(2*N,1);
 vertex_force = zeros(N,2);

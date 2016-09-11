@@ -1,4 +1,6 @@
 function [P,E,T] = tri_2D_Hex2()
+%creates sprign mesh in a hexagonal pattern for use in stress_2d_ode, for
+%creep experiments.
 N=7;
 c = sqrt(3)/2; %%constant
 y1= (1:N')-(N+1)/2;

@@ -1,5 +1,6 @@
 function [R,P] =  matricize(column)
-%converts columnn of x,y data to xy coordinates in 2d matrix
+%converts columnn of x,y data to xy coordinates in 2d matrix. Inverse of
+%columnize.
 N = length(column);
 N = N/2;
 real_column = column(1:N);

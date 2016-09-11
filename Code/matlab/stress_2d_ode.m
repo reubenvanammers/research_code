@@ -1,6 +1,5 @@
 function [Time,Y]=stress_2d_ode(alpha0,gamma0,T0,tend)
-%close all
-
+%Implements remodelling in a cell centre cell centre spring based model.
 global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec
 gamma = gamma0;alpha =alpha0;T = T0;
 %Model Parameters

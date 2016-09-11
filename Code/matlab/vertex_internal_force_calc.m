@@ -1,4 +1,6 @@
 function vertex_force = vertex_internal_force_calc(connectivitylist,C,V,neighbours,lambda,beta,gamma,A_target,C_target)
+%calculates the internal forces felt by vertices on connectivity and target
+%parameters. Used for both real and reference cells. 
 %A_target(i),C_target(i) should be vectors for each cell
 N = length(V);
 M = length(C);

@@ -1,3 +1,4 @@
+%old 1d simulation without reference cells
 function noreference_ode()
 global N s0
 N=5;

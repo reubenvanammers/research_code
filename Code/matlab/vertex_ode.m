@@ -1,5 +1,5 @@
 global V C connectivitylist F N A0 C0 lambda beta gamma M
-
+%vertex model without remodelling
 A0=sqrt(3)/2;
 C0 = 2*sqrt(pi*A0);
 lambda = 0;

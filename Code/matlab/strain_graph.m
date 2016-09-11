@@ -1,3 +1,6 @@
+%Varies parameters of stress_2d_ode, and plots time strain graphs in a
+%subplot.
+
 Tvec = [0 20 100];
 gammavec = [1 0.5 0.1];
 alphavec = 0.2:0.2:1;

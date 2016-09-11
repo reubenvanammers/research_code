@@ -1,4 +1,5 @@
 function hex_vis(Time,Y,C)
+%visualizes vertex model without remodelling
 figure
 for i = 1:length(Time);
      clf

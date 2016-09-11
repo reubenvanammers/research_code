@@ -1,5 +1,5 @@
 function dxdt = cell_vertex_stress_reference(t,x)
-
+%ode describing how the system evolves for the vertex based reference model
 global C connectivitylist F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T neighbouring_cells fixlist movelist eta restoring_rec restoring_t_rec
 
 [V,V_ref] = matricize(x);

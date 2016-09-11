@@ -1,4 +1,6 @@
 function d_vec =grad_d_2(i,l,index,C,V)
+%implements gradient of cell distance for use in vertex forces based on
+%circumference. slower than grad_d_3
 vertex_list = C{l};
 %vertex i, cell l, index (ie, -1, 1), list of vertices locations V and  vertex_list Cell
 %structures C{l}.

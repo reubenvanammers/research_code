@@ -1,4 +1,6 @@
 function dxdt = cell_forces_stress(t,x)
+%implements internal force calculation for spring based reference model,
+%and sets up for creep experiment by adding fixlist and movelist. 
 global gamma alpha s0 F N M E r_rec  t_rec T fixlist ;
 dxdt = zeros(4*N,1);
 

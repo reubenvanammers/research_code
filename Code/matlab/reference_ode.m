@@ -1,4 +1,5 @@
 function reference_ode()
+%can probably ignore
 global N s0 F alpha
 N=5;
 F= @instantforce

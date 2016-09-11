@@ -1,4 +1,5 @@
 function A_vec = grad_A_2(i,l,C,V)
+%implements gradient of area for area based force in vertex model
 j = C{l}==i;
 jp1 = circshift(j,1,2);
 jm1 = circshift(j,-1,2);

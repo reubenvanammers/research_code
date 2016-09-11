@@ -1,4 +1,5 @@
 function F = shear_force(t,x)
+%adds shear force to all cells
 alpha = 0.05;
 T = 10;
 F=0;

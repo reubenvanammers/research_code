@@ -1,4 +1,6 @@
 function F = ct_force(t,x)
+%constant tension compression force based on cell positions. Not really
+%meaningful
 alpha = 0.05;
 T = 15;
 F=0;

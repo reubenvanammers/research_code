@@ -1,3 +1,4 @@
+%old 1d simulation without reference cells
 N=5;
 cell_positions = 2*(0:(N-1));
 % default_postiion = 0:(N-1);

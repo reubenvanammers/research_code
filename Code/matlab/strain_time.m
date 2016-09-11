@@ -1,4 +1,5 @@
 function strain_time(alpha,gamma,T,tend)
+
 global N external_force restoring_rec restoring_t_rec
 [Time,Y]=stress_2d_ode(alpha,gamma,T,tend);
 xvalues = Y(:,1:N);

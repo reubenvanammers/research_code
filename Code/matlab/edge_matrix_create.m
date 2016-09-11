@@ -1,7 +1,8 @@
 function [vertex_matrix_1,vertex_matrix_2, edge_matrix] = edge_matrix_create(E,N)
 %creates matrices used to convert lists of points into edges (first two
 %matrices, and edge matrix is used to convert list of forces on edges to
-%lists of forces on vertices
+%lists of forces on vertices. This is used in vectorized version of the
+%spring model with remodelling
 
 
 l = size(E,1);

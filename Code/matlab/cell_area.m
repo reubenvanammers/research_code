@@ -1,4 +1,6 @@
 function area = cell_area(l,C,V);
+%calculates the area of the lth cell, based on connectivity given by C and
+%positions given by V
 vertex_list = C{l};
 A = 0;
 nk = length(vertex_list);

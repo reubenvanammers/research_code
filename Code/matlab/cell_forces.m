@@ -1,4 +1,6 @@
 function dxdt = cell_forces(t,x)
+%for spring based model, implements internal force calculation and an
+%external force. 
 global gamma alpha s0 F N M E r_rec  t_rec T ;
 dxdt = zeros(4*N,1);
 
