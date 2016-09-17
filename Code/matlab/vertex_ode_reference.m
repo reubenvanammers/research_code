@@ -1,7 +1,7 @@
 function [Time,Y] = vertex_ode_reference(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
 global C connectivitylist F N A0_vec C0_vec lambda beta gamma M alpha 
-global t_rec C_rec A_rec T neighbouring_cells fixlist movelist eta restoring_rec restoring_t_rec
+global t_rec C_rec A_rec T neighbouring_cells fixlist movelist eta restoring_rec counter
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 %C0 = 2*sqrt(pi*A0);
@@ -32,13 +32,14 @@ movelist =  V(:,1) >m-0.1;%plus minus 0.1 is for minor discrepancies
 
 
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
+counter = 1;
 C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 restoring_t_rec = [];
 
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.02:tend,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
 final_hex = Y(end,:)';
 [V,V_ref] = matricize(final_hex);
 

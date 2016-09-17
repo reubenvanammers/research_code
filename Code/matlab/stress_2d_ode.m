@@ -1,6 +1,6 @@
 function [Time,Y]=stress_2d_ode(alpha0,gamma0,T0,tend)
 %Implements remodelling in a cell centre cell centre spring based model.
-global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec
+global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter
 gamma = gamma0;alpha =alpha0;T = T0;
 %Model Parameters
 %gamma = 1;%speed of reference cell remodelling
@@ -28,6 +28,7 @@ M = length(E);
 
 r_rec = s0*ones(100,M);
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
+counter = 1;
 ref_P = P;
 tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:

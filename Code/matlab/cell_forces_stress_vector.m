@@ -2,27 +2,39 @@ function dxdt = cell_forces_stress_vector(t,x)
 %implements evolution of system for cell center cell centre spring based
 %model to be fed into inbuilt matlab solver. Used for creep experiment.
 %Done in a vectorized manner, but otherwize same as cell_forces_stress.
-global gamma alpha s0 F N r_rec  t_rec T fixlist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec movelist;
+global gamma alpha s0 F N r_rec  t_rec T fixlist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec movelist counter;
 dxdt = zeros(4*N,1);
 
-
+while t_rec(end) > t;
+    t_rec = t_rec(1:end-1);
+    r_rec = r_rec(1:end-1,:);
+    restoring_rec = restoring_rec(1:end-1);
+    while t_rec(counter)+T > t;
+        counter = counter-1;
+    end
+end
 t_rec = [t_rec; t];
 
 
-while t_rec(1)+T < t
-    t_rec = t_rec(2:end);
-    r_rec = r_rec(2:end,:);
+while t_rec(counter)+T < t
+    counter = counter +1;
 end     %removes entries older than value T
+
+
 
 cell_distance = vertex_matrix_1*x-vertex_matrix_2*x;
 [real_displacement, reference_displacement] = matricize(cell_distance);
 real_distance = sqrt(sum(real_displacement'.^2));
 reference_distance = sqrt(sum(reference_displacement'.^2));
 r_rec = [r_rec; real_distance];
-if t_rec(end)>t_rec(1)
-    r_av = trapz(t_rec,r_rec)./(t_rec(end)-t_rec(1));
+
+t_valid = t_rec(counter:end);
+r_valid = r_rec(counter:end,:);
+
+if t_valid(end)>t_valid(1)
+    r_av = trapz(t_valid,r_valid)./(t_valid(end)-t_valid(1));
 else
-    r_av = r_rec(end,:);
+    r_av = r_valid(end,:);
 end %calculates average distance
 
 real_force = ((real_distance-reference_distance)./real_distance)';
