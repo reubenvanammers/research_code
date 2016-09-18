@@ -6,7 +6,7 @@ global external_force restoring_rec t_rec
 
 [Time,Y]=fhandle(varargin{:});
 l = length(t_rec)-length(restoring_rec);
-t_rec = t_rec(101:end);
+t_rec = t_rec(l+1:end);
 N = size(Y,2)/4;
 xvalues = Y(:,1:N);
 strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));

@@ -2,19 +2,19 @@ global V C connectivitylist F N A0 C0 lambda beta gamma M
 %vertex model without remodelling
 A0=sqrt(3)/2;
 C0 = 2*sqrt(pi*A0);
-lambda = 0;
+lambda = 1;
 beta = 1;
-gamma = 0;
+gamma = 1;
 [V,C,connectivitylist] = hexgrid_voronoi();
 V_init = V;
 N= length(V);
 M = length(C);
 V(3,1) = V(3,1)+0;
-ref_V = V;
-V_vec = columnize(V,ref_V);
-V_vec = V_vec(1:2*N);%ignore reference cells for now
+%ref_V = V;
+V_vec = columnize(V,V_ref);
+V_vec = V_vec(2*N+1:end);%ignore reference cells for now
 F=0;
-tend = 100;
+tend = 1000;
 
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
