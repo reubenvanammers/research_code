@@ -1,6 +1,9 @@
-function [C,V,V2] = t1swap(vertex1,vertex2,C,V,varargin)
-%Executes t1swap between vertex1 and vertex2. 
-dsep = 0.1;
+function [C,V,V2] = t1swap(vertex1,vertex2,dsep,C,V,varargin)
+%Executes t1swap between vertex1 and vertex2. Can swap between reference
+%cells as well if added as an extra argument.
+
+
+%Calculates new position of cells after t1swap.
 avpos = 0.5*(V(vertex1,:)+V(vertex2,:));
 seperation_vector = V(vertex1,:)-V(vertex2,:);
 new_seperation = [0 1;-1,0]*seperation_vector'./norm(seperation_vector);
@@ -23,6 +26,8 @@ adjacent_cells = setdiff(union(including_cells_1,including_cells_2),common_cells
 no_of_cells = length(common_cells)+length(adjacent_cells);
 total_cells = reshape([common_cells';adjacent_cells'],1,[]);%cells A,B,C,D in Fletch2013Implementing respectively
 
+
+%Restructures C so that the new connectivity is applied.
 for i = 1:no_of_cells;
     if i==1 || i==3; %A or C
         l = total_cells(i);
