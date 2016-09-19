@@ -1,4 +1,4 @@
-function vertex_force = vertex_internal_force_calc(C,V,lambda,beta,gamma,A_target,C_target)
+function vertex_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,A_target,C_target)
 %calculates the internal forces felt by vertices on connectivity and target
 %parameters. Used for both real and reference cells. 
 %A_target(i),C_target(i) should be vectors for each cell
@@ -6,8 +6,7 @@ N = length(V);
 M = length(C);
 vertex_force = zeros(N,2);
 for  i= 1:N;%i is vertex number
-    [including_cells,~] = find(cell2mat(C)==i);
-    for l = including_cells';%l is cell number
+    for l = included_cell{i};%l is cell number
         gradilm1 = grad_d_3(i,l,-1,C,V);
         gradil0 = grad_d_3(i,l,0,C,V);
         vertex_force(i,:) = vertex_force(i,:) +...

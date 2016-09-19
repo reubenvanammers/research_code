@@ -1,7 +1,7 @@
 function [Time,Y] = vertex_ode_reference(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
 global C F N A0_vec C0_vec lambda beta gamma M alpha 
-global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter
+global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 %C0 = 2*sqrt(pi*A0);
@@ -14,6 +14,7 @@ C0 = 6*sidelength;
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
 [V,C] = hexgrid_voronoi();
+included_cell = cell_inclusion(V,C);
 N= length(V);
 M = length(C);
 A0_vec = ones(1,M)*A0;

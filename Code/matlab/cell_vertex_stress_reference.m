@@ -1,6 +1,6 @@
 function dxdt = cell_vertex_stress_reference(t,x)
 %ode describing how the system evolves for the vertex based reference model
-global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter
+global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 
 
 while t_rec(end) > t;
@@ -54,9 +54,9 @@ else
 end %calculates average Area and Circumference
 
 
-real_force = vertex_internal_force_calc(C,V,lambda,beta,gamma,reference_cell_areas,reference_cell_circumferences);
-follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,lambda,beta,gamma,A_av,C_av);
-fix_force = alpha*vertex_internal_force_calc(C,V_ref,lambda,beta,gamma,A0_vec,C0_vec);
+real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,reference_cell_areas,reference_cell_circumferences);
+follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A_av,C_av);
+fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A0_vec,C0_vec);
 
 
 
