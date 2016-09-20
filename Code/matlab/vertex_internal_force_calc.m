@@ -7,12 +7,11 @@ M = length(C);
 vertex_force = zeros(N,2);
 for  i= 1:N;%i is vertex number
     for l = included_cell{i};%l is cell number
-        gradilm1 = grad_d_3(i,l,-1,C,V);
-        gradil0 = grad_d_3(i,l,0,C,V);
+        grad_d_vec = grad_d_tot(i,l,C,V);
         vertex_force(i,:) = vertex_force(i,:) +...
             2*lambda*(A_current(l)-A_target(l))*grad_A_2(i,l,C,V)+...
-            2*beta*(C_current(l)-C_target(l))*(gradilm1-gradil0)+...
-            gamma*gradilm1-gamma*gradil0;%due to definition subtract grad_d_3 instead of add
+            2*beta*(C_current(l)-C_target(l))*(grad_d_vec)+...
+            gamma*(grad_d_vec);
     end
 end
 vertex_force = -vertex_force;
