@@ -1,15 +1,19 @@
-function dxdt = cell_vertex_stress_reference(t,x)
+function dxdt = cell_vertex_stress_restructuring(t,x)
 %ode describing how the system evolves for the vertex based reference model
-global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
-t
-
+global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell cell_history
+t;
+dmin = 0.2;
+dsep = dmin*1.2;
 while t_rec(end) > t;
+    cell_history =cell_history(1:end-1);
     t_rec = t_rec(1:end-1);
     A_rec = A_rec(1:end-1,:);
     C_rec = C_rec(1:end-1,:);
     restoring_rec = restoring_rec(1:end-1);
-    while t_rec(counter)+T > t;
-        counter = counter-1;
+    if counter <= length(t_rec)
+        while t_rec(counter)+T > t;
+            counter = counter-1;
+        end
     end
 end
 t_rec = [t_rec; t];
@@ -22,15 +26,52 @@ end     %removes entries older than value T
 
 [V,V_ref] = matricize(x);
 real_cell_areas = zeros(1,M);
-real_cell_circumferences = zeros(1,M);
+%real_cell_circumferences = zeros(1,M);
 reference_cell_areas = zeros(1,M);
 reference_cell_circumferences = zeros(1,M);
 
+[long_edges,real_cell_circumferences] = cell_edge_lengths(C,V,dmin);
 
+while length(long_edges) > 1
+    long_edges(1,1)
+    long_edges(1,2)
+    t
+    [C,V,V_ref] = t1swap(long_edges(1,1),long_edges(1,2),dsep,C,V,V_ref);
+    included_cell = cell_inclusion(V,C);
+    [long_edges,real_cell_circumferences] = cell_edge_lengths(C,V,dmin);
+    clf
+    for j = 1:length(C)
+    patch(V(C{j},1),V(C{j},2),j,'FaceColor','w'); % draws hexagons
+    end
+    
+end
 
+% while edge_status==false
+%     for l=1:length(real_edge_lengths);
+%         if flag
+%             flag = false;
+%             break
+%         end
+%         for i = length(real_edge_lengths{l})
+%             if real_edge_lengths{l}(i)<dmin;
+%                 i
+%                 l
+%                 t
+%                 [C,V,V_ref] = t1swap(C{l}(i),C{l}(mod(i,length(C{l}))+1),dsep,C,V,V_ref);
+%                 included_cell = cell_inclusion(V,C);
+%                 [real_edge_lengths,real_cell_circumferences] = cell_edge_lengths(C,V);
+% 
+%                 flag = true;
+%                 break
+%             end
+%         end
+%         edge_status = true;
+%     end
+% end
+cell_history{size(cell_history,2)+1} = C;      
 for i = 1:M
     real_cell_areas(i) = cell_area(i,C,V);
-    real_cell_circumferences(i) = cell_circumference(i,C,V);
+    %real_cell_circumferences(i) = cell_circumference(i,C,V);
     reference_cell_areas(i) = cell_area(i,C,V_ref);
     reference_cell_circumferences(i) = cell_circumference(i,C,V_ref);
 end

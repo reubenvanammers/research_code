@@ -7,9 +7,23 @@ M = length(C);
 vertex_force = zeros(N,2);
 for  i= 1:N;%i is vertex number
     for l = included_cell{i};%l is cell number
-        grad_d_vec = grad_d_tot(i,l,C,V);
+        len = length(C{l});
+        internal_vertex_number = find(i==C{l})-1;
+        v = V(i,:);
+        vp1 = V(C{l}(mod(internal_vertex_number + 1,len)+1),:);
+        vm1 = V(C{l}(mod(internal_vertex_number - 1,len)+1),:);
+        
+        grad_A_vec = 0.5*[vp1(2)-vm1(2);vm1(1)-vp1(1)]';
+        
+        V1 = v-vm1;
+        V2 = v-vp1;
+        V1norm = V1./norm(V1);
+        V2norm = V2./norm(V2);
+        
+        grad_d_vec = V1norm +V2norm;
+
         vertex_force(i,:) = vertex_force(i,:) +...
-            2*lambda*(A_current(l)-A_target(l))*grad_A_2(i,l,C,V)+...
+            2*lambda*(A_current(l)-A_target(l))*grad_A_vec+...
             2*beta*(C_current(l)-C_target(l))*(grad_d_vec)+...
             gamma*(grad_d_vec);
     end

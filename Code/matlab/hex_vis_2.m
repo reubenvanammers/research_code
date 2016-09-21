@@ -1,12 +1,22 @@
-function hex_vis_2(Time,Y,C)
+function hex_vis_2(Time,Y,C,C_hist,t_rec)
 %given an output from ode45/15s as [Time,Y], with real and reference data,
 %and the connectivity data for the real (and thus reference) state as 
 %C, displays output as a video of how system evolved
 %Hex vis will show only real cells, while hex_vis_2 will show both
 figure
+if nargin ==5
+    t_rec = [t_rec;inf];
+    counter = 1;
+end
 for i = 1:length(Time);
+    if nargin ==5
+        while Time(i) > t_rec(counter);
+            C = C_hist{counter};
+            counter = counter +1;
+        end
+    end
     clf
-    [V,V_ref] = matricize([Y(i,:)']);
+    [V,V_ref] = matricize(Y(i,:)');
     subplot(2,1,1);
     title(['t = ', num2str(Time(i))])
     
