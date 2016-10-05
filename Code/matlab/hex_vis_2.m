@@ -1,4 +1,4 @@
-function hex_vis_2(Time,Y,C,C_hist,t_rec)
+function F = hex_vis_2(Time,Y,C,C_hist,t_rec)
 %given an output from ode45/15s as [Time,Y], with real and reference data,
 %and the connectivity data for the real (and thus reference) state as 
 %C, displays output as a video of how system evolved
@@ -10,7 +10,7 @@ if nargin ==5
 end
 for i = 1:length(Time);
     if nargin ==5
-        while Time(i) > t_rec(counter);
+        while Time(i) >= t_rec(counter);
             C = C_hist{counter};
             counter = counter +1;
         end
@@ -30,6 +30,10 @@ for i = 1:length(Time);
     for j = 1:length(C)
         patch(V_ref(C{j},1),V_ref(C{j},2),j,'FaceColor','w'); % draws hexagons
     end
-    pause(0.1)
-   
+    F(i) =getframe;
+    pause(2)
+    clf;
+
 end
+
+movie(F,1,60);

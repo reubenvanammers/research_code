@@ -1,5 +1,7 @@
-function dxdt = cell_vertex_stress_reference(t,x)
+function dxdt = cell_vertex_stress_reference_nocirc(t,x)
 %ode describing how the system evolves for the vertex based reference model
+%tries to match real(reference) circumference with reference (real) area
+%instead of circumference. 
 global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 
 
@@ -53,9 +55,10 @@ else
     A_av = real_cell_areas;
 end %calculates average Area and Circumference
 
+circumference_wrt_area = @(A) sqrt(8*sqrt(3).*A);
 
-real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,reference_cell_areas,real_cell_areas,reference_cell_circumferences,real_cell_circumferences);
-follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A_av,reference_cell_areas,C_av,reference_cell_circumferences);
+real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,reference_cell_areas,real_cell_areas,circumference_wrt_area(real_cell_areas),real_cell_circumferences);
+follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A_av,reference_cell_areas,circumference_wrt_area(A_av),reference_cell_circumferences);
 fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A0_vec,reference_cell_areas,C0_vec,reference_cell_circumferences);
 
 

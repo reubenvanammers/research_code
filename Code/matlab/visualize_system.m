@@ -1,4 +1,4 @@
-function [Time,Y,strain,restoring] = visualize_system(fhandle,varargin)
+function [Time,Y,strain,restoring,F] = visualize_system(fhandle,varargin)
 
 global external_force restoring_rec t_rec
 [~,C] = hexgrid_voronoi();
@@ -12,7 +12,7 @@ restoring_temp = restoring_rec./external_force;
 [t_rec,ia,ic] = unique(t_rec);
 restoring_temp = restoring_temp(ia);%deletes duplicate time entries for interpolation
 restoring = interp1(t_rec,restoring_temp,Time);%interpolates restoring force to be same size as time vector
-
+figure
 for i = 1:length(Time);
     clf
     [V,V_ref] = matricize([Y(i,:)']);
@@ -40,5 +40,10 @@ for i = 1:length(Time);
     plot(Time(1:i),restoring(1:i));
     title('restoring')
     axis([0 Time(end) 0.8 1.1])
-    pause(0.1)
+    F(i) = getframe(gcf);
 end
+figure
+[h, w, p] = size(F(1).cdata);  % use 1st frame to get dimensions
+set(gcf, 'position', [0 0 w+100 h+100]);
+axis off
+movie(F);

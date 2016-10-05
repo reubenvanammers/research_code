@@ -12,7 +12,7 @@ for  i= 1:N;%i is vertex number
         v = V(i,:);
         vp1 = V(C{l}(mod(internal_vertex_number + 1,len)+1),:);
         vm1 = V(C{l}(mod(internal_vertex_number - 1,len)+1),:);
-        
+
         grad_A_vec = 0.5*[vp1(2)-vm1(2);vm1(1)-vp1(1)]';
         
         V1 = v-vm1;
