@@ -36,42 +36,8 @@ real_cell_circumferences = zeros(1,M);
 reference_cell_areas = zeros(1,M);
 reference_cell_circumferences = zeros(1,M);
 
-[real_cell_circumferences,short_edges] = cell_edge_lengths(C,V,dmin);
 
-if size(short_edges,1) > 0 &&swapcount <100
-
-    t
-    short_edges
-    norm(V(short_edges(1,1),:)-V(short_edges(1,2),:))
-    [C,V,V_ref] = t1swap(short_edges(1,1),short_edges(1,2),dsep,C,V,V_ref);
-    included_cell = cell_inclusion(V,C);
-    [real_cell_circumferences,short_edges] = cell_edge_lengths(C,V,dmin);
-    swapcount = swapcount +1;
-end
-
-% while edge_status==false
-%     for l=1:length(real_edge_lengths);
-%         if flag
-%             flag = false;
-%             break
-%         end
-%         for i = length(real_edge_lengths{l})
-%             if real_edge_lengths{l}(i)<dmin;
-%                 i
-%                 l
-%                 t
-%                 [C,V,V_ref] = t1swap(C{l}(i),C{l}(mod(i,length(C{l}))+1),dsep,C,V,V_ref);
-%                 included_cell = cell_inclusion(V,C);
-%                 [real_edge_lengths,real_cell_circumferences] = cell_edge_lengths(C,V);
-% 
-%                 flag = true;
-%                 break
-%             end
-%         end
-%         edge_status = true;
-%     end
-% end
-cell_history{size(cell_history,2)+1} = C;      
+      
 for i = 1:M
     real_cell_areas(i) = cell_area(i,C,V);
     real_cell_circumferences(i) = cell_circumference(i,C,V);
