@@ -1,21 +1,24 @@
-global V C connectivitylist F N A0 C0 lambda beta gamma M
+global V C connectivitylist F N A0_vec C0_vec lambda beta gamma M included_cell 
 %vertex model without remodelling
-A0=sqrt(3)/2;
-C0 = 2*sqrt(pi*A0);
+sidelength = 1/sqrt(3);
+A0=sqrt(27)/2*(sidelength.^2);
+C0 = 6*sidelength;
 lambda = 1;
 beta = 1;
-gamma = 1;
-[V,C,connectivitylist] = hexgrid_voronoi();
+gamma = 0;
+[V,C,connectivitylist] = hexgrid_voronoi(5,5);
 V_init = V;
 N= length(V);
 M = length(C);
+A0_vec = ones(1,M)*A0;
+C0_vec = ones(1,M)*C0;
 V(3,1) = V(3,1)+0;
 V_ref = V;
 V_vec = columnize(V,V_ref);
 V_vec = V_vec(2*N+1:end);%ignore reference cells for now
 F=0;
 tend = 1000;
-
+included_cell = cell_inclusion(V,C);
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
 [Time,Y] = ode15s(@cell_vertex_stress,0:0.2:tend,V_vec,options);
