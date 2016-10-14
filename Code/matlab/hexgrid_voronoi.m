@@ -5,14 +5,24 @@ function [V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize)
 %xsize is size of cells in x direction, ysize is size of cells in y
 %direction
 if nargin ==0
-    xsize = 9;
-    ysize = 9;
+    xsize = 7;
+    ysize = 8;
 end
+xsize = xsize +2;
+ysize = ysize +1;%These two lines make the x and y sizes consisten with
+%what one would expect: some cells get stripped away in order for symmetry
+%and this accounts for that
 c = sqrt(3) / 2;
 [X,Y] = meshgrid(0:1:xsize,0:1:ysize);
-n = size(X,1);
+n = size(X);
 X = c * X;
-Y = Y + repmat([0 0.5],[n,n/2]);
+if mod(n(2),2) == 1
+    k = n(2)-1;
+    Y(:,1:k) = Y(:,1:k) + repmat((2*c)/sqrt(3)*[0 0.5],n(1),k/2);
+else
+    k = n(2);
+    Y(:,1:k) = Y(:,1:k) + repmat((2*c)/sqrt(3)*[0 0.5],n(1),k/2);
+end
 X = X(:,1:end-1);
 Y = Y(:,1:end-1);
 
@@ -43,12 +53,12 @@ end
 
 N = length(C);%number of cells
 
-% 
-% figure
-% for i = 1:length(C)
-%     patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
-% end
-% title('Initial Hexagons')
+
+figure
+for i = 1:length(C)
+    patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
+end
+title('Initial Hexagons')
 
 end
 %connectivitylist(:,2:end);%removes point at infinity
