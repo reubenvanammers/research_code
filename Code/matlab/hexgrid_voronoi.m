@@ -1,4 +1,4 @@
-function [V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize)
+function [V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize,c)
 %creates hexagonal list of vertices V, cell of cells C, and matrix of
 %connetivity between the two. Neighbouring cells is list of neighbouring
 %cells for each
@@ -8,11 +8,14 @@ if nargin ==0
     xsize = 7;
     ysize = 8;
 end
+if nargin <3
+    c = sqrt(3) / 2;
+end
 xsize = xsize +2;
 ysize = ysize +1;%These two lines make the x and y sizes consisten with
 %what one would expect: some cells get stripped away in order for symmetry
 %and this accounts for that
-c = sqrt(3) / 2;
+
 [X,Y] = meshgrid(0:1:xsize,0:1:ysize);
 n = size(X);
 X = c * X;
@@ -54,12 +57,12 @@ end
 N = length(C);%number of cells
 
 
-figure
-for i = 1:length(C)
-    patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
-end
-title('Initial Hexagons')
-
+% figure
+% for i = 1:length(C)
+%     patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
+% end
+% title('Initial Hexagons')
+% 
 end
 %connectivitylist(:,2:end);%removes point at infinity
 
