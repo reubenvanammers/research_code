@@ -1,20 +1,20 @@
-function [Time,Y,cell_history2,cell_t_history2] = vertex_restructuring(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
+function [Time,Y,cell_history2,cell_t_history2,monoflag2] = vertex_restructuring_static(lambda0,beta0,gamma0,alpha0,eta0,T0,tend,external_force2)
 %implements vertex model with remodelling
-global C F N A0_vec C0_vec lambda beta gamma M alpha cell_history cell_t_history
-global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell 
+global C F N A0_vec C0_vec lambda beta gamma M alpha cell_history cell_t_history external_force
+global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell monoflag
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 C0 = 6*sidelength;
-
+external_force = external_force2;
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi();
+[V,C] = hexgrid_voronoi(5,5);
 
 included_cell = cell_inclusion(V,C);
 N= length(V);
 M = length(C);
 A0_vec = ones(1,M)*A0;
-C0_vec = ones(1,M)*C0;z
+C0_vec = ones(1,M)*C0;
 V(3,1) = V(3,1)+0;
 ref_V = V;
 V_vec = columnize(V,ref_V);
@@ -34,10 +34,10 @@ A_rec = A0*ones(100,M);
 restoring_rec = [];
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
-[Time,Y] = cell_intermediate_restructuring(@cell_vertex_stress_reference,tend,V_vec,options);
+[Time,Y] = cell_intermediate_restructuring_static(@cell_vertex_stress_reference,tend,V_vec,options);
 final_hex = Y(end,:)';
 cell_history2 =cell_history;
 cell_t_history2 = cell_t_history;
 %hex_vis_2(Time,Y,C);
-
+monoflag2 = monoflag;
 

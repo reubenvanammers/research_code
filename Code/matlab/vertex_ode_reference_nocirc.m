@@ -1,4 +1,4 @@
-function [Time,Y] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
+function [Time,Y,C] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 

@@ -1,5 +1,5 @@
-function [Time,Y] = cell_intermediate_restructuring(fhandle, tend, v0, varargin)
-global cell_history C included_cell cell_t_history
+function [Time,Y] = cell_intermediate_restructuring_static(fhandle, tend, v0, varargin)
+global cell_history C included_cell cell_t_history restoring_rec monoflag external_force
 cell_history = {C};
 cell_t_history = 0;
 restructuring_time = 1; %How often algo checks if need to swap
@@ -7,12 +7,17 @@ h = 0.02; %delta t
 Y = v0';
 Time = 0;
 v = v0;
-
-dmin = 0.18;
+N = size(Y,2)/4;
+xvalues = Y(:,1:N);
+monolayer_length = max(xvalues);
+dmin = 0.15;
 dsep = dmin*1.1;
-
+monoflag = 'timeout';
 for i = 0:restructuring_time:(tend-restructuring_time)
-    i
+    if mod(i,10) ==0
+        i
+    end
+
     [Time0,Y0] = ode45(fhandle,i:h:(i+restructuring_time),v,varargin{:});
     Time0 = Time0(2:end); Time = [Time;Time0];
     Y0 = Y0(2:end,:); Y = [Y;Y0]; 
@@ -26,4 +31,17 @@ for i = 0:restructuring_time:(tend-restructuring_time)
     cell_history{size(cell_history,2)+1} = C;
     cell_t_history = [cell_t_history ; i+restructuring_time];
     v = columnize(V,V_ref);
+        
+    xvalues = Y(:,1:N);
+    monolayer_length2 = max(xvalues(end,:));
+    abs(monolayer_length-monolayer_length2);
+    if abs(monolayer_length-monolayer_length2) < 0.001*restructuring_time
+        monoflag = 'stable';
+        break
+    end
+    monolayer_length = monolayer_length2;
+    if ~connected_cells(C,V);
+        monoflag = 'break';
+        break
+    end
 end

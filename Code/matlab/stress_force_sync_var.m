@@ -1,12 +1,10 @@
-function F = stress_force_sync(t,dxdt)
+function F = stress_force_sync_var(t,dxdt)
 %adds external force to vertices marked in movelist. averages out restoring
 %force and adds it to the external force, so that all vertices move at the
-%same speed. 
+%same speed. Doesn't have external force builtin, so needs to be defined in
+%a parent file.
 global movelist N external_force restoring_rec 
-if isempty(external_force) %default value of external force if no previous value is defined. 
-    external_force = 0.2;
-end
-
+%external_force = 0.2;
 [V,~] = matricize(dxdt);
 Vx = V(:,1);
 restoring_forces = Vx(movelist,:);

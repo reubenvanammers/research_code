@@ -1,7 +1,7 @@
 %Varies parameters of vertex_ode_reference, and plots time strain graphs in a
 %subplot.
 
-inherent_parameters = {3,3,0}; % alpha =3, beta = 3, gamma = 0
+inherent_parameters = {3,3,0}; % lambda =3, beta = 3, gamma = 0
 Tvec = [0 20 100];
 etavec = [1 0.5 0.1];
 alphavec = 0.2:0.2:1;
