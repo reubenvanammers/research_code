@@ -1,6 +1,7 @@
-function [Time,Y]=stress_2d_ode(alpha0,gamma0,T0,tend)
+function [Time,Y,Tri2]=stress_2d_ode(alpha0,gamma0,T0,tend)
 %Implements remodelling in a cell centre cell centre spring based model.
-global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter
+global gamma alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1
+global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter external_force
 gamma = gamma0;alpha =alpha0;T = T0;
 %Model Parameters
 %gamma = 1;%speed of reference cell remodelling
@@ -12,7 +13,7 @@ restoring_t_rec = [];
 F=@stress_force_sync;
 
 
-
+external_force = 0.2;
 [P,E,Tri] = tri_2D_Hex2;
 m = min(P(:,1));
 fixlist = P(:,1) ==m;
@@ -35,7 +36,7 @@ tot_P = columnize(P,ref_P);
 % real x values, real y values, reference x values, reference y values
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_forces_stress_vector,0:0.2:tend,tot_P,options);
-
+Tri2 = Tri;
 %tri_vis(Time,Y,Tri)%visualizes system
 
 end

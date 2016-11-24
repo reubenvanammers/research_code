@@ -46,4 +46,4 @@ figure
 [h, w, p] = size(F(1).cdata);  % use 1st frame to get dimensions
 set(gcf, 'position', [0 0 w+100 h+100]);
 axis off
-movie(F);
+%movie(F);

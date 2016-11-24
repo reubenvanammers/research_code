@@ -3,7 +3,7 @@ function dxdt = cell_vertex_stress_reference_nocirc(t,x)
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
 global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist 
-global movelist eta restoring_rec counter included_cell circ_area_conversion
+global movelist eta restoring_rec counter included_cell circ_area_conversion external_force
 t
 
 while t_rec(end) > t;
@@ -108,8 +108,8 @@ fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,g
 
 
 dxdt = columnize(real_force,eta*(follow_force+fix_force));
-external_force = F(t,dxdt);
+extforce = F(t,dxdt,external_force);
 dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
 
-dxdt = dxdt +external_force;
+dxdt = dxdt +extforce;
 dxdt = dxdt - [fixlist; fixlist; zeros(2*N,1)].*dxdt;

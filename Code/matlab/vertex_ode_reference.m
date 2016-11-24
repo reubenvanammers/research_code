@@ -1,16 +1,14 @@
-function [Time,Y,C] = vertex_ode_reference(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
+function [Time,Y,C2] = vertex_ode_reference(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
-global C F N A0_vec C0_vec lambda beta gamma M alpha 
+global C F N A0_vec C0_vec lambda beta gamma M alpha external_force
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 %C0 = 2*sqrt(pi*A0);
 C0 = 6*sidelength;
-% lambda = 1;
-% beta = 1;
-% gamma = 1;
-% alpha = 1;
-% tend = 50;
+
+external_force = 0.2;
+
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
 [V,C] = hexgrid_voronoi();
@@ -40,9 +38,11 @@ restoring_rec = [];
 
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
-final_hex = Y(end,:)';
-[V,V_ref] = matricize(final_hex);
 
+C2 =C;
+
+% final_hex = Y(end,:)';
+% [V,V_ref] = matricize(final_hex);
 %hex_vis_2(Time,Y,C);
 
 

@@ -34,8 +34,8 @@ for i = 1:length(Time);
         patch(V_ref(C{j},1),V_ref(C{j},2),j,'FaceColor','w'); % draws hexagons
     end
     F(i) =getframe;
-    clf;
+   % clf;
 
 end
 
-movie(F,1,60);
+%movie(F,1,60);

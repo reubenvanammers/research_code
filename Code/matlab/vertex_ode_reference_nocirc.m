@@ -1,8 +1,8 @@
-function [Time,Y,C] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
+function [Time,Y,C2] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
-global C F N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion
+global C F N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
@@ -17,6 +17,7 @@ lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
 [V,C] = hexgrid_voronoi();
 included_cell = cell_inclusion(V,C);
+external_force = 0.2;
 N= length(V);
 M = length(C);
 A0_vec = ones(1,M)*A0;
@@ -41,9 +42,8 @@ restoring_rec = [];
 
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.2:tend,V_vec,options);
-final_hex = Y(end,:)';
-[V,V_ref] = matricize(final_hex);
-
+%final_hex = Y(end,:)';
+C2 = C;
 %hex_vis_2(Time,Y,C);
 
 
