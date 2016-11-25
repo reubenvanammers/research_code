@@ -1,5 +1,6 @@
 function dxdt = cell_vertex_stress_restructuring(t,x)
 %ode describing how the system evolves for the vertex based reference model
+%Dont use: use intermediate timesteps with other solvers
 global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
 global fixlist movelist eta restoring_rec counter included_cell cell_history external_force
 

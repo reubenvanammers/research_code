@@ -1,7 +1,7 @@
-function [Time,Y,Tri2]=stress_2d_ode(alpha0,eta0,T0,tend)
+function [Time,Y,Tri2]=strain_2d_ode(alpha0,eta0,T0,tend,strainfunc)
 %Implements remodelling in a cell centre cell centre spring based model.
-global eta alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k
-global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter external_force
+global eta alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k initial_length
+global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter strain_function
 eta = eta0;alpha =alpha0;T = T0;
 %Model Parameters
 %eta = 1;%speed of reference cell remodelling
@@ -11,16 +11,16 @@ s0 = 1; %un-stretch length of cells
 k=1; %spring constant
 restoring_rec = [];
 restoring_t_rec = [];
-F=@stress_force_sync;
+F=@strain_force;
 
 
-external_force = 0.2;
+strain_function = strainfunc;
 [P,E,Tri] = tri_2D_Hex2;
 initial_min = min(P(:,1));
 fixlist = P(:,1) ==initial_min;
 initial_max = max(P(:,1));
 movelist =  P(:,1) ==initial_max;
-
+initial_length = initial_max-initial_min;
 
 N= length(P);
 M = length(E);
@@ -36,7 +36,7 @@ tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:
 % real x values, real y values, reference x values, reference y values
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_forces_stress_vector,0:0.2:tend,tot_P,options);
+[Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:tend,tot_P,options);
 Tri2 = Tri;
 %tri_vis(Time,Y,Tri)%visualizes system
 

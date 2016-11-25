@@ -1,6 +1,6 @@
 function [Time,Y,strain,restoring,F] = visualize_system(fhandle,varargin)
 
-global external_force restoring_rec t_rec
+global restoring_rec t_rec
 [~,C] = hexgrid_voronoi();
 [Time,Y]=fhandle(varargin{:});
 l = length(t_rec)-length(restoring_rec);
@@ -8,8 +8,8 @@ t_rec = t_rec(l+1:end);
 N = size(Y,2)/4;
 xvalues = Y(:,1:N);
 strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
-restoring_temp = restoring_rec./external_force;
-[t_rec,ia,ic] = unique(t_rec);
+restoring_temp = restoring_rec;
+[t_rec,ia,~] = unique(t_rec);
 restoring_temp = restoring_temp(ia);%deletes duplicate time entries for interpolation
 restoring = interp1(t_rec,restoring_temp,Time);%interpolates restoring force to be same size as time vector
 figure

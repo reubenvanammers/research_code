@@ -1,7 +1,7 @@
 function dxdt = cell_forces_stress(t,x)
 %implements internal force calculation for spring based reference model,
 %and sets up for creep experiment by adding fixlist and movelist. 
-global gamma alpha s0 F N M E r_rec  t_rec T fixlist ;
+global eta alpha s0 F N M E r_rec  t_rec T fixlist k;
 dxdt = zeros(4*N,1);
 
 
@@ -17,7 +17,7 @@ for i = 1:M;
     edge = E(i,:);
     r_ij = [x(edge(1)) x(edge(1)+N)]-[x(edge(2)) x(edge(2)+N)];
     rho_ij = [x(edge(1)+2*N) x(edge(1)+3*N)]-[x(edge(2)+2*N) x(edge(2)+3*N)];
-    real_force = (norm(r_ij)-norm(rho_ij))*r_ij/norm(r_ij);
+    real_force = k*(norm(r_ij)-norm(rho_ij))*r_ij/norm(r_ij);
     r_rec(K,i) = norm(r_ij);%records rij
     if t_rec(end)>t_rec(1)
         r_av = trapz(t_rec,r_rec(:,i))/(t_rec(end)-t_rec(1));
@@ -25,7 +25,7 @@ for i = 1:M;
         r_av = r_rec(end,i);
     end
     
-    ref_force = gamma*((alpha*(norm(rho_ij)-s0)+(1-alpha)*(norm(rho_ij)-norm(r_av)))*rho_ij/norm(rho_ij));
+    ref_force = k*eta*((alpha*(norm(rho_ij)-s0)+(1-alpha)*(norm(rho_ij)-norm(r_av)))*rho_ij/norm(rho_ij));
     dxdt(edge(1)) = dxdt(edge(1))-real_force(1);%real xvalues
     dxdt(edge(2)) = dxdt(edge(2))+real_force(1);%real xvalues
     dxdt(edge(1)+N) = dxdt(edge(1)+N)-real_force(2);%real yvalues

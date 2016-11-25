@@ -7,13 +7,14 @@ global movelist eta restoring_rec counter included_cell circ_area_conversion ext
 t
 
 while t_rec(end) > t;
+    while t_rec(counter)+T > t;
+        counter = counter-1;
+    end
     t_rec = t_rec(1:end-1);
     A_rec = A_rec(1:end-1,:);
     C_rec = C_rec(1:end-1,:);
     restoring_rec = restoring_rec(1:end-1);
-    while t_rec(counter)+T > t;
-        counter = counter-1;
-    end
+
 end
 t_rec = [t_rec; t];
 

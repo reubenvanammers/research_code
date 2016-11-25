@@ -1,5 +1,5 @@
 function [Time,Y] = cell_intermediate_restructuring_static(fhandle, tend, v0, varargin)
-global cell_history C included_cell cell_t_history restoring_rec monoflag external_force
+global cell_history C included_cell cell_t_history  monoflag 
 cell_history = {C};
 cell_t_history = 0;
 restructuring_time = 1; %How often algo checks if need to swap

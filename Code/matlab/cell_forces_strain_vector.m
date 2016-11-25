@@ -1,9 +1,9 @@
-function dxdt = cell_forces_stress_vector(t,x)
+function dxdt = cell_forces_strain_vector(t,x)
 %implements evolution of system for cell center cell centre spring based
 %model to be fed into inbuilt matlab solver. Used for creep experiment.
 %Done in a vectorized manner, but otherwize same as cell_forces_stress.
 global eta alpha s0 F N r_rec  t_rec T fixlist vertex_matrix_1 vertex_matrix_2
-global edge_matrix restoring_rec movelist counter external_force k
+global edge_matrix restoring_rec movelist counter strain_function k initial_length
 dxdt = zeros(4*N,1);
 
 while t_rec(end) > t;
@@ -50,8 +50,7 @@ dxdt = dxdt+edge_matrix*total_force;
 % restoring_t_rec = [restoring_t_rec; t];
 % restoring_rec = [restoring_rec; max(abs(dxdt([movelist; zeros(3*N,1)]==1)))];
 
-
-extforce = F(t,dxdt,external_force);
+extforce = F(t,dxdt,strain_function,initial_length);
 dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
 
 dxdt = dxdt +extforce;
