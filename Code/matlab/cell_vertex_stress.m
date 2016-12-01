@@ -1,6 +1,6 @@
 function dxdt = cell_vertex_stress(t,x);
 %used in simulation without remodelling.
-global C F N A0_vec C0_vec lambda beta gamma M included_cell
+global C N A0_vec C0_vec lambda beta gamma M included_cell
 dxdt = zeros(2*N,1);
 vertex_force = zeros(N,2);
 [V,~] = matricize([x;x]);

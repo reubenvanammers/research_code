@@ -1,6 +1,6 @@
-function [Time,Y,Tri2]=stress_2d_ode(alpha0,eta0,T0,tend,)
+function [Time,Y,Tri2]=stress_2d_ode(alpha0,eta0,T0,tend)
 %Implements remodelling in a cell centre cell centre spring based model.
-global eta alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k t_strain_end
+global eta alpha s0 N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k t_strain_end
 global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter external_force
 eta = eta0;alpha =alpha0;T = T0;
 %Model Parameters
@@ -11,7 +11,6 @@ s0 = 1; %un-stretch length of cells
 k=1; %spring constant
 restoring_rec = [];
 restoring_t_rec = [];
-F=@stress_force_sync;
 if nargin < 5
     t_strain_end = Inf;
 else

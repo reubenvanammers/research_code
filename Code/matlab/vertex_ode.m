@@ -1,4 +1,4 @@
-global V C connectivitylist F N A0_vec C0_vec lambda beta gamma M included_cell 
+global V C connectivitylist N A0_vec C0_vec lambda beta gamma M included_cell 
 %vertex model without remodelling
 sidelength = 1/sqrt(3)*1.5;
 A0=sqrt(27)/2*(sidelength.^2);
@@ -16,7 +16,6 @@ V(3,1) = V(3,1)+0;
 V_ref = V;
 V_vec = columnize(V,V_ref);
 V_vec = V_vec(2*N+1:end);%ignore reference cells for now
-F=0;
 tend = 1000;
 included_cell = cell_inclusion(V,C);
 

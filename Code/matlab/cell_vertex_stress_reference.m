@@ -1,9 +1,9 @@
 function dxdt = cell_vertex_stress_reference(t,x)
 %ode describing how the system evolves for the vertex based reference model
-global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
+global C N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
 global fixlist movelist eta restoring_rec counter included_cell external_force
 
-
+t
 while t_rec(end) > t;
     while t_rec(counter)+T > t;
         counter = counter-1;
@@ -64,8 +64,6 @@ fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,g
 
 
 dxdt = columnize(real_force,eta*(follow_force+fix_force));
-extforce = F(t,dxdt,external_force);
-dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
+dxdt = stress_force_sync(t,dxdt,external_force);
 
-dxdt = dxdt +extforce;
 dxdt = dxdt - [fixlist; fixlist; zeros(2*N,1)].*dxdt;

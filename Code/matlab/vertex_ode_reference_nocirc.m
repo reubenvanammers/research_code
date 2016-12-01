@@ -2,7 +2,7 @@ function [Time,Y,C2] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,e
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
-global C F N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force
+global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
@@ -27,7 +27,6 @@ ref_V = V;
 V_vec = columnize(V,ref_V);
 
 
-F=@stress_force_sync;
 m = min(V(:,1));
 fixlist = V(:,1) <m+0.1;
 m = max(V(:,1));

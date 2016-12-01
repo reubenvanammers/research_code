@@ -1,6 +1,6 @@
 function [Time,Y,cell_history2,cell_t_history2,monoflag2] = vertex_restructuring_static(lambda0,beta0,gamma0,alpha0,eta0,T0,tend,external_force2)
 %implements vertex model with remodelling
-global C F N A0_vec C0_vec lambda beta gamma M alpha cell_history cell_t_history external_force
+global C N A0_vec C0_vec lambda beta gamma M alpha cell_history cell_t_history external_force
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell monoflag
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
@@ -8,7 +8,7 @@ C0 = 6*sidelength;
 external_force = external_force2;
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi(5,5);
+[V,C] = hexgrid_voronoi(7,7);
 
 included_cell = cell_inclusion(V,C);
 N= length(V);
@@ -20,7 +20,6 @@ ref_V = V;
 V_vec = columnize(V,ref_V);
 
 
-F=@stress_force_sync;
 m = min(V(:,1));
 fixlist = V(:,1) <m+0.1;
 m = max(V(:,1));

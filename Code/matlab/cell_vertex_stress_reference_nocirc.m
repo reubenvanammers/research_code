@@ -109,8 +109,6 @@ fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,g
 
 
 dxdt = columnize(real_force,eta*(follow_force+fix_force));
-extforce = F(t,dxdt,external_force);
-dxdt = dxdt - [movelist; movelist; zeros(2*N,1)].*dxdt;
+dxdt = stress_force_sync(t,dxdt,external_force);
 
-dxdt = dxdt +extforce;
 dxdt = dxdt - [fixlist; fixlist; zeros(2*N,1)].*dxdt;

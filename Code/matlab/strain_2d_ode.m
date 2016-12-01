@@ -1,6 +1,6 @@
 function [Time,Y,Tri2]=strain_2d_ode(alpha0,eta0,T0,tend,strainfunc,t_strain_end2)
 %Implements remodelling in a cell centre cell centre spring based model.
-global eta alpha s0 F N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k initial_length t_strain_end
+global eta alpha s0 N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k initial_length t_strain_end
 global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter strain_function stress_rec
 eta = eta0;alpha =alpha0;T = T0;
 %Model Parameters
@@ -12,7 +12,7 @@ k=1; %spring constant
 restoring_rec = [];
 stress_rec = [];
 restoring_t_rec = [];
-F=@strain_force;
+
 
 if nargin < 6
     t_strain_end = Inf;
@@ -44,7 +44,7 @@ tot_P = columnize(P,ref_P);
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:tend,tot_P,options);
 Tri2 = Tri;
-%tri_vis(Time,Y,Tri)%visualizes system
+tri_vis(Time,Y,Tri)%visualizes system
 
 end
 
