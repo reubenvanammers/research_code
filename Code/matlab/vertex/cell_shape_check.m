@@ -1,4 +1,5 @@
 function cell_shape_check(xsize,ysize,leftarea,rightarea)
+%Test function for checking behaviour of vertex model
 if nargin ==2
     leftarea = 1;
     rightarea =1;
