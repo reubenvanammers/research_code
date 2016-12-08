@@ -4,10 +4,10 @@
 
 forcevec = logspace(-1,0,5);
 %Tvec = [0 20 100];
-T = 50;
+T = 0;
 gammavec = logspace(-2,0,10);
 alphavec = logspace(-2,0,10);
-tend = 2000;
+tend = 20000;
 f = length(forcevec);g = length(gammavec);a = length(alphavec);
 L = f*g*a;
 straincell = cell(1,L);
@@ -45,9 +45,9 @@ error1 = nan*ones(f,g,a);
 error2 = nan*ones(f,g,a);
 error_fit = nan*ones(f,g,a);
 
-save([pwd '\workspaces\creeperror']);
+save([pwd '\workspaces\creeperror' num2str(T)]);
 %%
-load([pwd '\workspaces\creeperror']);
+load([pwd '\workspaces\creeperror' num2str(T)]);
 for i = 1:L
     counter = i-1;
     alpha_index = mod(counter,a);
@@ -100,3 +100,15 @@ xlabel('gamma');
 ylabel('alpha');
 title('regions above/right of contours are good fits')
 legend(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
+
+
+%%
+contours = logspace(-10,10,21);
+force_index = 1;
+figure
+[X,Y] = meshgrid(gammavec,alphavec);
+hold on;
+contour(X,Y,reshape(error2(force_index,:,:),[g,a])',contours,'ShowText','on');
+set(gca, 'XScale', 'log', 'YScale', 'log');
+xlabel('gamma');
+ylabel('alpha');
