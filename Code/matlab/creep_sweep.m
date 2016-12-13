@@ -2,30 +2,30 @@
 %subplot.
 
 
-forcevec = logspace(-1,0,5);
+forcevec = logspace(-1.6,-0.6 ,5);
 %Tvec = [0 20 100];
-T = 0;
-gammavec = logspace(-2,0,10);
-alphavec = logspace(-2,0,10);
-tend = 20000;
-f = length(forcevec);g = length(gammavec);a = length(alphavec);
+T = 50;
+etavec = logspace(-1,0,5);
+alphavec = logspace(-1,0,5);
+tend = 50000;
+f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a;
 straincell = cell(1,L);
 timecell = cell(1,L);
 flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L);
-parfor i = 1:L%index loops over alpha, then gamma, then T
+parfor i = 1:L%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    gamma_index = mod(counter,g);
-    counter = (counter-gamma_index)/g;
+    eta_index = mod(counter,g);
+    counter = (counter-eta_index)/g;
     force_index = counter;
     alpha = alphavec(alpha_index+1);
     force = forcevec(force_index+1);
-    gamma = gammavec(gamma_index+1);%converts linear index to alpha,gamma,T
-    [Time, Y,~,flag] =stress_2d_ode_maxstrain(alpha,gamma,T,tend,[10,10],force);
+    eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
+    [Time, Y,~,flag] =stress_2d_ode_maxstrain(alpha,eta,T,tend,[10,10],force);
     N = size(Y,2)/4;
     xvalues = Y(:,1:N);
     strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
@@ -45,23 +45,52 @@ error1 = nan*ones(f,g,a);
 error2 = nan*ones(f,g,a);
 error_fit = nan*ones(f,g,a);
 
-save([pwd '\workspaces\creeperror' num2str(T)]);
+save([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-load([pwd '\workspaces\creeperror' num2str(T)]);
+load([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+maxstraincell = cell(f,g,a);
+timeendcell = cell(f,g,a);
+straincell3 = cell(f,g,a);
+timecell3 = cell(f,g,a);
 for i = 1:L
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    gamma_index = mod(counter,g);
-    counter = (counter-gamma_index)/g;
+    eta_index = mod(counter,g);
+    counter = (counter-eta_index)/g;
     force_index = counter;
-    vars = {force_index+1,gamma_index+1,alpha_index+1};
+    vars = {force_index+1,eta_index+1,alpha_index+1};
     straincell2{vars{:}} = straincell{i};
     timecell2{vars{:}} = timecell{i};
+    maxstraincell{vars{:}} = max(straincell2{vars{:}});
+    timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(straincell2{vars{:}}<(1+0.9*(maxstraincell{vars{:}}-1)),1,'last'));
+    if  timeendcell{vars{:}} > tend;
+        ['Not enough time calculated for variables']
+        vars
+    end
+    timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
+    straincell3{vars{:}} = interp1(timecell2{vars{:}},straincell2{vars{:}},timecell3{vars{:}});
+end
+%%
+unable_to_fit = [];
+for i = 1:L
+    counter = i-1;
+    alpha_index = mod(counter,a);
+    counter = (counter-alpha_index)/a;
+    eta_index = mod(counter,g);
+    counter = (counter-eta_index)/g;
+    force_index = counter;
+    vars = {force_index+1,eta_index+1,alpha_index+1};
+%     straincell2{vars{:}} = straincell{i};
+%     timecell2{vars{:}} = timecell{i};
     if ~flagcell{i}
         try
-            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell2{vars{:}}',straincell2{vars{:}}');
+            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',straincell3{vars{:}}');
+        catch
+            unable_to_fit = [unable_to_fit; vars];
         end
+    else
+        %unable_to_fit = [unable_to_fit; vars];
     end
 end
 
@@ -72,13 +101,13 @@ for force_index = 1:f
     figure
     hold on
     for alpha_index = 1:a 
-        for  gamma_index = 1:g
-            subplot(g,a,alpha_index+a*(gamma_index-1))
-            vars = {force_index,gamma_index,alpha_index};
+        for  eta_index = 1:g
+            subplot(a,g,eta_index-g*(alpha_index)+a*g)
+            vars = {force_index,eta_index,alpha_index};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            plot(timecell2{vars{:}},straincell2{vars{:}},'r',timecell2{vars{:}},exp1(timecell2{vars{:}}),'k--',timecell2{vars{:}},exp2(timecell2{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' gamma = ', num2str(gammavec(gamma_index)), ' force = ' num2str(gammavec(force_index))]); 
+            plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
+            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' force = ' num2str(etavec(force_index))]); 
         end
     end
 end
@@ -88,27 +117,67 @@ error_threshold = 1e-5;
 colourvec = ['y','m','c','r','b','g','k'];
 figure
 hold on
-[X,Y] = meshgrid(gammavec,alphavec);
+[X,Y] = meshgrid(etavec,alphavec);
 contours = logspace(-10,10,21);
 plot(X,Y,'ko');
 
 for force_index = 1:f
-    [~,h(force_index)] = contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','on');
+    [~,h(force_index)] = contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
-xlabel('gamma');
+xlabel('eta');
 ylabel('alpha');
-title('regions above/right of contours are good fits')
-legend(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
+title('regions above/right of contours are good fits/have 1 timescale')
+legendflex(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
 
 
 %%
 contours = logspace(-10,10,21);
-force_index = 1;
-figure
-[X,Y] = meshgrid(gammavec,alphavec);
-hold on;
-contour(X,Y,reshape(error2(force_index,:,:),[g,a])',contours,'ShowText','on');
-set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('gamma');
-ylabel('alpha');
+for force_index = 1:f;
+    figure
+    [X,Y] = meshgrid(etavec,alphavec);
+    hold on;
+    surf(X,Y,reshape(error_fit(force_index,:,:),[g,a])');
+    shading interp;
+    alpha(0.5);
+    colorbar;
+    contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',contours,'ShowText','on');
+
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    xlabel('eta');
+    ylabel('alpha');
+end
+
+%%
+for force_index = 2:2;
+    figure
+    [X,Y] = meshgrid(1./etavec,alphavec);
+    hold on;
+    surf(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])');
+    shading interp;
+    alpha(0.5);
+    colorbar;
+    contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
+
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    xlabel('1/eta');
+    ylabel('alpha');
+    title('equilibriation times')
+end
+%%
+for force_index = 2:2;
+    figure
+    [X,Y] = meshgrid(etavec,alphavec);
+    hold on;
+    mesh(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])');
+    shading interp;
+    alpha(0.5);
+    colorbar;
+    contour(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])',contours,'ShowText','on');
+
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    xlabel('eta');
+    ylabel('alpha');
+    title('max strain')
+end
+

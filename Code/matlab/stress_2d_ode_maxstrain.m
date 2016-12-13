@@ -32,7 +32,7 @@ initial_min = min(P(:,1));
 fixlist = P(:,1) ==initial_min;
 initial_max = max(P(:,1));
 movelist =  P(:,1) ==initial_max;
-maxlength = 10*(initial_max-initial_min);
+maxlength = 2*(initial_max-initial_min);
 
 
 N= length(P);
@@ -48,7 +48,7 @@ ref_P = P;
 tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:
 % real x values, real y values, reference x values, reference y values
-options = odeset('RelTol',1e-5,'AbsTol',1e-8);
+options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
 [Time,Y] = ode15s(@cell_forces_stress_vector_maxstrain,0:0.2:tend,tot_P,options);
 Tri2 = Tri;
 %tri_vis(Time,Y,Tri)%visualizes system
