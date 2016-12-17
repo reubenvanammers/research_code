@@ -137,6 +137,7 @@ for force_index = 1:f;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
+    plot(X,Y,'k.')
     surf(X,Y,reshape(error_fit(force_index,:,:),[g,a])');
     shading interp;
     alpha(0.5);
@@ -159,7 +160,7 @@ for force_index = 2:2;
     colorbar;
     contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
-    set(gca, 'XScale', 'log', 'YScale', 'log');
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('1/eta');
     ylabel('alpha');
     title('equilibriation times')
