@@ -9,10 +9,11 @@ for i = 1:length(Time);
     [R,P] = matricize(current_points);%real and reference points
     TR = triangulation(Tri,R);
     triplot(TR);
-    title('Real Points')
+%    title('Real Points')
+    title(['t = ', num2str(Time(i))])
     subplot(2,1,2);
     TR = triangulation(Tri,P);
     triplot(TR);
-    title('Reference Points')
+%    title('Reference Points')
     pause(0.1)
 end

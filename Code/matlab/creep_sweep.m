@@ -4,7 +4,7 @@
 
 forcevec = logspace(-1.6,-0.6 ,5);
 %Tvec = [0 20 100];
-T = 50;
+T = 1;
 etavec = logspace(-1,0,5);
 alphavec = logspace(-1,0,5);
 tend = 50000;
@@ -107,9 +107,10 @@ for force_index = 1:f
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' force = ' num2str(etavec(force_index))]); 
+            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' force = ' num2str(forcevec(force_index))]); 
         end
     end
+%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/strainplot-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 end
 
 %%
@@ -129,6 +130,7 @@ xlabel('eta');
 ylabel('alpha');
 title('regions above/right of contours are good fits/have 1 timescale')
 legendflex(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
+SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
 
 
 %%
@@ -137,7 +139,7 @@ for force_index = 1:f;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
-    plot(X,Y,'k.')
+    plot(X,Y,'k.','MarkerSize',12)
     surf(X,Y,reshape(error_fit(force_index,:,:),[g,a])');
     shading interp;
     alpha(0.5);
@@ -147,10 +149,13 @@ for force_index = 1:f;
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');
     ylabel('alpha');
+    title(['Error contour - force = ' num2str(forcevec(force_index))])
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/forcefitcontour-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
+
 end
 
 %%
-for force_index = 2:2;
+for force_index = 1:1;
     figure
     [X,Y] = meshgrid(1./etavec,alphavec);
     hold on;
@@ -164,9 +169,11 @@ for force_index = 2:2;
     xlabel('1/eta');
     ylabel('alpha');
     title('equilibriation times')
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationtimes-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
+
 end
 %%
-for force_index = 2:2;
+for force_index = 1:1;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
@@ -176,9 +183,12 @@ for force_index = 2:2;
     colorbar;
     contour(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
-    set(gca, 'XScale', 'log', 'YScale', 'log');
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('eta');
     ylabel('alpha');
     title('max strain')
+    view([90 0])
+
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationlenghs-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 end
 

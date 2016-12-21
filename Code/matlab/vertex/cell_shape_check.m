@@ -1,4 +1,4 @@
-function cell_shape_check(xsize,ysize,leftarea,rightarea)
+function cell_shape_check(gridsize,leftarea,rightarea)
 %Test function for checking behaviour of vertex model
 if nargin ==2
     leftarea = 1;
@@ -11,7 +11,7 @@ C0 = 6*sidelength;
 lambda = 1;
 beta = 1;
 gamma = 0;
-[V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize);
+[V,C,connectivitylist] = hexgrid_voronoi(gridsize);
 included_cell = cell_inclusion(V,C);
 N= length(V);
 M = length(C);
