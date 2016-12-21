@@ -1,4 +1,4 @@
-function [Time,Y,Tri2]=strain_2d_ode(alpha0,eta0,T0,tend,strainfunc,t_strain_end2)
+function [Time,Y,Tri2,stress_rec2]=strain_2d_ode(alpha0,eta0,T0,tend,strainfunc,t_strain_end2,gridsize)
 %Implements remodelling in a cell centre cell centre spring based model.
 %Needs external strain function value to match that strain. Optional
 %argument when to stop the external strain.
@@ -15,7 +15,9 @@ restoring_rec = [];
 stress_rec = [];
 restoring_t_rec = [];
 
-
+if nargin < 7
+    gridsize = [7,8];
+end
 if nargin < 6
     t_strain_end = Inf;
 else
@@ -23,7 +25,7 @@ else
 end
 
 strain_function = strainfunc;
-[P,E,Tri] = tri_2D_Hex2;
+[P,E,Tri] = tri_2D_Hex2(gridsize);
 initial_min = min(P(:,1));
 fixlist = P(:,1) ==initial_min;
 initial_max = max(P(:,1));
@@ -48,6 +50,12 @@ options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 Tri2 = Tri;
 tri_vis(Time,Y,Tri)%visualizes system
 
+
+l = length(t_rec)-length(stress_rec);
+t_rec2 = t_rec(l+1:end);
+[t_rec2,ia,~] = unique(t_rec2);
+stress_rec2 = stress_rec(ia);%deletes duplicate time entries for interpolation
+stress_rec2 = interp1(t_rec2,stress_rec2,Time);
 end
 
 

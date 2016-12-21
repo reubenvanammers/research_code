@@ -1,4 +1,4 @@
-function [V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize,c)
+function [V,C,connectivitylist] = hexgrid_voronoi(gridsize,c)
 %creates hexagonal list of vertices V, cell of cells C, and matrix of
 %connetivity between the two. Neighbouring cells is list of neighbouring
 %cells for each
@@ -7,6 +7,9 @@ function [V,C,connectivitylist] = hexgrid_voronoi(xsize,ysize,c)
 if nargin ==0
     xsize = 7;
     ysize = 8;
+else
+    xsize = gridsize(1);
+    ysize = gridsize(2);
 end
 if nargin <3
     c = sqrt(3) / 2;
