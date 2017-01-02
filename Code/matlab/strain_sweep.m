@@ -1,4 +1,4 @@
-%Varies parameters of stress_2d_ode, and plots time strain graphs in a
+%Varies parameters of strain_2d_ode, and plots time strain graphs in a
 %subplot.
 
 endstrain = 1.5;
@@ -7,7 +7,7 @@ ramptimevec = [5];
 T = 50;
 etavec = logspace(-1,0,2);
 alphavec = logspace(-1,0,2);
-tend = 100;
+tend = 500;
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
@@ -49,6 +49,7 @@ save([pwd '\workspaces\strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2st
 %%
 load([pwd '\workspaces\strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 maxstraincell = cell(t,g,a);
+endstresscell = cell(t,g,a);
 timeendcell = cell(t,g,a);
 stresscell3 = cell(t,g,a);
 timecell3 = cell(t,g,a);
@@ -58,18 +59,23 @@ for i = 1:L
     counter = (counter-alpha_index)/a;
     eta_index = mod(counter,g);
     counter = (counter-eta_index)/g;
-    time_index = counter;
-    vars = {time_index+1,eta_index+1,alpha_index+1};
-    straincell2{vars{:}} = straincell{i};
+    ramptime_index = counter;
+    vars = {ramptime_index+1,eta_index+1,alpha_index+1};
+    stresscell2{vars{:}} = stresscell{i};
     timecell2{vars{:}} = timecell{i};
-    endstresscell{vars{:}} = (stresscell2{vars{:}}(end);
-    timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(1.1*endstresscell{vars{:}}),1,'last')); %Note: Need to change condition: 90% of the way?
+    rampindex = find(timecell2{vars{:}}>ramptimevec(ramptime_index+1),1,'first');
+    maxstresscell{vars{:}} = stresscell2{vars{:}}(rampindex);
+    endstresscell{vars{:}} = stresscell2{vars{:}}(end);
+
+    timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(maxstresscell{vars{:}}-endstresscell{vars{:}})),1,'last'));
+    %Chooses end time condition as twice the time it takes for stress to
+    %get 90% of the way from initial to final value
     if  timeendcell{vars{:}} > tend;
         ['Not enough time calculated for variables']
         vars
     end
-    timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
-    stresscell3{vars{:}} = interp1(timecell2{vars{:}},straincell2{vars{:}},timecell3{vars{:}});
+    timecell3{vars{:}} = linspace(ramptimevec(ramptime_index+1),timeendcell{vars{:}},1001)';
+    stresscell3{vars{:}} = interp1(timecell2{vars{:}},stresscell2{vars{:}},timecell3{vars{:}});
 end
 %%
 unable_to_fit = [];
@@ -83,15 +89,15 @@ for i = 1:L
     vars = {time_index+1,eta_index+1,alpha_index+1};
 %     straincell2{vars{:}} = straincell{i};
 %     timecell2{vars{:}} = timecell{i};
-    if ~flagcell{i}
-        try
-            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
-        catch
-            unable_to_fit = [unable_to_fit; vars];
-        end
-    else
-        %unable_to_fit = [unable_to_fit; vars];
+    %if ~flagcell{i}
+    try
+        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
+    catch
+        unable_to_fit = [unable_to_fit; vars];
     end
+    %else
+        %unable_to_fit = [unable_to_fit; vars];
+    %end
 end
 
 
@@ -107,10 +113,10 @@ for time_index = 1:t
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' force = ' num2str(etavec(time_index))]); 
+            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
         end
     end
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
 end
 
 %%
