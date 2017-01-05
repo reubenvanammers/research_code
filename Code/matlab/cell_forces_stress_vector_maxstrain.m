@@ -13,7 +13,7 @@ Vx = V(:,1);
 if max(Vx)-min(Vx) > maxlength
     strainflag = true;
 end
-if strainflag
+if strainflag %this if block shouldn't be needed - stress_event.m should stop the simulation if above certain strain
     return
 end
 

@@ -1,4 +1,4 @@
-function [Time,Y,Tri2,stress_rec2]=strain_2d_ode_ramp(alpha0,eta0,T0,tend,strainfunc,t_strain_end2,gridsize)
+function [Time,Y,Tri2,stress_rec2,t_rec2,stress_index]=strain_2d_ode_ramp(alpha0,eta0,T0,tend,strainfunc,t_ramp_end,t_strain_end2,gridsize)
 %Implements remodelling in a cell centre cell centre spring based model.
 %Needs external strain function value to match that strain. Optional
 %argument when to stop the external strain.
@@ -15,10 +15,10 @@ restoring_rec = [];
 stress_rec = [];
 restoring_t_rec = [];
 
-if nargin < 7
+if nargin < 8
     gridsize = [7,8];
 end
-if nargin < 6
+if nargin < 7
     t_strain_end = Inf;
 else
     t_strain_end = t_strain_end2;
@@ -45,21 +45,24 @@ ref_P = P;
 tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:
 % real x values, real y values, reference x values, reference y values
-options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:tend,tot_P,options);
+options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@strain_event);
+[Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:t_ramp_end,tot_P,options);
 stress_index = length(stress_rec);
 t_index = length(t_rec);
 tot_P = Y(end,:)';
-[Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:tend,tot_P,options);
+[Time2,Y2] = ode15s(@cell_forces_strain_vector,t_ramp_end:0.2:tend,tot_P,options);
 Tri2 = Tri;
-tri_vis(Time,Y,Tri)%visualizes system
+Time = [Time; Time2(2:end)];
+Y = [Y; Y2(2:end,:)];
+%tri_vis(Time,Y,Tri)%visualizes system
 
 
 l = length(t_rec)-length(stress_rec);
 t_rec2 = t_rec(l+1:end);
-[t_rec2,ia,~] = unique(t_rec2);
-stress_rec2 = stress_rec(ia);%deletes duplicate time entries for interpolation
-stress_rec2 = interp1(t_rec2,stress_rec2,Time);
+stress_rec2 = stress_rec;
+%[t_rec2,ia,~] = unique(t_rec2);
+%stress_rec2 = stress_rec(ia);%deletes duplicate time entries for interpolation
+% stress_rec2 = interp1(t_rec2,stress_rec2,Time);
 end
 
 

@@ -66,7 +66,7 @@ warning('off','MATLAB:triangulation:PtsNotInTriWarnId')
 DT = triangulation(T,P);
 
 E = edges(DT);
-triplot(DT);
+%triplot(DT);
 
 
 

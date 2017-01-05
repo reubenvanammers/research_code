@@ -1,13 +1,13 @@
 %Varies parameters of strain_2d_ode, and plots time strain graphs in a
 %subplot.
-
+clear all
 endstrain = 1.5;
-ramptimevec = [5];
+ramptimevec = 5:5:50;
 %Tvec = [0 20 100];
-T = 50;
-etavec = logspace(-1,0,2);
-alphavec = logspace(-1,0,2);
-tend = 500;
+T = 10;
+etavec = logspace(-1,0,5);
+alphavec = logspace(-1,0,5);
+tend = 10000;
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
@@ -15,7 +15,7 @@ timecell = cell(1,L);
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L);
-for i = 1:L%index loops over alpha, then eta, then T
+parfor i = 1:L%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
@@ -25,12 +25,14 @@ for i = 1:L%index loops over alpha, then eta, then T
     alpha = alphavec(alpha_index+1);
     ramptime = ramptimevec(ramptime_index+1);
     eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
-    [Time, Y,~,stress] =strain_2d_ode(alpha,eta,T,tend,ramp(endstrain,1,ramptime),inf,[10,10]);
+    [Time, Y,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,T,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
     N = size(Y,2)/4;
     xvalues = Y(:,1:N);
     %strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
-    stresscell{i} = stress;
-    timecell{i} = Time;
+    stresscell{i} = stress(stress_index+1:end);
+    timecell{i} = trec(stress_index+1:end);
+    [timecell{i},ia,~] = unique(timecell{i});
+    stresscell{i} = stresscell{i}(ia);%deletes duplicate time entries for interpolation
     %flagcell{i} = flag;
     parfor_progress;
 end
@@ -62,10 +64,11 @@ for i = 1:L
     ramptime_index = counter;
     vars = {ramptime_index+1,eta_index+1,alpha_index+1};
     stresscell2{vars{:}} = stresscell{i};
-    timecell2{vars{:}} = timecell{i};
-    rampindex = find(timecell2{vars{:}}>ramptimevec(ramptime_index+1),1,'first');
-    maxstresscell{vars{:}} = stresscell2{vars{:}}(rampindex);
-    endstresscell{vars{:}} = stresscell2{vars{:}}(end);
+    timecell2{vars{:}} = timecell{i}-ramptimevec(ramptime_index+1);
+    %rampindex = find(timecell2{vars{:}}>0,1,'first');
+    maxstresscell{vars{:}} = stresscell2{vars{:}}(1);
+    stress = stresscell2{vars{:}};
+    endstresscell{vars{:}} = stress(end);
 
     timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(maxstresscell{vars{:}}-endstresscell{vars{:}})),1,'last'));
     %Chooses end time condition as twice the time it takes for stress to
@@ -74,7 +77,7 @@ for i = 1:L
         ['Not enough time calculated for variables']
         vars
     end
-    timecell3{vars{:}} = linspace(ramptimevec(ramptime_index+1),timeendcell{vars{:}},1001)';
+    timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
     stresscell3{vars{:}} = interp1(timecell2{vars{:}},stresscell2{vars{:}},timecell3{vars{:}});
 end
 %%
@@ -100,8 +103,10 @@ for i = 1:L
     %end
 end
 
-
+save([pwd '\workspaces\strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
+load([pwd '\workspaces\strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+
 
 for time_index = 1:t
     figure
@@ -116,27 +121,28 @@ for time_index = 1:t
             title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
         end
     end
-    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
 end
 
 %%
-error_threshold = 1e-5;
-colourvec = ['y','m','c','r','b','g','k'];
+error_threshold = 1e-4      ;
+colourvec = ['y','m','c','r','b','g','k','y','m','c','r'];%need to stop reuse of colours, temp measure
+%colourvec = [linspace(0,1,t);linspace(1,0,t);zeros(1,t)];
 figure
 hold on
 [X,Y] = meshgrid(etavec,alphavec);
 contours = logspace(-10,10,21);
 plot(X,Y,'ko');
-
+h = [];
 for time_index = 1:t
     [~,h(time_index)] = contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
 ylabel('alpha');
-title('regions above/right of contours are good fits/have 1 timescale')
-legendflex(h,arrayfun(@num2str,timevec,'UniformOutput',false));
-SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
+title(['regions above/right of contours are good fits/have 1 timescale, have error less than ' num2str(error_threshold)])
+legendflex(h,arrayfun(@num2str,ramptimevec,'UniformOutput',false));
+SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
 
 
 %%
@@ -147,16 +153,19 @@ for time_index = 1:t;
     hold on;
     plot(X,Y,'k.')
     surf(X,Y,reshape(error_fit(time_index,:,:),[g,a])');
+
     shading interp;
+    clearvars alpha
     alpha(0.5);
     colorbar;
-    contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',contours,'ShowText','on');
-
+    pause(0.01)
+ %   contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',contours,'ShowText','on');
+    hold off;
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');
     ylabel('alpha');
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/forcefitcontour-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
-
+    title(['fit error, ramptime = ' , num2str(ramptimevec(time_index))]);
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 end
 
 %%
@@ -168,31 +177,31 @@ for time_index = 2:2;
     shading interp;
     alpha(0.5);
     colorbar;
-    contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
+ %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('1/eta');
     ylabel('alpha');
-    title('equilibriation times')
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationtimes-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
+    title(['equilibriation times, ramptime = ' , num2str(ramptimevec(time_index))])
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 end
-%%
-for time_index = 2:2;
-    figure
-    [X,Y] = meshgrid(etavec,alphavec);
-    hold on;
-    mesh(X,Y,reshape(cell2mat(maxstraincell(time_index,:,:)),[g,a])');
-    shading interp;
-    alpha(0.5);
-    colorbar;
-    contour(X,Y,reshape(cell2mat(maxstraincell(time_index,:,:)),[g,a])',contours,'ShowText','on');
-
-    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('eta');
-    ylabel('alpha');
-    title('max strain')
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationlenghs-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
-
-end
+% %%
+% for time_index = 2:2;
+%     figure
+%     [X,Y] = meshgrid(etavec,alphavec);
+%     hold on;
+%     mesh(X,Y,reshape(cell2mat(maxstraincell(time_index,:,:)),[g,a])');
+%     shading interp;
+%     alpha(0.5);
+%     colorbar;
+%     contour(X,Y,reshape(cell2mat(maxstraincell(time_index,:,:)),[g,a])',contours,'ShowText','on');
+% 
+%     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['max strain ramptime = ' , num2str(ramptimevec(time_index))])
+%     SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationlengths-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+% 
+% end
 

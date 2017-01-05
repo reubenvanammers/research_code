@@ -1,10 +1,10 @@
 %Varies parameters of stress_2d_ode, and plots time strain graphs in a
 %subplot.
-
+clear all
 
 forcevec = logspace(-1.6,-0.6 ,5);
 %Tvec = [0 20 100];
-T = 1;
+T = 100;
 etavec = logspace(-1,0,5);
 alphavec = logspace(-1,0,5);
 tend = 50000;
@@ -94,8 +94,10 @@ for i = 1:L
     end
 end
 
-
+save([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
+load([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+
 
 for force_index = 1:f
     figure
@@ -121,6 +123,7 @@ hold on
 [X,Y] = meshgrid(etavec,alphavec);
 contours = logspace(-10,10,21);
 plot(X,Y,'ko');
+h = [];
 
 for force_index = 1:f
     [~,h(force_index)] = contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
@@ -128,7 +131,7 @@ for force_index = 1:f
 end
 xlabel('eta');
 ylabel('alpha');
-title('regions above/right of contours are good fits/have 1 timescale')
+title(['regions above/right of contours are good fits/have 1 timescale, have error less than ' num2str(error_threshold)])
 legendflex(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
 SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
 
@@ -168,7 +171,7 @@ for force_index = 1:1;
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('1/eta');
     ylabel('alpha');
-    title('equilibriation times')
+    title(['equilibriation times, force = ', num2str(forcevec(force_index))]);
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationtimes-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 
 end
