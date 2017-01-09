@@ -2,11 +2,11 @@
 %subplot.
 clear all
 endstrain = 1.5;
-ramptimevec = 5:5:50;
+ramptimevec = logspace(0,2,5);
 %Tvec = [0 20 100];
-T = 10;
-etavec = logspace(-1,0,5);
-alphavec = logspace(-1,0,5);
+T = 1;
+etavec = logspace(-2,0,10);
+alphavec = logspace(-2,0,10);
 tend = 10000;
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
@@ -15,7 +15,7 @@ timecell = cell(1,L);
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L);
-parfor i = 1:L%index loops over alpha, then eta, then T
+for i = 1:L%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
@@ -165,7 +165,7 @@ for time_index = 1:t;
     xlabel('eta');
     ylabel('alpha');
     title(['fit error, ramptime = ' , num2str(ramptimevec(time_index))]);
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+  %  SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 end
 
 %%
@@ -183,7 +183,7 @@ for time_index = 2:2;
     xlabel('1/eta');
     ylabel('alpha');
     title(['equilibriation times, ramptime = ' , num2str(ramptimevec(time_index))])
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+ %   SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 end
 % %%
