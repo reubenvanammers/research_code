@@ -1,4 +1,4 @@
-%Varies parameters of strain_2d_ode, and plots time strain graphs in a
+%Varies parameters of stra/in_2d_ode, and plots time strain graphs in a
 %subplot.
 clear all
 endstrain = 1.5;
@@ -88,7 +88,7 @@ for i = 1:L
     counter = (counter-alpha_index)/a;
     eta_index = mod(counter,g);
     counter = (counter-eta_index)/g;
-    time_index = counter;
+    time_index = counter;c.
     vars = {time_index+1,eta_index+1,alpha_index+1};
 %     straincell2{vars{:}} = straincell{i};
 %     timecell2{vars{:}} = timecell{i};
@@ -142,7 +142,7 @@ xlabel('eta');
 ylabel('alpha');
 title(['regions above/right of contours are good fits/have 1 timescale, have error less than ' num2str(error_threshold)])
 legendflex(h,arrayfun(@num2str,ramptimevec,'UniformOutput',false));
-SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
+%SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
 
 
 %%
@@ -165,7 +165,7 @@ for time_index = 1:t;
     xlabel('eta');
     ylabel('alpha');
     title(['fit error, ramptime = ' , num2str(ramptimevec(time_index))]);
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 end
 
 %%
@@ -183,7 +183,7 @@ for time_index = 2:2;
     xlabel('1/eta');
     ylabel('alpha');
     title(['equilibriation times, ramptime = ' , num2str(ramptimevec(time_index))])
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 end
 % %%
