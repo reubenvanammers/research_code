@@ -2,11 +2,11 @@
 %subplot.
 clear all
 
-forcevec = logspace(-1.6,-0.6 ,5);
+forcevec = logspace(-2,-1 ,5);
 %Tvec = [0 20 100];
-T = 100;
-etavec = logspace(-1,0,5);
-alphavec = logspace(-1,0,5);
+T = 0;
+etavec = logspace(-2,0,10);
+alphavec = logspace(-2,0,10);
 tend = 50000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a;

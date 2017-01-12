@@ -48,7 +48,7 @@ tot_P = columnize(P,ref_P);
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:tend,tot_P,options);
 Tri2 = Tri;
-tri_vis(Time,Y,Tri)%visualizes system
+%tri_vis(Time,Y,Tri)%visualizes system
 
 
 l = length(t_rec)-length(stress_rec);
