@@ -1,7 +1,9 @@
 function [Time,Y,Tri2,stress_rec2,t_rec2,stress_index]=strain_2d_ode_ramp(alpha0,eta0,T0,tend,strainfunc,t_ramp_end,t_strain_end2,gridsize)
 %Implements remodelling in a cell centre cell centre spring based model.
 %Needs external strain function value to match that strain. Optional
-%argument when to stop the external strain.
+%argument when to stop the external strain. Gives output argument of when
+%strain stops increasing and remains constant, in form of index when this
+%occurs
 global eta alpha s0 N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k initial_length t_strain_end
 global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter strain_function stress_rec
 eta = eta0;alpha =alpha0;T = T0;
@@ -45,7 +47,9 @@ ref_P = P;
 tot_P = columnize(P,ref_P);
 %essentially have 4 lists of data stacked in one column vector:
 % real x values, real y values, reference x values, reference y values
-options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@strain_event);
+
+%options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@strain_event);
+options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:t_ramp_end,tot_P,options);
 stress_index = length(stress_rec);
 t_index = length(t_rec);

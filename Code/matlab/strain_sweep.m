@@ -4,10 +4,10 @@ clear all
 endstrain = 1.5;
 ramptimevec = logspace(0,2,5);
 %Tvec = [0 20 100];
-T = 1;
+T = 0;
 etavec = logspace(-2,0,10);
 alphavec = logspace(-2,0,10);
-tend = 10000;
+tend = 200000;
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
@@ -15,7 +15,7 @@ timecell = cell(1,L);
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L);
-for i = 1:L%index loops over alpha, then eta, then T
+parfor i = 1:L%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
