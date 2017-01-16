@@ -50,11 +50,11 @@ tot_P = columnize(P,ref_P);
 
 %options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@strain_event);
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_forces_strain_vector,0:0.2:t_ramp_end,tot_P,options);
+[Time,Y] = ode15s(@cell_forces_strain_vector,[0,t_ramp_end],tot_P,options);
 stress_index = length(stress_rec);
 t_index = length(t_rec);
 tot_P = Y(end,:)';
-[Time2,Y2] = ode15s(@cell_forces_strain_vector,t_ramp_end:0.2:tend,tot_P,options);
+[Time2,Y2] = ode15s(@cell_forces_strain_vector,[t_ramp_end,tend],tot_P,options);
 Tri2 = Tri;
 Time = [Time; Time2(2:end)];
 Y = [Y; Y2(2:end,:)];

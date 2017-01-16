@@ -7,7 +7,7 @@ forcevec = logspace(-2,-1 ,5);
 T = 0;
 etavec = logspace(-2,0,10);
 alphavec = logspace(-2,0,10);
-tend = 50000;
+tend = 200000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a;
 straincell = cell(1,L);
@@ -45,9 +45,9 @@ error1 = nan*ones(f,g,a);
 error2 = nan*ones(f,g,a);
 error_fit = nan*ones(f,g,a);
 
-save([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-load([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 maxstraincell = cell(f,g,a);
 timeendcell = cell(f,g,a);
 straincell3 = cell(f,g,a);
@@ -94,9 +94,9 @@ for i = 1:L
     end
 end
 
-save([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
-load([pwd '\workspaces\creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
 
 for force_index = 1:f
@@ -153,7 +153,7 @@ for force_index = 1:f;
     xlabel('eta');
     ylabel('alpha');
     title(['Error contour - force = ' num2str(forcevec(force_index))])
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/forcefitcontour-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
+%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/forcefitcontour-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 
 end
 
