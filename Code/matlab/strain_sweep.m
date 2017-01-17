@@ -7,7 +7,7 @@ ramptimevec = logspace(0,2,5);
 T = 0;
 etavec = logspace(-2,0,10);
 alphavec = logspace(-2,0,10);
-tend = 2000000;
+tend = 200000;
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
@@ -69,8 +69,23 @@ for i = 1:L
     maxstresscell{vars{:}} = stresscell2{vars{:}}(1);
     stress = stresscell2{vars{:}};
     endstresscell{vars{:}} = stress(end);
-
+end
+rampmaxstress = ones(1,t);
+for ramptime_index = 1:t
+    stress = cell2mat(maxstresscell);
+    rampmaxstress(ramptime_index) = max(max(stress(ramptime_index,:,:)));
+end
+for i = 1:L
+    counter = i-1;
+    alpha_index = mod(counter,a);
+    counter = (counter-alpha_index)/a;
+    eta_index = mod(counter,g);
+    counter = (counter-eta_index)/g;
+    ramptime_index = counter;
+    vars = {ramptime_index+1,eta_index+1,alpha_index+1};
     timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(maxstresscell{vars{:}}-endstresscell{vars{:}})),1,'last'));
+    %timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(rampmaxstress(ramptime_index+1)-endstresscell{vars{:}})),1,'last'));
+
     %Chooses end time condition as twice the time it takes for stress to
     %get 90% of the way from initial to final value
     if  timeendcell{vars{:}} > tend;
@@ -192,7 +207,7 @@ end
  %%
 for time_index = 2:2;
     figure
-    [X,Y] = meshgrid(1./etavec,alphavec);
+    [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     surf(X,Y,reshape(cell2mat(maxstresscell(time_index,:,:)),[g,a])');
     shading interp;
@@ -201,7 +216,7 @@ for time_index = 2:2;
  %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('1/eta');
+    xlabel('eta');
     ylabel('alpha');
     title(['max stress, ramptime = ' , num2str(ramptimevec(time_index))])
 %    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
@@ -213,7 +228,7 @@ end
  %%
 for time_index = 2:2;
     figure
-    [X,Y] = meshgrid(1./etavec,alphavec);
+    [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     surf(X,Y,reshape(cell2mat(endstresscell(time_index,:,:)),[g,a])');
     shading interp;
@@ -222,9 +237,36 @@ for time_index = 2:2;
  %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('1/eta');
+    xlabel('eta');
     ylabel('alpha');
     title(['final stress, ramptime = ' , num2str(ramptimevec(time_index))])
+%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+
+
+end
+ %%
+ endstresscellinterp = cell(t,g,a);
+ for ramptime_index = 1:t
+     for alpha_index = 1:a
+         for eta_index = 1:g
+             endstresscellinterp{ramptime_index,eta_index,alpha_index} = stresscell3{ramptime_index,eta_index,alpha_index}(end);
+         end
+     end
+ end
+for time_index = 2:2;
+    figure
+    [X,Y] = meshgrid(etavec,alphavec);
+    hold on;
+    surf(X,Y,reshape(cell2mat(endstresscellinterp(time_index,:,:)),[g,a])');
+    shading interp;
+    alpha(0.5);
+    colorbar;
+ %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
+
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
+    xlabel('eta');
+    ylabel('alpha');
+    title(['final stress interp, ramptime = ' , num2str(ramptimevec(time_index))])
 %    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 
