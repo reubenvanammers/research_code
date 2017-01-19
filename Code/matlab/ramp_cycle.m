@@ -6,7 +6,7 @@ alphavec = logspace(-1,0,3);
 etavec =logspace(-1,0,3);
 a = length(alphavec);
 e = length(etavec);
-T = 0;
+T = 10;
 
 stresscell = cell(a,e);
 straincell = cell(a,e);
@@ -24,7 +24,10 @@ for alpha_index = 1:a
         straincell{a,e} = strain;
     end
 end
+save([pwd '/workspaces/rampcycle' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+
 %%
+load([pwd '/workspaces/rampcycle' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
 figure
 for alpha_index = 1:a
