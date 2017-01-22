@@ -8,10 +8,14 @@ T = 0;
 etavec = logspace(-2,0,10);
 alphavec = logspace(-2,0,10);
 tend = 200000;
+
+
+etavec = [etavec 100];
 t = length(ramptimevec);g = length(etavec);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
 timecell = cell(1,L);
+
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L);
@@ -41,20 +45,13 @@ parfor_progress(0);
 stresscell2 = cell(t,g,a);
 timecell2 = cell(t,g,a);
 
-fit1 = nan*ones(t,g,a,3);
-fit2 = nan*ones(t,g,a,5);
-error1 = nan*ones(t,g,a);
-error2 = nan*ones(t,g,a);
-error_fit = nan*ones(t,g,a);
 
-save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+%save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-maxstraincell = cell(t,g,a);
-endstresscell = cell(t,g,a);
-timeendcell = cell(t,g,a);
-stresscell3 = cell(t,g,a);
-timecell3 = cell(t,g,a);
+%load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+maxstresscell2 = cell(t,g,a);
+endstresscell2 = cell(t,g,a);
+
 for i = 1:L
     counter = i-1;
     alpha_index = mod(counter,a);
@@ -66,15 +63,31 @@ for i = 1:L
     stresscell2{vars{:}} = stresscell{i};
     timecell2{vars{:}} = timecell{i}-ramptimevec(ramptime_index+1);
     %rampindex = find(timecell2{vars{:}}>0,1,'first');
-    maxstresscell{vars{:}} = stresscell2{vars{:}}(1);
+    maxstresscell2{vars{:}} = stresscell2{vars{:}}(1);
     stress = stresscell2{vars{:}};
-    endstresscell{vars{:}} = stress(end);
+    endstresscell2{vars{:}} = stress(end);
 end
-rampmaxstress = ones(1,t);
+rampmaxstress = ones(a,t);
 for ramptime_index = 1:t
-    stress = cell2mat(maxstresscell);
-    rampmaxstress(ramptime_index) = max(max(stress(ramptime_index,:,:)));
+    for alpha_index =1:a
+        stress = cell2mat(maxstresscell2);
+        rampmaxstress(alpha_index,ramptime_index) = min(stress(ramptime_index,:,alpha_index));
+    end
 end
+etavec = etavec(1:end-1);
+g = length(etavec); L = t*g*a;
+fit1 = nan*ones(t,g,a,3);
+fit2 = nan*ones(t,g,a,5);
+error1 = nan*ones(t,g,a);
+error2 = nan*ones(t,g,a);
+error_fit = nan*ones(t,g,a);
+stresscell3 = cell(t,g,a);
+timecell3 = cell(t,g,a);
+timeendcell = cell(t,g,a);
+maxstresscell = cell(t,g,a);
+endstresscell = cell(t,g,a);
+
+
 for i = 1:L
     counter = i-1;
     alpha_index = mod(counter,a);
@@ -83,8 +96,10 @@ for i = 1:L
     counter = (counter-eta_index)/g;
     ramptime_index = counter;
     vars = {ramptime_index+1,eta_index+1,alpha_index+1};
-    timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(maxstresscell{vars{:}}-endstresscell{vars{:}})),1,'last'));
-    %timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(rampmaxstress(ramptime_index+1)-endstresscell{vars{:}})),1,'last'));
+    maxstresscell{vars{:}} = maxstresscell2{vars{:}};
+    endstresscell{vars{:}} = endstresscell2{vars{:}};
+    %timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(maxstresscell{vars{:}}-endstresscell{vars{:}})),1,'last'));
+    timeendcell{vars{:}} = 2*timecell2{vars{:}}(find(stresscell2{vars{:}}>(endstresscell{vars{:}}+0.1*(rampmaxstress(alpha_index+1,ramptime_index+1)-endstresscell{vars{:}})),1,'last'));
 
     %Chooses end time condition as twice the time it takes for stress to
     %get 90% of the way from initial to final value
@@ -133,7 +148,7 @@ for time_index = 1:t
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
+            %title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
         end
     end
     %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
@@ -185,21 +200,22 @@ for time_index = 1:t;
 end
 
 %%
-for time_index = 2:2;
+for time_index = 3:3;
     figure
-    [X,Y] = meshgrid(1./etavec,alphavec);
+    [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])');
     shading interp;
     alpha(0.5);
-    colorbar;
+
  %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('1/eta');
+    colorbar;
+    xlabel('eta');
     ylabel('alpha');
     title(['equilibriation times, ramptime = ' , num2str(ramptimevec(time_index))])
-%    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 
 end

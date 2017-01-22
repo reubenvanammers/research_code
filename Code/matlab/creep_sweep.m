@@ -4,7 +4,7 @@ clear all
 
 forcevec = logspace(-1.5,-1 ,3);
 %Tvec = [0 20 100];
-T = 10;
+T = 0;
 etavec = logspace(-1,0,5);
 alphavec = logspace(-1,0,5);
 tend = 200000;
@@ -160,19 +160,20 @@ end
 %%
 for force_index = 1:1;
     figure
-    [X,Y] = meshgrid(1./etavec,alphavec);
+    [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])');
     shading interp;
     alpha(0.5);
     colorbar;
-    contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
+    %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('1/eta');
+    xlabel('eta');
     ylabel('alpha');
     title(['equilibriation times, force = ', num2str(forcevec(force_index))]);
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationtimes-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
 
 end
 %%

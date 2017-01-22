@@ -68,7 +68,7 @@ set(gca,'OuterPosition',[0.01 0.01 0.99 0.99])
 print('-depsc2',resolution_str, filename);   % export .eps (In fact, eps does not really care about the resolution)
 print('-dpng',resolution_str, filename);     % export .png
 
-savefig(filename); %save the fig for backup
+savefig([filename '.fig']); %save the fig for backup
 
 
 
