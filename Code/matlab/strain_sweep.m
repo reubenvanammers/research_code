@@ -200,7 +200,7 @@ for time_index = 1:t;
 end
 
 %%
-for time_index = 3:3;
+for time_index = 1:t;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
@@ -269,7 +269,7 @@ end
          end
      end
  end
-for time_index = 2:2;
+for time_index = 1:t;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
