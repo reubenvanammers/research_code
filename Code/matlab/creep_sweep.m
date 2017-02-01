@@ -5,8 +5,8 @@ clear all
 forcevec = logspace(-1.5,-1 ,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-1,0,5);
-alphavec = logspace(-1,0,5);
+etavec = logspace(-2,0,5);
+alphavec = logspace(-2,0,5);
 tend = 200000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a;
@@ -44,7 +44,7 @@ fit2 = nan*ones(f,g,a,5);
 error1 = nan*ones(f,g,a);
 error2 = nan*ones(f,g,a);
 error_fit = nan*ones(f,g,a);
-
+error_fit2 = nan*ones(f,g,a);
 save([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
 load([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
@@ -68,8 +68,16 @@ for i = 1:L
         ['Not enough time calculated for variables']
         vars
     end
-    timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
-    straincell3{vars{:}} = interp1(timecell2{vars{:}},straincell2{vars{:}},timecell3{vars{:}});
+    x_coord_scale = [0 1]; %rescales strain to unit square for comparison
+    y_coord_scale = [0 1];
+    strain_scaled = (straincell2{vars{:}}-1)/(maxstraincell{vars{:}}-1);
+    time_scaled = timecell2{vars{:}}/timeendcell{vars{:}};
+    
+    timecell3{vars{:}} = linspace(x_coord_scale(1),x_coord_scale(2),1001)';
+    straincell3{vars{:}} = interp1(time_scaled,strain_scaled,timecell3{vars{:}});
+%     timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
+%     straincell3{vars{:}} = interp1(timecell2{vars{:}},straincell2{vars{:}},timecell3{vars{:}});
+
 end
 %%
 unable_to_fit = [];
@@ -85,7 +93,7 @@ for i = 1:L
 %     timecell2{vars{:}} = timecell{i};
     if ~flagcell{i}
         try
-            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',straincell3{vars{:}}');
+            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',straincell3{vars{:}}');
         catch
             unable_to_fit = [unable_to_fit; vars];
         end
@@ -126,7 +134,7 @@ plot(X,Y,'ko');
 h = [];
 
 for force_index = 1:f
-    [~,h(force_index)] = contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
+    [~,h(force_index)] = contour(X,Y,reshape(error_fit2(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
@@ -143,11 +151,11 @@ for force_index = 1:f;
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     plot(X,Y,'k.','MarkerSize',12)
-    surf(X,Y,reshape(error_fit(force_index,:,:),[g,a])');
-    shading interp;
-    alpha(0.5);
-    colorbar;
-    contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',contours,'ShowText','on');
+    surf(X,Y,reshape(error_fit2(force_index,:,:),[g,a])');
+     shading interp;
+     alpha(0.5);
+     colorbar;
+%     contour(X,Y,reshape(error_fit2(force_index,:,:),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');

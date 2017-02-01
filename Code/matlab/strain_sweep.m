@@ -2,11 +2,11 @@
 %subplot.
 clear all
 endstrain = 1.5;
-ramptimevec = logspace(0,2,5);
+ramptimevec = logspace(0,2,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-2,0,10);
-alphavec = logspace(-2,0,10);
+etavec = logspace(-2,0,5);
+alphavec = logspace(-2,0,5);
 tend = 200000;
 
 
@@ -81,6 +81,7 @@ fit2 = nan*ones(t,g,a,5);
 error1 = nan*ones(t,g,a);
 error2 = nan*ones(t,g,a);
 error_fit = nan*ones(t,g,a);
+error_fit2 = nan*ones(t,g,a);
 stresscell3 = cell(t,g,a);
 timecell3 = cell(t,g,a);
 timeendcell = cell(t,g,a);
@@ -107,8 +108,14 @@ for i = 1:L
         ['Not enough time calculated for variables']
         vars
     end
-    timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
-    stresscell3{vars{:}} = interp1(timecell2{vars{:}},stresscell2{vars{:}},timecell3{vars{:}});
+    
+    time_scaled = timecell2{vars{:}}/timeendcell{vars{:}};
+    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(maxstresscell{vars{:}}-endstresscell{vars{:}});
+%    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(rampmaxstress(alpha_index+1,ramptime_index+1)-endstresscell{vars{:}});
+    
+    
+    timecell3{vars{:}} = linspace(0,1,1001)';
+    stresscell3{vars{:}} = interp1(time_scaled,stress_scaled,timecell3{vars{:}});
 end
 %%
 unable_to_fit = [];
@@ -124,7 +131,7 @@ for i = 1:L
 %     timecell2{vars{:}} = timecell{i};
     %if ~flagcell{i}
     try
-        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
+        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
     catch
         unable_to_fit = [unable_to_fit; vars];
     end
@@ -148,7 +155,8 @@ for time_index = 1:t
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            %title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
+            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
+            axis([0 1 0 1]);
         end
     end
     %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
@@ -165,7 +173,7 @@ contours = logspace(-10,10,21);
 plot(X,Y,'ko');
 h = [];
 for time_index = 1:t
-    [~,h(time_index)] = contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
+    [~,h(time_index)] = contour(X,Y,reshape(error_fit2(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
@@ -182,7 +190,7 @@ for time_index = 1:t;
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     plot(X,Y,'k.')
-    surf(X,Y,reshape(error_fit(time_index,:,:),[g,a])');
+    surf(X,Y,reshape(error_fit2(time_index,:,:),[g,a])');
 
     shading interp;
     clearvars alpha
