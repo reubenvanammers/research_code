@@ -10,8 +10,11 @@ alphavec = logspace(-2,0,5);
 tend = 200000;
 
 
-etavec = [etavec 100];
-t = length(ramptimevec);g = length(etavec);a = length(alphavec);
+etavec_augmented = [etavec 1000]; %adds large eta (should be infinity in theory)
+%in order to get lower bound of maximum stress for each alpha and ramptime
+%value, to get bounds between which 90% of the value can be found to find a
+%representative time. 
+t = length(ramptimevec);g = length(etavec_augmented);a = length(alphavec);
 L = t*g*a;
 stresscell = cell(1,L);
 timecell = cell(1,L);
@@ -28,7 +31,7 @@ parfor i = 1:L%index loops over alpha, then eta, then T
     ramptime_index = counter;
     alpha = alphavec(alpha_index+1);
     ramptime = ramptimevec(ramptime_index+1);
-    eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
+    eta = etavec_augmented(eta_index+1);%converts linear index to alpha,eta,T
     [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,T,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
     %N = size(Y,2)/4;
     %xvalues = Y(:,1:N);
@@ -46,9 +49,9 @@ stresscell2 = cell(t,g,a);
 timecell2 = cell(t,g,a);
 
 
-%save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-%load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 maxstresscell2 = cell(t,g,a);
 endstresscell2 = cell(t,g,a);
 
@@ -74,7 +77,7 @@ for ramptime_index = 1:t
         rampmaxstress(alpha_index,ramptime_index) = min(stress(ramptime_index,:,alpha_index));
     end
 end
-etavec = etavec(1:end-1);
+%etavec = etavec(1:end-1);
 g = length(etavec); L = t*g*a;
 fit1 = nan*ones(t,g,a,3);
 fit2 = nan*ones(t,g,a,5);
@@ -313,3 +316,15 @@ end
 % 
 % end
 
+%%
+figure
+hold off
+for ramptime_index = 1:1
+    for alpha_index = 1:1
+        error_vals = error_fit2(ramptime_index,:,alpha_index);
+        semilogx(etavec,error_vals);
+        xlabel('eta')
+        ylabel('Infinity norm error');
+        title(['ramptime = ' num2str(ramptimevec(ramptime_index)) ', alpha = ' num2str(alphavec(alpha_index))])
+    end
+end

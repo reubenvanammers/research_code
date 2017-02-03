@@ -204,3 +204,14 @@ for force_index = 1:1;
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationlenghs-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 end
 
+%%
+figure
+for force_index = 1:1
+    for alpha_index = 1:1
+        error_vals = error_fit2(force_index,:,alpha_index);
+        semilogx(etavec,error_vals);
+        xlabel('eta')
+        ylabel('Infinity norm error')
+        title(['force = ' num2str(forcevec(force_index)) ', alpha = ' num2str(alphavec(alpha_index))])
+    end
+end
