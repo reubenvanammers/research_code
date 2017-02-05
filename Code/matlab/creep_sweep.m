@@ -215,3 +215,39 @@ for force_index = 1:1
         title(['force = ' num2str(forcevec(force_index)) ', alpha = ' num2str(alphavec(alpha_index))])
     end
 end
+
+%%
+biexponential_status = nan*zeros(f,g,a);
+scale_diff_vals = nan*zeros(f,g,a);
+timescale_diff_vals =nan*zeros(f,g,a);
+timescale_range = [0.2 5];
+scale_range = [0.2 5];
+for force_index = 1:f
+    for eta_index = 1:g
+        for alpha_index = 1:a;
+            vars = {force_index,eta_index,alpha_index};
+            timescale_diff = fit2(vars{:},3)/fit2(vars{:},5);
+            timescale_diff_vals(vars{:}) = timescale_diff;
+            scale_diff = fit2(vars{:},2)/fit2(vars{:},4);
+            scale_diff_vals(vars{:}) = scale_diff;
+            if timescale_diff < timescale_range(1) || timescale_diff > timescale_range(2)
+                if scale_diff > scale_range(1) && scale_diff < scale_range(2)
+                    biexponential_status(vars{:}) =1;
+                else
+                    biexponential_status(vars{:}) = 0;
+                end
+            end
+        end
+    end
+end
+
+
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(biexponential_status(f,:,:),[g,a])')
+        xlabel('eta');
+    ylabel('alpha');
+    title(['biexponential status, force = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+
+end
