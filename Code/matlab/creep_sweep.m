@@ -5,8 +5,8 @@ clear all
 forcevec = logspace(-1.5,-1 ,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-2,0,5);
-alphavec = logspace(-2,0,5);
+etavec = logspace(-2,0,9);
+alphavec = logspace(-2,0,9);
 tend = 200000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a;
@@ -106,18 +106,34 @@ save([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str
 %% plots strain-time graphs and exponential fits
 load([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
+if mod(a,4)==1 && mod(g,4)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
+    g_scale = (g-1)/4;
+    a_scale = (a-1)/4;
+    alphavec_temp = alphavec(1:a_scale:a);
+    etavec_temp = etavec(1:g_scale:g);
+    a_temp = length(alphavec_temp);
+    g_temp = length(etavec_temp);
+else
+    a_scale = 1;
+    g_scale = 1;
+    alphavec_temp = alphavec;
+    etavec_temp = etavec;
+    a_temp = a;
+    g_temp = g;
+end
+
 
 for force_index = 1:f
     figure
     hold on
-    for alpha_index = 1:a 
-        for  eta_index = 1:g
-            subplot(a,g,eta_index-g*(alpha_index)+a*g)
-            vars = {force_index,eta_index,alpha_index};
+    for alpha_index = 1:a_temp 
+        for  eta_index = 1:g_temp
+            subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
+            vars = {force_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' force = ' num2str(forcevec(force_index))]); 
+            title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' force = ' num2str(forcevec(force_index))]); 
         end
     end
 %    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/strainplot-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
@@ -222,13 +238,15 @@ scale_diff_vals = nan*zeros(f,g,a);
 timescale_diff_vals =nan*zeros(f,g,a);
 timescale_range = [0.2 5];
 scale_range = [0.2 5];
+[X,Y] = meshgrid(etavec,alphavec);
+
 for force_index = 1:f
     for eta_index = 1:g
         for alpha_index = 1:a;
             vars = {force_index,eta_index,alpha_index};
-            timescale_diff = fit2(vars{:},3)/fit2(vars{:},5);
+            timescale_diff = fit2(vars{:},5)/fit2(vars{:},3);
             timescale_diff_vals(vars{:}) = timescale_diff;
-            scale_diff = fit2(vars{:},2)/fit2(vars{:},4);
+            scale_diff = fit2(vars{:},4)/fit2(vars{:},2);
             scale_diff_vals(vars{:}) = scale_diff;
             if timescale_diff < timescale_range(1) || timescale_diff > timescale_range(2)
                 if scale_diff > scale_range(1) && scale_diff < scale_range(2)
@@ -242,12 +260,33 @@ for force_index = 1:f
 end
 
 
-for force_index = 1:f
+for force_index = 1:1
     figure
-    surf(X,Y,reshape(biexponential_status(f,:,:),[g,a])')
-        xlabel('eta');
+    surf(X,Y,reshape(biexponential_status(force_index,:,:),[g,a])')
+    xlabel('eta');
     ylabel('alpha');
     title(['biexponential status, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
 
+
+for force_index = 1:1
+    figure
+    surf(X,Y,reshape(scale_diff_vals(force_index,:,:),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Coefficient scaling difference, force = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
+
+for force_index = 1:1
+    figure
+    surf(X,Y,reshape(timescale_diff_vals(force_index,:,:),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['exponential timescale difference, force = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
 end

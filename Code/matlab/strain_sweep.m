@@ -148,17 +148,33 @@ save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2st
 load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
 
+if mod(a,4)==1 && mod(g,4)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
+    g_scale = (g-1)/4;
+    a_scale = (a-1)/4;
+    alphavec_temp = alphavec(1:a_scale:a);
+    etavec_temp = etavec(1:g_scale:g);
+    a_temp = length(alphavec_temp);
+    g_temp = length(etavec_temp);
+else
+    a_scale = 1;
+    g_scale = 1;
+    alphavec_temp = alphavec;
+    etavec_temp = etavec;
+    a_temp = a;
+    g_temp = g;
+end
+
 for time_index = 1:t
     figure
     hold on
-    for alpha_index = 1:1:a 
-        for  eta_index = 1:1:g
-            subplot(a,g,eta_index-g*(alpha_index)+a*g)
-            vars = {time_index,eta_index,alpha_index};
+    for alpha_index = 1:a_temp 
+        for  eta_index = 1:g_temp
+            subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
+            vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            title(['alpha = ', num2str(alphavec(alpha_index)), ' eta = ', num2str(etavec(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
+            title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
             axis([0 1 0 1]);
         end
     end
@@ -330,18 +346,20 @@ for ramptime_index = 1:1
 end
 
 %%
-biexponential_status = nan*zeros(f,g,a);
-scale_diff_vals = nan*zeros(f,g,a);
-timescale_diff_vals =nan*zeros(f,g,a);
+biexponential_status = nan*zeros(t,g,a);
+scale_diff_vals = nan*zeros(t,g,a);
+timescale_diff_vals =nan*zeros(t,g,a);
 timescale_range = [0.2 5];
 scale_range = [0.2 5];
+[X,Y] = meshgrid(etavec,alphavec);
+
 for ramptime_index = 1:t
     for eta_index = 1:g
         for alpha_index = 1:a;
             vars = {ramptime_index,eta_index,alpha_index};
-            timescale_diff = fit2(vars{:},3)/fit2(vars{:},5);
+            timescale_diff = fit2(vars{:},5)/fit2(vars{:},3);
             timescale_diff_vals(vars{:}) = timescale_diff;
-            scale_diff = fit2(vars{:},2)/fit2(vars{:},4);
+            scale_diff = fit2(vars{:},4)/fit2(vars{:},2);
             scale_diff_vals(vars{:}) = scale_diff;
             if timescale_diff < timescale_range(1) || timescale_diff > timescale_range(2)
                 if scale_diff > scale_range(1) && scale_diff < scale_range(2)
@@ -355,12 +373,33 @@ for ramptime_index = 1:t
 end
 
 
-for ramptime_index = 1:t
+for ramptime_index = 3:3
     figure
-    surf(X,Y,reshape(biexponential_status(f,:,:),[g,a])')
+    surf(X,Y,reshape(biexponential_status(ramptime_index,:,:),[g,a])')
         xlabel('eta');
     ylabel('alpha');
     title(['biexponential status, ramptime = ' num2str(ramptimevec(ramptime_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
 
+
+for timescale_index = 3:3
+    figure
+    surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Coefficient scaling difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
+
+for timescale_index = 3:3
+    figure
+    surf(X,Y,reshape(timescale_diff_vals(ramptime_index,:,:),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['exponential timescale difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
 end
