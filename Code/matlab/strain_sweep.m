@@ -2,11 +2,11 @@
 %subplot.
 clear all
 endstrain = 1.5;
-ramptimevec = logspace(0,2,3);
+ramptimevec = logspace(1,2,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-2,0,5);
-alphavec = logspace(-2,0,5);
+etavec = logspace(-2,0,17);
+alphavec = logspace(-2,0,17);
 tend = 200000;
 
 
@@ -146,11 +146,13 @@ end
 save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
 load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
 
 
-if mod(a,4)==1 && mod(g,4)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
-    g_scale = (g-1)/4;
-    a_scale = (a-1)/4;
+viewscale = viewscale-1;
+if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
+    g_scale = (g-1)/viewscale;
+    a_scale = (a-1)/viewscale;
     alphavec_temp = alphavec(1:a_scale:a);
     etavec_temp = etavec(1:g_scale:g);
     a_temp = length(alphavec_temp);
@@ -173,7 +175,10 @@ for time_index = 1:t
             vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
+            exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
+            exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+%             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
+            plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp2_1(timecell3{vars{:}}),'g-.',timecell3{vars{:}},exp2_2(timecell3{vars{:}}),'y-.')
             title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
             axis([0 1 0 1]);
         end
@@ -192,7 +197,7 @@ contours = logspace(-10,10,21);
 plot(X,Y,'ko');
 h = [];
 for time_index = 1:t
-    [~,h(time_index)] = contour(X,Y,reshape(error_fit2(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
+    [~,h(time_index)] = contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
@@ -208,12 +213,12 @@ for time_index = 1:t;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
-    plot(X,Y,'k.')
-    surf(X,Y,reshape(error_fit2(time_index,:,:),[g,a])');
+    %plot(X,Y,'k.')
+    surf(X,Y,reshape(error_fit(time_index,:,:),[g,a])');
 
-    shading interp;
+    %shading interp;
     clearvars alpha
-    alpha(0.5);
+    %alpha(0.5);
     colorbar;
     pause(0.01)
  %   contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',contours,'ShowText','on');
@@ -242,7 +247,7 @@ for time_index = 1:t;
     xlabel('eta');
     ylabel('alpha');
     title(['equilibriation times, ramptime = ' , num2str(ramptimevec(time_index))])
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/equilibriationtimes-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 
 end
@@ -373,26 +378,26 @@ for ramptime_index = 1:t
 end
 
 
-for ramptime_index = 3:3
-    figure
-    surf(X,Y,reshape(biexponential_status(ramptime_index,:,:),[g,a])')
-        xlabel('eta');
-    ylabel('alpha');
-    title(['biexponential status, ramptime = ' num2str(ramptimevec(ramptime_index))])
-    set(gca, 'XScale', 'log', 'YScale', 'log');
-    colorbar;
-end
-
-
-for timescale_index = 3:3
-    figure
-    surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
-    title(['Coefficient scaling difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
-    set(gca, 'XScale', 'log', 'YScale', 'log');
-    colorbar;
-end
+% for ramptime_index = 3:3
+%     figure
+%     surf(X,Y,reshape(biexponential_status(ramptime_index,:,:),[g,a])')
+%         xlabel('eta');
+%     ylabel('alpha');
+%     title(['biexponential status, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%     set(gca, 'XScale', 'log', 'YScale', 'log');
+%     colorbar;
+% end
+% 
+% 
+% for timescale_index = 3:3
+%     figure
+%     surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['Coefficient scaling difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%     set(gca, 'XScale', 'log', 'YScale', 'log');
+%     colorbar;
+% end
 
 for timescale_index = 3:3
     figure
@@ -400,6 +405,68 @@ for timescale_index = 3:3
     xlabel('eta');
     ylabel('alpha');
     title(['exponential timescale difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
-    set(gca, 'XScale', 'log', 'YScale', 'log');
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     colorbar;
 end
+
+
+%%
+one_exp_error = zeros(t,g,a);
+two_exp_error = zeros(t,g,a);
+[X,Y] = meshgrid(etavec,alphavec);
+for ramptime_index = 1:t %calculates the error at x = 0 (which will also be the maximum error) for each force, eta, and alpha for one and two exponential fits
+    for alpha_index = 1:a 
+        for  eta_index = 1:g
+            vars = {ramptime_index,eta_index,alpha_index};
+            exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
+            exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+            one_exp_error(ramptime_index,eta_index,alpha_index) = abs(1-exp1(0));
+            two_exp_error(ramptime_index,eta_index,alpha_index) = abs(1-exp2(0));
+        end
+    end
+end
+
+
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(one_exp_error(ramptime_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential maximum error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(two_exp_error(ramptime_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['two exponential maximum error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+%%
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(error1(ramptime_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(error2(ramptime_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['two exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
