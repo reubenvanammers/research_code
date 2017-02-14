@@ -259,7 +259,7 @@ for force_index = 1:f
             if timescale_diff < timescale_range(1) || timescale_diff > timescale_range(2)
                 if scale_diff > scale_range(1) && scale_diff < scale_range(2)
                     biexponential_status(vars{:}) =1;
-                else
+                else-
                     biexponential_status(vars{:}) = 0;
                 end
             end

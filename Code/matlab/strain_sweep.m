@@ -389,15 +389,15 @@ end
 % end
 % 
 % 
-% for timescale_index = 3:3
-%     figure
-%     surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
-%     xlabel('eta');
-%     ylabel('alpha');
-%     title(['Coefficient scaling difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
-%     set(gca, 'XScale', 'log', 'YScale', 'log');
-%     colorbar;
-% end
+for timescale_index = 1:3
+    figure
+    surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Coefficient scaling difference, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
 
 for timescale_index = 3:3
     figure
@@ -409,6 +409,7 @@ for timescale_index = 3:3
     colorbar;
 end
 
+%%
 
 %%
 one_exp_error = zeros(t,g,a);
@@ -447,6 +448,17 @@ for ramptime_index = 1:t
     title(['two exponential maximum error, ramptime = ' num2str(ramptimevec(ramptime_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
+%%
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(2*two_exp_error(ramptime_index,:,:),[g,a])'-reshape(one_exp_error(ramptime_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Positive regions are one exponential, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
 
 %%
 for ramptime_index = 1:t
@@ -468,5 +480,30 @@ for ramptime_index = 1:t
     ylabel('alpha');
     title(['two exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+%%
+error1(:,:,17) = nan*ones(3,17)
+error2(:,:,17) = nan*ones(3,17)
+capped_error2 = error2;
+capped_error2(capped_error2<4*1e-5) = 4*1e-5
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(capped_error2(ramptime_index,:,:),[g,a])')
+         
+    xlabel('eta');
+    ylabel('alpha');
+    title(['capped error2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+     set(gca, 'XScale', 'log', 'YScale', 'log');
+    figure
+    hold on
+    surf(X,Y,reshape(error1(ramptime_index,:,:),[g,a])'./reshape(capped_error2(ramptime_index,:,:),[g,a])')
+    alpha(0.7)
+
+    contour(X,Y,reshape(error1(ramptime_index,:,:),[g,a])'./reshape(capped_error2(ramptime_index,:,:),[g,a])',linspace(0,50,11),'ShowText','on')
+%     
+    xlabel('eta');
+    ylabel('alpha');
+    title(['L2 error 1 /L2 error 2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
