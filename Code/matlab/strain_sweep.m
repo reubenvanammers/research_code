@@ -389,7 +389,7 @@ end
 % end
 % 
 % 
-for timescale_index = 1:3
+for ramptime_index = 1:3
     figure
     surf(X,Y,reshape(scale_diff_vals(ramptime_index,:,:),[g,a])')
     xlabel('eta');
@@ -399,7 +399,7 @@ for timescale_index = 1:3
     colorbar;
 end
 
-for timescale_index = 3:3
+for ramptime_index = 1:3
     figure
     surf(X,Y,reshape(timescale_diff_vals(ramptime_index,:,:),[g,a])')
     xlabel('eta');
