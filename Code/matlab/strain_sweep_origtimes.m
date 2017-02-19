@@ -5,8 +5,8 @@ endstrain = 1.5;
 ramptimevec = logspace(1,2,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-2,0,17);
-alphavec = logspace(-2,0,17);
+etavec = logspace(-1,0,9);
+alphavec = logspace(-1,0,9);
 tend = 200000;
 
 
@@ -226,6 +226,8 @@ end
 % end
 %%
 coef_scale_vals = nan*ones(t,g,a);
+coef_scale_vals1 = nan*ones(t,g,a);
+coef_scale_vals2 = nan*ones(t,g,a);
 %Two coefficients of the exponential in the biexponential fit that are the
 %same will have a  coef_scale_value of 1, while one which has only 1
 %timescale, ie one of the coefficients is zero, will have coef_scale value
@@ -237,18 +239,25 @@ for ramptime_index = 1:t
             coef1 = fit2(vars{:},2);
             coef2 = fit2(vars{:},4);
             coef_scale_vals(vars{:}) = 4*(coef1*coef2)/((coef1+coef2)^2);
+            if coef1 > coef2
+                coef_scale_vals1(vars{:}) = 1;
+                coef_scale_vals2(vars{:}) = coef_scale_vals(vars{:});
+            else
+                coef_scale_vals2(vars{:}) = 1;
+                coef_scale_vals1(vars{:}) = coef_scale_vals(vars{:});
+            end
         end
     end
 end
 %%
-for ramptime_index = 1:1
+for ramptime_index = 1:t
     for alpha_index = 1:4:a
         figure
         hold on
         for eta_index = 1:g
             vars = {ramptime_index,eta_index,alpha_index};
-            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals(vars{:}))*[1 1 1])
-            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals(vars{:})*[-1 -1 0])
+            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' alpha = ' num2str(alphavec(alpha_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('eta')
@@ -258,14 +267,14 @@ for ramptime_index = 1:1
 end
 
 %%
-for ramptime_index = 1:1
+for ramptime_index = 1:t
     for eta_index = 1:4:g
         figure
         hold on
         for alpha_index = 1:a
             vars = {ramptime_index,eta_index,alpha_index};
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals(vars{:}))*[1 1 1])
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals(vars{:})*[-1 -1 0])
+            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' eta = ' num2str(etavec(eta_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('alpha')

@@ -5,8 +5,8 @@ endstrain = 1.5;
 ramptimevec = logspace(1,2,3);
 %Tvec = [0 20 100];
 T = 0;
-etavec = logspace(-2,0,17);
-alphavec = logspace(-2,0,17);
+etavec = logspace(-1,0,9);
+alphavec = logspace(-1,0,9);
 tend = 200000;
 
 
@@ -226,7 +226,7 @@ for time_index = 1:t;
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');
     ylabel('alpha');
-    title(['fit error, ramptime = ' , num2str(ramptimevec(time_index))]);
+    title(['one exp minus two exp L2 error, ramptime = ' , num2str(ramptimevec(time_index))]);
 %    SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/forcefitcontour-' num2str(T) '-' num2str(ramptimevec(time_index))]  , 7, 7/5, 9)
 
 end
@@ -338,10 +338,10 @@ end
 % end
 
 %%
-figure
 hold off
 for ramptime_index = 1:1
-    for alpha_index = 1:1
+    for alpha_index = 1:3:a
+        figure
         error_vals = error_fit2(ramptime_index,:,alpha_index);
         semilogx(etavec,error_vals);
         xlabel('eta')
@@ -482,18 +482,18 @@ for ramptime_index = 1:t
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 %%
-error1(:,:,17) = nan*ones(3,17)
-error2(:,:,17) = nan*ones(3,17)
-capped_error2 = error2;
-capped_error2(capped_error2<4*1e-5) = 4*1e-5
+error1(:,:,end) = nan*ones(t,g);
+error2(:,:,end) = nan*ones(t,g);
+ capped_error2 = error2;
+% capped_error2(capped_error2<4*1e-5) = 4*1e-5
 for ramptime_index = 1:t
-    figure
-    surf(X,Y,reshape(capped_error2(ramptime_index,:,:),[g,a])')
-         
-    xlabel('eta');
-    ylabel('alpha');
-    title(['capped error2, ramptime = ' num2str(ramptimevec(ramptime_index))])
-     set(gca, 'XScale', 'log', 'YScale', 'log');
+%     figure
+%     surf(X,Y,reshape(capped_error2(ramptime_index,:,:),[g,a])')
+%          
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['capped error2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%      set(gca, 'XScale', 'log', 'YScale', 'log');
     figure
     hold on
     surf(X,Y,reshape(error1(ramptime_index,:,:),[g,a])'./reshape(capped_error2(ramptime_index,:,:),[g,a])')
