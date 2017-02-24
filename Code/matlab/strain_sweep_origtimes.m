@@ -271,6 +271,8 @@ for ramptime_index = 1:t
     for eta_index = 1:4:g
         figure
         hold on
+        plot(alphavec,1000*reshape(error1(ramptime_index,eta_index,:),[a 1]),'m-')
+
         for alpha_index = 1:a
             vars = {ramptime_index,eta_index,alpha_index};
             plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
@@ -279,7 +281,6 @@ for ramptime_index = 1:t
             plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,4),'bx','markers',20*coef_scale_vals2(vars{:}))
             plot(alphavec(alpha_index),fit1(ramptime_index,eta_index,alpha_index,2),'rx','markers',20*coef_scale_vals2(vars{:}))
             plot(alphavec(alpha_index),fit1(ramptime_index,eta_index,alpha_index,3),'r.','markers',20)
-
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' eta = ' num2str(etavec(eta_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('alpha')

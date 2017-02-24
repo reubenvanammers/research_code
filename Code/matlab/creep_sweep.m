@@ -360,3 +360,117 @@ for force_index = 1:f
     title(['two exponential L2 error, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
+%%one_exp_error = zeros(f,g,a);
+two_exp_error = zeros(f,g,a);
+[X,Y] = meshgrid(etavec,alphavec);
+for force_index = 1:f %calculates the error at x = 0 (which will also be the maximum error) for each force, eta, and alpha for one and two exponential fits
+    for alpha_index = 1:a 
+        for  eta_index = 1:g
+            vars = {force_index,eta_index,alpha_index};
+            exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
+            exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+            one_exp_error(force_index,eta_index,alpha_index) = abs(1-exp1(0));
+            two_exp_error(force_index,eta_index,alpha_index) = abs(1-exp2(0));
+        end
+    end
+end
+
+
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(one_exp_error(force_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential maximum error, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(two_exp_error(force_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['two exponential maximum error, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+%%
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(2*two_exp_error(force_index,:,:),[g,a])'-reshape(one_exp_error(force_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Positive regions are one exponential, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+%%
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(error1(force_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(error2(force_index,:,:),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['two exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+%%
+error1(:,:,end) = nan*ones(f,g);
+error2(:,:,end) = nan*ones(f,g);
+ capped_error2 = error2;
+% capped_error2(capped_error2<4*1e-5) = 4*1e-5
+for force_index = 1:f
+%     figure
+%     surf(X,Y,reshape(capped_error2(force_index,:,:),[g,a])')
+%          
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['capped error2, ramptime = ' num2str(forcevec(force_index))])
+%      set(gca, 'XScale', 'log', 'YScale', 'log');
+    figure
+    hold on
+    surf(X,Y,reshape(error1(force_index,:,:),[g,a])'./reshape(capped_error2(force_index,:,:),[g,a])')
+    alpha(0.7)
+
+    contour(X,Y,reshape(error1(force_index,:,:),[g,a])'./reshape(capped_error2(force_index,:,:),[g,a])',linspace(0,50,11),'ShowText','on')
+%     
+    xlabel('eta');
+    ylabel('alpha');
+    title(['L2 error 1 /L2 error 2, ramptime = ' num2str(forcevec(force_index))])
+     set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+%%
+error_threshold = 5e-4      ;
+colourvec = ['y','m','c','r','b','g','k','y','m','c','r'];%need to stop reuse of colours, temp measure
+%colourvec = [linspace(0,1,f);linspace(1,0,f);zeros(1,f)];
+figure
+hold on
+[X,Y] = meshgrid(etavec,alphavec);
+contours = logspace(-10,10,21);
+plot(X,Y,'ko');
+h = [];
+for time_index = 1:f
+    [~,h(time_index)] = contour(X,Y,reshape(error1(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+xlabel('eta');
+ylabel('alpha');
+title(['Error contour threshold, ' num2str(error_threshold)])
+legendflex(h,arrayfun(@num2str,forcevec,'UniformOutput',false));
+%SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)

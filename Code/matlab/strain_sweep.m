@@ -507,3 +507,22 @@ for ramptime_index = 1:t
      set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
+%%
+error_threshold = 5e-4      ;
+colourvec = ['y','m','c','r','b','g','k','y','m','c','r'];%need to stop reuse of colours, temp measure
+%colourvec = [linspace(0,1,t);linspace(1,0,t);zeros(1,t)];
+figure
+hold on
+[X,Y] = meshgrid(etavec,alphavec);
+contours = logspace(-10,10,21);
+plot(X,Y,'ko');
+h = [];
+for time_index = 1:t
+    [~,h(time_index)] = contour(X,Y,reshape(error1(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+xlabel('eta');
+ylabel('alpha');
+title(['Error contour threshold, ' num2str(error_threshold)])
+legendflex(h,arrayfun(@num2str,ramptimevec,'UniformOutput',false));
+%SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/fitcontour-' num2str(T)]  , 7, 7/5, 9)
