@@ -14,20 +14,20 @@ etavec_augmented = [etavec 1000]; %adds large eta (should be infinity in theory)
 %in order to get lower bound of maximum stress for each alpha and ramptime
 %value, to get bounds between which 90% of the value can be found to find a
 %representative time. 
-t = length(ramptimevec);g = length(etavec_augmented);a = length(alphavec);
-L = t*g*a;
-stresscell = cell(1,L);
-timecell = cell(1,L);
+t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec)
+L_2 = t*g_2*a; L=t*g*a;
+stresscell = cell(1,L_2);
+timecell = cell(1,L_2);
 
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
-parfor_progress(L);
-parfor i = 1:L%index loops over alpha, then eta, then T
+parfor_progress(L_2);
+parfor i = 1:L-2%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    eta_index = mod(counter,g);
-    counter = (counter-eta_index)/g;
+    eta_index = mod(counter,g_2);
+    counter = (counter-eta_index)/g_2;
     ramptime_index = counter;
     alpha = alphavec(alpha_index+1);
     ramptime = ramptimevec(ramptime_index+1);
@@ -45,22 +45,22 @@ parfor i = 1:L%index loops over alpha, then eta, then T
 end
 parfor_progress(0);
 
-stresscell2 = cell(t,g,a);
-timecell2 = cell(t,g,a);
+stresscell2 = cell(t,g_2,a);
+timecell2 = cell(t,g_2,a);
 
 
 save([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
 load([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-maxstresscell2 = cell(t,g,a);
-endstresscell2 = cell(t,g,a);
+maxstresscell2 = cell(t,g_2,a);
+endstresscell2 = cell(t,g_2,a);
 
-for i = 1:L
+for i = 1:L_2
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    eta_index = mod(counter,g);
-    counter = (counter-eta_index)/g;
+    eta_index = mod(counter,g_2);
+    counter = (counter-eta_index)/g_2;
     ramptime_index = counter;
     vars = {ramptime_index+1,eta_index+1,alpha_index+1};
     stresscell2{vars{:}} = stresscell{i};
@@ -190,8 +190,8 @@ for time_index = 1:t
             vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
-            exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+            exp2_1 = @(x) fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
+            exp2_2 = @(x) fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp2_1(timecell3{vars{:}}),'g-.',timecell3{vars{:}},exp2_2(timecell3{vars{:}}),'y-.')
             title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
@@ -271,8 +271,9 @@ for ramptime_index = 1:t
     for eta_index = 1:4:g
         figure
         hold on
+        
         plot(alphavec,1000*reshape(error1(ramptime_index,eta_index,:),[a 1]),'m-')
-
+        plot(alphavec,1000*reshape(error2(ramptime_index,eta_index,:),[a 1]),'g-')
         for alpha_index = 1:a
             vars = {ramptime_index,eta_index,alpha_index};
             plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
