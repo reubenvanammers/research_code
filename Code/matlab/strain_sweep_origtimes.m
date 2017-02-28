@@ -14,7 +14,7 @@ etavec_augmented = [etavec 1000]; %adds large eta (should be infinity in theory)
 %in order to get lower bound of maximum stress for each alpha and ramptime
 %value, to get bounds between which 90% of the value can be found to find a
 %representative time. 
-t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec)
+t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
 L_2 = t*g_2*a; L=t*g*a;
 stresscell = cell(1,L_2);
 timecell = cell(1,L_2);
@@ -52,6 +52,8 @@ timecell2 = cell(t,g_2,a);
 save([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
 load([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
+L_2 = t*g_2*a; L=t*g*a;
 maxstresscell2 = cell(t,g_2,a);
 endstresscell2 = cell(t,g_2,a);
 
@@ -79,12 +81,12 @@ for ramptime_index = 1:t
 end
 %etavec = etavec(1:end-1);
 g = length(etavec); L = t*g*a;
-fit1 = nan*ones(t,g,a,3);
-fit2 = nan*ones(t,g,a,5);
-error1 = nan*ones(t,g,a);
-error2 = nan*ones(t,g,a);
-error_fit = nan*ones(t,g,a);
-error_fit2 = nan*ones(t,g,a);
+fit1 = nan*ones(t,g,a,3,3);
+fit2 = nan*ones(t,g,a,3,5);
+error1 = nan*ones(t,g,a,3);
+error2 = nan*ones(t,g,a,3);
+error_fit = nan*ones(t,g,a,3);
+error_fit2 = nan*ones(t,g,a,3);
 stresscell3 = cell(t,g,a);
 timecell3 = cell(t,g,a);
 timeendcell = cell(t,g,a);
@@ -122,38 +124,68 @@ for i = 1:L
 end
 %%
 unable_to_fit = [];
-for i = 1:L
-    counter = i-1;
-    alpha_index = mod(counter,a);
-    counter = (counter-alpha_index)/a;
-    eta_index = mod(counter,g);
-    counter = (counter-eta_index)/g;
-    time_index = counter;
-    vars = {time_index+1,eta_index+1,alpha_index+1};
-%     straincell2{vars{:}} = straincell{i};
-%     timecell2{vars{:}} = timecell{i};
-    %if ~flagcell{i}
-    try
-        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
-    catch
-        unable_to_fit = [unable_to_fit; vars];
+for guess_index = 1:3 
+    for i = 1:L
+        counter = i-1;
+        alpha_index = mod(counter,a);
+        counter = (counter-alpha_index)/a;
+        eta_index = mod(counter,g);
+        counter = (counter-eta_index)/g;
+        time_index = counter;
+        vars = {time_index+1,eta_index+1,alpha_index+1,guess_index};
+    %     straincell2{vars{:}} = straincell{i};
+    %     timecell2{vars{:}} = timecell{i};
+        %if ~flagcell{i}
+        try
+            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{1:end-1}}',stresscell3{vars{1:end-1}}',-1,guess_index);
+        catch
+            unable_to_fit = [unable_to_fit; vars];
+        end
+        %else
+            %unable_to_fit = [unable_to_fit; vars];
+        %end
     end
-    %else
-        %unable_to_fit = [unable_to_fit; vars];
-    %end
 end
-
-for ramptime_index = 1:t
-    for eta_index = 1:g
-        for alpha_index = 1:a
-            vars = {ramptime_index,eta_index,alpha_index};
-            if fit2(vars{:},3) > fit2(vars{:},5)
-                temptimecoef = fit2(vars{:},3);
-                tempcoef = fit2(vars{:},2);
-                fit2(vars{:},3) = fit2(vars{:},5);
-                fit2(vars{:},5) = temptimecoef;
-                fit2(vars{:},2) = fit2(vars{:},4);
-                fit2(vars{:},4) = tempcoef;
+for guess_index = 1:3
+    for ramptime_index = 1:t
+        for eta_index = 1:g
+            for alpha_index = 1:a
+                vars = {ramptime_index,eta_index,alpha_index,guess_index};
+                if fit2(vars{:},3) > fit2(vars{:},5)
+                    temptimecoef = fit2(vars{:},3);
+                    tempcoef = fit2(vars{:},2);
+                    fit2(vars{:},3) = fit2(vars{:},5);
+                    fit2(vars{:},5) = temptimecoef;
+                    fit2(vars{:},2) = fit2(vars{:},4);
+                    fit2(vars{:},4) = tempcoef;
+                end
+            end
+        end
+    end
+end
+%%
+coef_scale_vals = nan*ones(t,g,a,3);
+coef_scale_vals1 = nan*ones(t,g,a,3);
+coef_scale_vals2 = nan*ones(t,g,a,3);
+%Two coefficients of the exponential in the biexponential fit that are the
+%same will have a  coef_scale_value of 1, while one which has only 1
+%timescale, ie one of the coefficients is zero, will have coef_scale value
+%of 0
+for guess_index = 1:3
+    for ramptime_index = 1:t
+        for eta_index = 1:g
+            for alpha_index = 1:a;
+                vars = {ramptime_index,eta_index,alpha_index,guess_index};
+                coef1 = fit2(vars{:},2);
+                coef2 = fit2(vars{:},4);
+                coef_scale_vals(vars{:}) = 4*(coef1*coef2)/((coef1+coef2)^2);
+                if coef1 > coef2
+                    coef_scale_vals1(vars{:}) = 1;
+                    coef_scale_vals2(vars{:}) = min(coef_scale_vals(vars{:}),1);% min(1) used for floating point errors
+                else
+                    coef_scale_vals2(vars{:}) = 1;
+                    coef_scale_vals1(vars{:}) = min(coef_scale_vals(vars{:}),1);
+                end
             end
         end
     end
@@ -162,7 +194,7 @@ save([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-
 %% plots strain-time graphs and exponential fits
 load([pwd '/workspaces/strainerrortimeorig' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
-
+guess_value = 1;
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -187,13 +219,13 @@ for time_index = 1:t
     for alpha_index = 1:a_temp 
         for  eta_index = 1:g_temp
             subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-            vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1};
+            vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1,guess_value};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp2_1(timecell3{vars{:}}),'g-.',timecell3{vars{:}},exp2_2(timecell3{vars{:}}),'y-.')
+            plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
             %axis([0 1 0 1]);
         end
@@ -224,40 +256,16 @@ end
 %         ylabel('Time coefficients')
 %     end
 % end
-%%
-coef_scale_vals = nan*ones(t,g,a);
-coef_scale_vals1 = nan*ones(t,g,a);
-coef_scale_vals2 = nan*ones(t,g,a);
-%Two coefficients of the exponential in the biexponential fit that are the
-%same will have a  coef_scale_value of 1, while one which has only 1
-%timescale, ie one of the coefficients is zero, will have coef_scale value
-%of 0
-for ramptime_index = 1:t
-    for eta_index = 1:g
-        for alpha_index = 1:a;
-            vars = {ramptime_index,eta_index,alpha_index};
-            coef1 = fit2(vars{:},2);
-            coef2 = fit2(vars{:},4);
-            coef_scale_vals(vars{:}) = 4*(coef1*coef2)/((coef1+coef2)^2);
-            if coef1 > coef2
-                coef_scale_vals1(vars{:}) = 1;
-                coef_scale_vals2(vars{:}) = coef_scale_vals(vars{:});
-            else
-                coef_scale_vals2(vars{:}) = 1;
-                coef_scale_vals1(vars{:}) = coef_scale_vals(vars{:});
-            end
-        end
-    end
-end
+
 %%
 for ramptime_index = 1:t
     for alpha_index = 1:4:a
         figure
         hold on
         for eta_index = 1:g
-            vars = {ramptime_index,eta_index,alpha_index};
-            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
-            plot(etavec(eta_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            vars = {ramptime_index,eta_index,alpha_index,guess_value};
+            plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' alpha = ' num2str(alphavec(alpha_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('eta')
@@ -271,17 +279,19 @@ for ramptime_index = 1:t
     for eta_index = 1:4:g
         figure
         hold on
-        
-        plot(alphavec,1000*reshape(error1(ramptime_index,eta_index,:),[a 1]),'m-')
-        plot(alphavec,1000*reshape(error2(ramptime_index,eta_index,:),[a 1]),'g-')
+        yyaxis right
+        plot(alphavec,reshape(error1(ramptime_index,eta_index,:,guess_value),[a 1]),'m-')
+        plot(alphavec,reshape(error2(ramptime_index,eta_index,:,guess_value),[a 1]),'g-')
+        ylabel('L2 error')
         for alpha_index = 1:a
-            vars = {ramptime_index,eta_index,alpha_index};
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,2),'kx','markers',20*coef_scale_vals1(vars{:}))
-            plot(alphavec(alpha_index),fit2(ramptime_index,eta_index,alpha_index,4),'bx','markers',20*coef_scale_vals2(vars{:}))
-            plot(alphavec(alpha_index),fit1(ramptime_index,eta_index,alpha_index,2),'rx','markers',20*coef_scale_vals2(vars{:}))
-            plot(alphavec(alpha_index),fit1(ramptime_index,eta_index,alpha_index,3),'r.','markers',20)
+            yyaxis left
+            vars = {ramptime_index,eta_index,alpha_index,guess_value};
+            plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',20*coef_scale_vals1(vars{:}))
+            plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',20*coef_scale_vals2(vars{:}))
+            plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',20*coef_scale_vals2(vars{:}))
+            plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',20)
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' eta = ' num2str(etavec(eta_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('alpha')
@@ -291,10 +301,9 @@ for ramptime_index = 1:t
 end
 %%
 [X,Y] = meshgrid(etavec,alphavec);
-
 for ramptime_index = 1:t
     figure
-    surf(X,Y,reshape(fit2(ramptime_index,:,:,3),[g,a])')
+    surf(X,Y,reshape(fit2(ramptime_index,:,:,guess_value,3),[g,a])')
     xlabel('eta');
     ylabel('alpha');
     title(['Timescale 1, ramptime = ' num2str(ramptimevec(ramptime_index))])
@@ -304,7 +313,7 @@ end
 
 for ramptime_index = 1:t
     figure
-    surf(X,Y,reshape(fit2(ramptime_index,:,:,5),[g,a])')
+    surf(X,Y,reshape(fit2(ramptime_index,:,:,guess_value,5),[g,a])')
     xlabel('eta');
     ylabel('alpha');
     title(['Timescale 2, ramptime = ' num2str(ramptimevec(ramptime_index))])

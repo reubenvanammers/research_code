@@ -14,20 +14,20 @@ etavec_augmented = [etavec 1000]; %adds large eta (should be infinity in theory)
 %in order to get lower bound of maximum stress for each alpha and ramptime
 %value, to get bounds between which 90% of the value can be found to find a
 %representative time. 
-t = length(ramptimevec);g = length(etavec_augmented);a = length(alphavec);
-L = t*g*a;
-stresscell = cell(1,L);
-timecell = cell(1,L);
+t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
+L_2 = t*g_2*a; L=t*g*a;
+stresscell = cell(1,L_2);
+timecell = cell(1,L_2);
 
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
-parfor_progress(L);
-parfor i = 1:L%index loops over alpha, then eta, then T
+parfor_progress(L_2);
+parfor i = 1:L_2%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    eta_index = mod(counter,g);
-    counter = (counter-eta_index)/g;
+    eta_index = mod(counter,g_2);
+    counter = (counter-eta_index)/g_2;
     ramptime_index = counter;
     alpha = alphavec(alpha_index+1);
     ramptime = ramptimevec(ramptime_index+1);
@@ -45,22 +45,24 @@ parfor i = 1:L%index loops over alpha, then eta, then T
 end
 parfor_progress(0);
 
-stresscell2 = cell(t,g,a);
-timecell2 = cell(t,g,a);
+stresscell2 = cell(t,g_2,a);
+timecell2 = cell(t,g_2,a);
 
 
 save([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
 load([pwd '/workspaces/strainerror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-maxstresscell2 = cell(t,g,a);
-endstresscell2 = cell(t,g,a);
+t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
+L_2 = t*g_2*a; L=t*g*a;
+maxstresscell2 = cell(t,g_2,a);
+endstresscell2 = cell(t,g_2,a);
 
 for i = 1:L
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
-    eta_index = mod(counter,g);
-    counter = (counter-eta_index)/g;
+    eta_index = mod(counter,g_2);
+    counter = (counter-eta_index)/g_2;
     ramptime_index = counter;
     vars = {ramptime_index+1,eta_index+1,alpha_index+1};
     stresscell2{vars{:}} = stresscell{i};
