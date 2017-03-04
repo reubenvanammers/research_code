@@ -275,16 +275,16 @@ for ramptime_index = 1:t
 end
 
 %%
-for ramptime_index = 1:t
+for ramptime_index = 3:3
     for eta_index = 1:4:g
         figure
         hold on
-        yyaxis right
+        %yyaxis right
         plot(alphavec,reshape(error1(ramptime_index,eta_index,:,guess_value),[a 1]),'m-')
         plot(alphavec,reshape(error2(ramptime_index,eta_index,:,guess_value),[a 1]),'g-')
-        ylabel('L2 error')
+        %ylabel('L2 error')
         for alpha_index = 1:a
-            yyaxis left
+   %         yyaxis left
             vars = {ramptime_index,eta_index,alpha_index,guess_value};
             plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])

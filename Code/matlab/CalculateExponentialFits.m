@@ -53,7 +53,8 @@ elseif guesstype ==2
     %two exp initial guess is one exponential guess, each exponential
     %equally weighted
 elseif guesstype ==3
-    initial_2 = [0 1 1 1 1];    % Uses guess not related to 1 exponential guess
+    %initial_2 = [0 1 1 1 1];    % Uses guess not related to 1 exponential guess
+    initial_2 = rand(1,5);
 end
     
 
