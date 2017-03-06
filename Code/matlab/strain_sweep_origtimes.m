@@ -85,8 +85,8 @@ fit1 = nan*ones(t,g,a,3,3);
 fit2 = nan*ones(t,g,a,3,5);
 error1 = nan*ones(t,g,a,3);
 error2 = nan*ones(t,g,a,3);
-error_fit = nan*ones(t,g,a,3);
-error_fit2 = nan*ones(t,g,a,3);
+error_fit_L2 = nan*ones(t,g,a,3);
+error_fit_inf = nan*ones(t,g,a,3);
 stresscell3 = cell(t,g,a);
 timecell3 = cell(t,g,a);
 timeendcell = cell(t,g,a);
@@ -137,7 +137,7 @@ for guess_index = 1:3
     %     timecell2{vars{:}} = timecell{i};
         %if ~flagcell{i}
         try
-            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{1:end-1}}',stresscell3{vars{1:end-1}}',-1,guess_index);
+            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit_L2(vars{:}),error_fit_inf(vars{:})] = CalculateExponentialFits(timecell3{vars{1:end-1}}',stresscell3{vars{1:end-1}}',-1,guess_index);
         catch
             unable_to_fit = [unable_to_fit; vars];
         end
@@ -167,6 +167,9 @@ end
 coef_scale_vals = nan*ones(t,g,a,3);
 coef_scale_vals1 = nan*ones(t,g,a,3);
 coef_scale_vals2 = nan*ones(t,g,a,3);
+time_dif_1 =  nan*ones(t,g,a,3);
+time_dif_2 =  nan*ones(t,g,a,3);
+time_dif_3 =  nan*ones(t,g,a,3);
 %Two coefficients of the exponential in the biexponential fit that are the
 %same will have a  coef_scale_value of 1, while one which has only 1
 %timescale, ie one of the coefficients is zero, will have coef_scale value
@@ -186,6 +189,12 @@ for guess_index = 1:3
                     coef_scale_vals2(vars{:}) = 1;
                     coef_scale_vals1(vars{:}) = min(coef_scale_vals(vars{:}),1);
                 end
+                %Three different ways at measuring the difference between
+                %the main timescales between the one exponential and the
+                %two exponential fits
+                time_dif_1(vars{:})  = abs(fit2(vars{:},5)-fit1(vars{:},3));
+                time_dif_2(vars{:})  = abs(fit2(vars{:},5)/fit1(vars{:},3));
+                time_dif_3(vars{:})  = abs(fit2(vars{:},5)-fit1(vars{:},3))/(fit2(vars{:},5)+fit1(vars{:},3));
             end
         end
     end
@@ -258,14 +267,39 @@ end
 % end
 
 %%
-for ramptime_index = 1:t
+% for ramptime_index = 1:t
+%     for alpha_index = 1:4:a
+%         figure
+%         hold on
+%         for eta_index = 1:g
+%             vars = {ramptime_index,eta_index,alpha_index,guess_value};
+%             plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+%             plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+%             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' alpha = ' num2str(alphavec(alpha_index))])
+%             set(gca,'XScale','log','YScale','log')
+%             xlabel('eta')
+%             ylabel('Time coefficients')
+%         end
+%     end
+% end
+%%
+for ramptime_index = 3:3
     for alpha_index = 1:4:a
         figure
         hold on
+        %yyaxis right
+        plot(etavec,reshape(error1(ramptime_index,:,alpha_index,guess_value),[g 1]),'m-')
+        plot(etavec,reshape(error2(ramptime_index,:,alpha_index,guess_value),[g 1]),'g-')
+        %ylabel('L2 error')
         for eta_index = 1:g
+   %         yyaxis left
             vars = {ramptime_index,eta_index,alpha_index,guess_value};
-            plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',14,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
-            plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',14,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            plot(etavec(eta_index),fit2(vars{:},2),'kx','markers',20*coef_scale_vals1(vars{:}))
+            plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',20*coef_scale_vals2(vars{:}))
+            plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',20)
+            plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',20)
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' alpha = ' num2str(alphavec(alpha_index))])
             set(gca,'XScale','log','YScale','log')
             xlabel('eta')
@@ -273,9 +307,8 @@ for ramptime_index = 1:t
         end
     end
 end
-
 %%
-for ramptime_index = 3:3
+for ramptime_index = 1:t
     for eta_index = 1:4:g
         figure
         hold on
@@ -290,7 +323,7 @@ for ramptime_index = 3:3
             plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
             plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',20*coef_scale_vals1(vars{:}))
             plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',20*coef_scale_vals2(vars{:}))
-            plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',20*coef_scale_vals2(vars{:}))
+            plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',20)
             plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',20)
             title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' eta = ' num2str(etavec(eta_index))])
             set(gca,'XScale','log','YScale','log')
@@ -320,3 +353,36 @@ for ramptime_index = 1:t
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
+
+%%
+[X,Y] = meshgrid(etavec,alphavec);
+
+% for ramptime_index = 1:t
+%     figure
+%     surf(X,Y,reshape(time_dif_1(ramptime_index,:,:,guess_value),[g,a])')
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['Timedif1, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%     set(gca, 'XScale', 'log', 'YScale', 'log');
+%     colorbar;
+% end
+
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,guess_value),[g,a])')
+    xlabel('eta');
+    ylabel('alpha');
+    title(['Timedif2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+    colorbar;
+end
+
+% for ramptime_index = 1:t
+%     figure
+%     surf(X,Y,reshape(time_dif_3(ramptime_index,:,:,guess_value),[g,a])')
+%     xlabel('eta');
+%     ylabel('alpha');
+%     title(['Timedif3, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%     set(gca, 'XScale', 'log', 'YScale', 'log');
+%     colorbar;
+% end

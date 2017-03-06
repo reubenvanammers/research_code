@@ -43,8 +43,8 @@ fit1 = nan*ones(f,g,a,3);
 fit2 = nan*ones(f,g,a,5);
 error1 = nan*ones(f,g,a);
 error2 = nan*ones(f,g,a);
-error_fit = nan*ones(f,g,a);
-error_fit2 = nan*ones(f,g,a);
+error_fit_L2 = nan*ones(f,g,a);
+error_fit_inf = nan*ones(f,g,a);
 %save([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
 %load([pwd '/workspaces/creeperror' num2str(T) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
@@ -93,7 +93,7 @@ for i = 1:L
 %     timecell2{vars{:}} = timecell{i};
     if ~flagcell{i}
         try
-            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',straincell3{vars{:}}');
+            [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit_L2(vars{:}),error_fit_inf(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',straincell3{vars{:}}');
         catch
             unable_to_fit = [unable_to_fit; vars];
         end
@@ -158,7 +158,7 @@ plot(X,Y,'ko');
 h = [];
 
 for force_index = 1:f
-    [~,h(force_index)] = contour(X,Y,reshape(error_fit(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
+    [~,h(force_index)] = contour(X,Y,reshape(error_fit_L2(force_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(force_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
@@ -175,11 +175,11 @@ for force_index = 1:f;
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     plot(X,Y,'k.','MarkerSize',12)
-    surf(X,Y,reshape(error_fit(force_index,:,:),[g,a])');
+    surf(X,Y,reshape(error_fit_L2(force_index,:,:),[g,a])');
      shading interp;
      alpha(0.5);
      colorbar;
-%     contour(X,Y,reshape(error_fit2(force_index,:,:),[g,a])',contours,'ShowText','on');
+%     contour(X,Y,reshape(error_fit_inf(force_index,:,:),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');
@@ -232,7 +232,7 @@ end
 for force_index = 1:1
     for alpha_index = 1:1
         figure
-        error_vals = error_fit2(force_index,:,alpha_index);
+        error_vals = error_fit_inf(force_index,:,alpha_index);
         semilogx(etavec,error_vals);
         xlabel('eta')
         ylabel('Infinity norm error')
@@ -382,7 +382,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['one exponential maximum error, ramptime = ' num2str(forcevec(force_index))])
+    title(['one exponential maximum error, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
@@ -393,7 +393,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['two exponential maximum error, ramptime = ' num2str(forcevec(force_index))])
+    title(['two exponential maximum error, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 %%
@@ -403,7 +403,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['Positive regions are one exponential, ramptime = ' num2str(forcevec(force_index))])
+    title(['Positive regions are one exponential, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
@@ -415,7 +415,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['one exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    title(['one exponential L2 error, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
@@ -426,7 +426,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['two exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    title(['two exponential L2 error, force = ' num2str(forcevec(force_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 %%

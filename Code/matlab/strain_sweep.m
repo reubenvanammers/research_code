@@ -85,8 +85,8 @@ fit1 = nan*ones(t,g,a,3);
 fit2 = nan*ones(t,g,a,5);
 error1 = nan*ones(t,g,a);
 error2 = nan*ones(t,g,a);
-error_fit = nan*ones(t,g,a);
-error_fit2 = nan*ones(t,g,a);
+error_fit_L2 = nan*ones(t,g,a);
+error_fit_inf = nan*ones(t,g,a);
 stresscell3 = cell(t,g,a);
 timecell3 = cell(t,g,a);
 timeendcell = cell(t,g,a);
@@ -136,7 +136,7 @@ for i = 1:L
 %     timecell2{vars{:}} = timecell{i};
     %if ~flagcell{i}
     try
-        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit(vars{:}),error_fit2(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
+        [fit1(vars{:},:),error1(vars{:}),fit2(vars{:},:),error2(vars{:}),error_fit_L2(vars{:}),error_fit_inf(vars{:})] = CalculateExponentialFits(timecell3{vars{:}}',stresscell3{vars{:}}');
     catch
         unable_to_fit = [unable_to_fit; vars];
     end
@@ -199,7 +199,7 @@ contours = logspace(-10,10,21);
 plot(X,Y,'ko');
 h = [];
 for time_index = 1:t
-    [~,h(time_index)] = contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
+    [~,h(time_index)] = contour(X,Y,reshape(error_fit_L2(time_index,:,:),[g,a])',[error_threshold,error_threshold],colourvec(time_index),'ShowText','off');
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 xlabel('eta');
@@ -216,14 +216,14 @@ for time_index = 1:t;
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
     %plot(X,Y,'k.')
-    surf(X,Y,reshape(error_fit(time_index,:,:),[g,a])');
+    surf(X,Y,reshape(error_fit_L2(time_index,:,:),[g,a])');
 
     %shading interp;
     clearvars alpha
     %alpha(0.5);
     colorbar;
     pause(0.01)
- %   contour(X,Y,reshape(error_fit(time_index,:,:),[g,a])',contours,'ShowText','on');
+ %   contour(X,Y,reshape(error_fit_L2(time_index,:,:),[g,a])',contours,'ShowText','on');
     hold off;
     set(gca, 'XScale', 'log', 'YScale', 'log');
     xlabel('eta');
@@ -344,7 +344,7 @@ hold off
 for ramptime_index = 1:1
     for alpha_index = 1:3:a
         figure
-        error_vals = error_fit2(ramptime_index,:,alpha_index);
+        error_vals = error_fit_inf(ramptime_index,:,alpha_index);
         semilogx(etavec,error_vals);
         xlabel('eta')
         ylabel('Infinity norm error');
