@@ -22,7 +22,7 @@ timecell = cell(1,L_2);
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L_2);
-parfor i = 1:L-2%index loops over alpha, then eta, then T
+parfor i = 1:L_2%index loops over alpha, then eta, then T
     counter = i-1;
     alpha_index = mod(counter,a);
     counter = (counter-alpha_index)/a;
@@ -32,7 +32,11 @@ parfor i = 1:L-2%index loops over alpha, then eta, then T
     alpha = alphavec(alpha_index+1);
     ramptime = ramptimevec(ramptime_index+1);
     eta = etavec_augmented(eta_index+1);%converts linear index to alpha,eta,T
-    [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,T,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
+    if eta_index == g %if calculating reference stress curve for max and min stresses for calculating endtime, uses no delay as it takes forever to calculate
+        [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,0,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
+    else
+        [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,T,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
+    end
     %N = size(Y,2)/4;
     %xvalues = Y(:,1:N);
     %strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
@@ -382,7 +386,7 @@ end
 %     surf(X,Y,reshape(time_dif_3(ramptime_index,:,:,guess_value),[g,a])')
 %     xlabel('eta');
 %     ylabel('alpha');
-%     title(['Timedif3, ramptime = ' num2str(ramptimevec(ramptime_index))])
+%     title(['Timedif3, ramptime = /' num2str(ramptimevec(ramptime_index))])
 %     set(gca, 'XScale', 'log', 'YScale', 'log');
 %     colorbar;
 % end

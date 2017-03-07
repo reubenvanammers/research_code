@@ -240,7 +240,7 @@ for time_index = 1:t;
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])');
     shading interp;
-    alpha(0.5);
+%    alpha(0.5);
 
  %   contour(X,Y,reshape(cell2mat(timeendcell(time_index,:,:)),[g,a])',contours,'ShowText','on');
 
