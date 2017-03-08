@@ -223,7 +223,7 @@ T_value = 1;
 save([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
 load([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-
+%%
 viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
@@ -388,7 +388,7 @@ end
 %     colorbar;
 % end
 
-for ramptime_index = 1:1
+for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_value,guess_value),[g,a])')
     xlabel('eta');
@@ -407,3 +407,14 @@ end
 %     set(gca, 'XScale', 'log', 'YScale', 'log');
 %     colorbar;
 % end
+
+%%
+for ramptime_index = 1:t
+    figure
+    surf(X,Y,reshape(error1(ramptime_index,:,:,T_value,guess_value),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
