@@ -138,15 +138,16 @@ end
 unable_to_fit = [];
 for guess_index = 1:3 
     for i = 1:L
+        counter = i-1;
         T_index = mod(counter,length(Tvec));
         counter = (counter-T_index)/length(Tvec);
-        counter = i-1;
         alpha_index = mod(counter,a);
         counter = (counter-alpha_index)/a;
         eta_index = mod(counter,g);
         counter = (counter-eta_index)/g;
-        time_index = counter;
-        vars = {time_index+1,eta_index+1,alpha_index+1,T_index+1,guess_index};
+        ramptime_index = counter;
+        vars = {ramptime_index+1,eta_index+1,alpha_index+1,T_index+1,guess_index};
+        
     %     straincell2{vars{:}} = straincell{i};
     %     timecell2{vars{:}} = timecell{i};
         %if ~flagcell{i}
@@ -242,24 +243,24 @@ else
     g_temp = g;
 end
 
-for time_index = 1:t
+for ramptime_index = 1:t
     figure
     hold on
     for alpha_index = 1:a_temp 
         for  eta_index = 1:g_temp
             subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-            vars = {time_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1,T_value,guess_value};
+            vars = {ramptime_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1,T_value,guess_value};
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(time_index))]); 
+            title(['alpha = ', num2str(alphavec_temp(alpha_index)), ' eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(ramptime_index))]); 
             %axis([0 1 0 1]);
         end
     end
-    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/strainplot-' num2str(T) '-' num2str(timevec(time_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/strainfitting/strainplot-' num2str(T) '-' num2str(timevec(ramptime_index))]  , 7, 7/5, 9)
 end
 
 %%
@@ -387,7 +388,7 @@ end
 %     colorbar;
 % end
 
-for ramptime_index = 1:t
+for ramptime_index = 1:1
     figure
     surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_value,guess_value),[g,a])')
     xlabel('eta');
