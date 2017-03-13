@@ -326,6 +326,7 @@ for force_index = 1:f
 end
 
 %%
+[X,Y] = meshgrid(etavec,alphavec);
 
 % for force_index = 1:f
 %     figure
@@ -356,3 +357,38 @@ end
 %     set(gca, 'XScale', 'log', 'YScale', 'log');
 %     colorbar;
 % end
+
+%%
+[X,Y] = meshgrid(etavec,alphavec);
+
+for force_index = 1:f
+    figure
+    surf(X,Y,reshape(error1(force_index,:,:,T_value,guess_value),[g,a])')
+    
+    xlabel('eta');
+    ylabel('alpha');
+    title(['one exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+%%
+
+[X,Y] = meshgrid(etavec,alphavec);
+
+contours = logspace(0,5,61);
+for force_index = 1:f
+    for T_index = 1:length(Tvec)
+        figure
+        hold on
+        surf(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])')
+        clearvars alpha
+        alpha(0.5)
+        contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
+        xlabel('eta');
+        ylabel('alpha');
+        title(['Timedif2, force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_index))])
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+        colorbar;
+        SaveAsPngEpsAndFig(-1,[pwd '/pictures/timedifplots/creep/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
+    end
+end

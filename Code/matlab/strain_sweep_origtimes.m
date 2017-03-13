@@ -409,6 +409,8 @@ end
 % end
 
 %%
+[X,Y] = meshgrid(etavec,alphavec);
+
 for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(error1(ramptime_index,:,:,T_value,guess_value),[g,a])')
@@ -417,4 +419,29 @@ for ramptime_index = 1:t
     ylabel('alpha');
     title(['one exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
     set(gca, 'XScale', 'log', 'YScale', 'log');
+end
+
+
+%%
+[X,Y] = meshgrid(etavec,alphavec);
+
+contours = logspace(0,5,61);
+for ramptime_index = 1:t
+    for T_index = 1:length(Tvec)
+        figure
+        hold on
+        surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])')
+        clearvars alpha
+        alpha(0.5)
+        contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
+
+        xlabel('eta');
+        ylabel('alpha');
+        title(['Timedif2, ramptime = ' num2str(ramptimevec(ramptime_index)), ' T = ' num2str(Tvec(T_index)) ])
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+
+        colorbar;
+        SaveAsPngEpsAndFig(-1,[pwd '/pictures/timedifplots/relaxation/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
+
+    end
 end
