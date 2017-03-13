@@ -392,3 +392,24 @@ for force_index = 1:f
         SaveAsPngEpsAndFig(-1,[pwd '/pictures/timedifplots/creep/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
     end
 end
+
+%%
+stylevec = {'-','--','-.',':'};
+colourvec = ['r','b','k','g','y','m','c','r','y','m','c',];%need to stop reuse of colours, temp measure
+error_threshold = 1.5;
+figure
+hold on;
+[X,Y] = meshgrid(etavec,alphavec);
+
+for T_index = 1:length(Tvec)
+    for force_index = 1:f
+        [~,h((T_index-1)*f+force_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[colourvec(force_index) stylevec{T_index}],'ShowText','off');
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+        legendcell{((T_index-1)*f+force_index)} =['T = ', num2str(Tvec(T_index)), ',force = ' , num2str(forcevec(force_index))];
+        xlabel('eta');
+        ylabel('alpha');
+        title(['overall creep contour, threshold = ' num2str(error_threshold)])
+    end
+end
+
+legendflex(h,legendcell)

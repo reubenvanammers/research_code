@@ -445,3 +445,26 @@ for ramptime_index = 1:t
 
     end
 end
+
+
+%%
+stylevec = {'-','--','-.',':'};
+colourvec = ['r','b','k','g','y','m','c','r','y','m','c',];%need to stop reuse of colours, temp measure
+error_threshold = 1.5;
+figure
+hold on;
+[X,Y] = meshgrid(etavec,alphavec);
+
+for T_index = 1:length(Tvec)
+    for ramptime_index = 1:t
+        [~,h((T_index-1)*t+ramptime_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[colourvec(ramptime_index) stylevec{T_index}],'ShowText','off');
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+        legendcell{((T_index-1)*t+ramptime_index)} =['T = ', num2str(Tvec(T_index)), ',ramptime = ' , num2str(ramptimevec(ramptime_index))];
+        xlabel('eta');
+        ylabel('alpha');
+        title(['overall relaxation contour, threshold = ' num2str(error_threshold)])
+
+    end
+end
+
+legendflex(h,legendcell)
