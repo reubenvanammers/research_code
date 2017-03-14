@@ -455,6 +455,8 @@ figure
 hold on;
 [X,Y] = meshgrid(etavec,alphavec);
 
+two_exp_status = time_dif_2 > error_threshold;
+
 for T_index = 1:length(Tvec)
     for ramptime_index = 1:t
         [~,h((T_index-1)*t+ramptime_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[colourvec(ramptime_index) stylevec{T_index}],'ShowText','off');
@@ -468,3 +470,45 @@ for T_index = 1:length(Tvec)
 end
 
 legendflex(h,legendcell)
+
+%%
+clear legendcell h
+for T_index = 1:length(Tvec)
+    figure
+    hold on
+    clear h legendcell
+    for ramptime_index = t:-1:1
+        [~,h(ramptime_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[colourvec(ramptime_index) stylevec{1}],'ShowText','off');
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+        legendcell{(ramptime_index)} =['ramptime = ' , num2str(ramptimevec(ramptime_index))];
+        xlabel('eta');
+        ylabel('alpha');
+        title(['overall relaxation contour, threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
+        Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
+        plot(Z.*X,Z.*Y,[colourvec(ramptime_index) '.'],'markers',5*2^(ramptime_index))
+    end
+    legendflex(h,legendcell)
+
+end
+
+
+%%
+clear legendcell h
+for ramptime_index = 1:t
+    figure
+    hold on
+    clear h legendcell
+    for T_index = length(Tvec):-1:1
+        [~,h(T_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[colourvec(T_index) stylevec{1}],'ShowText','off');
+        set(gca, 'XScale', 'log', 'YScale', 'log');
+        legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
+        xlabel('eta');
+        ylabel('alpha');
+        title(['overall relaxation contour, threshold = ' num2str(error_threshold), ' ramptime = ', num2str(ramptimevec(ramptime_index))])
+        Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
+        plot(Z.*X,Z.*Y,[colourvec(T_index) '.'],'markers',5*2^(T_index))
+    end
+    legendflex(h,legendcell)
+
+end
+
