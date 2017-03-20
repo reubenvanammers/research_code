@@ -2,7 +2,7 @@
 %subplot.
 clear all
 
-forcevec = logspace(-1.5,-1 ,3);
+forcevec = logspace(-1,0 ,3);
 Tvec = [0 1 10 100];
 %T = 0;
 etavec = logspace(-1,0,9);

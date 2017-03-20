@@ -5,7 +5,7 @@ global eta alpha s0 N M E r_rec t_rec T fixlist movelist vertex_matrix_1 k
 global vertex_matrix_2 edge_matrix restoring_rec restoring_t_rec counter external_force
 global maxlength strainflag
 eta = eta0;alpha =alpha0;T = T0;
-
+maxstrain = 5;
 strainflag = false;
 
 if nargin < 5
@@ -32,7 +32,7 @@ initial_min = min(P(:,1));
 fixlist = P(:,1) ==initial_min;
 initial_max = max(P(:,1));
 movelist =  P(:,1) ==initial_max;
-maxlength = 2*(initial_max-initial_min);
+maxlength = maxstrain*(initial_max-initial_min);
 
 
 N= length(P);
