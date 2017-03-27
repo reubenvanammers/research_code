@@ -51,6 +51,12 @@ set(get(gca,'YLabel'),'fontsize',labelsize); % set font size for ylabel
 set(get(gca,'ZLabel'),'fontsize',labelsize); % set font size for zlabel
 set(get(gca,'Title'),'fontsize',labelsize);  % set font size for title
 
+
+fig = gcf;
+%fig.PaperPositionMode = 'auto'
+fig_pos = fig.PaperPosition;
+fig.PaperSize = [fig_pos(3) fig_pos(4)];
+
 if (h == -1)                                 % if plot handles that need line width change is -1
     h = get(gca,'Children');                 % do it for all
 end
@@ -67,6 +73,8 @@ set(gca,'OuterPosition',[0.01 0.01 0.99 0.99])
 
 print('-depsc2',resolution_str, [filename '.eps']);   % export .eps (In fact, eps does not really care about the resolution)
 print('-dpng',resolution_str, [filename '.png']);     % export .png
+print('-dpdf',resolution_str, [filename '.pdf']);     % export .png
+
 
 savefig([filename '.fig']); %save the fig for backup
 
