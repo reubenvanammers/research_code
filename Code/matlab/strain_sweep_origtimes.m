@@ -507,11 +507,11 @@ for ramptime_index = 1:t
         ylabel('alpha');
         title(['overall relaxation contour, threshold = ' num2str(error_threshold), ' ramptime = ', num2str(ramptimevec(ramptime_index))])
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
-        %plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
-        surf(Z.*X,Z.*Y,+Z)
-        colormap(colourvec{T_index})
+        plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
+        %surf(Z.*X,Z.*Y,+Z)
+        %colormap(colourvec{T_index})
         %alpha(0.3)
-        shading interp
+        %shading interp
     end
     legendflex(h,legendcell)
 
