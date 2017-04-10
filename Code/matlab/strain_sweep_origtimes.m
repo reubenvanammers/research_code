@@ -287,6 +287,25 @@ for ramptime_index = 1:t
     end
 end
 %%
+%%
+for ramptime_index = 1:t;
+    figure
+    [X,Y] = meshgrid(etavec,alphavec);
+    hold on;
+    surf(X,Y,reshape(cell2mat(timeendcell(ramptime_index,:,:,T_value,guess_value)),[g,a])');
+    shading interp; 
+    alpha(0.5);
+    colorbar;
+    %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
+
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
+    xlabel('eta');
+    ylabel('alpha');
+    title(['equilibriation times, ramptime = ', num2str(ramptimevec(ramptime_index))]);
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
+
+end
 % for ramptime_index = 1:t
 %     for alpha_index = 1:4:a
 %         figure

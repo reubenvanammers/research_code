@@ -249,13 +249,31 @@ for force_index = 1:f
             title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_value))]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
             close all
         end
     end
 end
 % end
+%%
+for force_index = 1:f;
+    figure
+    [X,Y] = meshgrid(etavec,alphavec);
+    hold on;
+    surf(X,Y,reshape(cell2mat(timeendcell(force_index,:,:,T_value,guess_value)),[g,a])');
+    shading interp; 
+    alpha(0.5);
+    colorbar;
+    %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
+    set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
+    xlabel('eta');
+    ylabel('alpha');
+    title(['equilibriation times, force = ', num2str(forcevec(force_index))]);
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
+
+end
 %%
 % for force_index = 1:f
 %     for alpha_index = 1:4:a
@@ -413,9 +431,10 @@ for force_index = 1:f
 end
 
 %%
+time_dif_2(:,:,a,:,:) = nan*time_dif_2(:,:,a,:,:);
 stylevec = {'-','--','-.',':'};
 colourvec = {[1 0 0],[0 0 1],[0 0 0],[0 1 0],[1 1 0],[1 0 1],[0 1 1],[1 0 0],[0 0 1],[0 0 0],[0 1 0]};%need to stop reuse of colours, temp measure
-error_threshold = 1.5;
+error_threshold = 1.75;
 figure
 hold on;
 [X,Y] = meshgrid(etavec,alphavec);
@@ -451,7 +470,7 @@ for T_index = 1:length(Tvec)
         title([%'overall relaxation contour, 
             'threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
-        plot(Z.*X,Z.*Y,['.'],'markers',2*2^(force_index),'Color',colourvec{force_index})
+        plot(Z.*X,Z.*Y,['.'],'markers',2*1.5^(force_index),'Color',colourvec{force_index})
 
     end
     legendflex(h,legendcell)
