@@ -11,7 +11,7 @@ if nargin ==4
     t_rec = [t_rec;inf];
     counter = 1;
 end
-for i = 1:length(Time);
+for i = 3920:1:length(Time);
     if nargin ==4
         while Time(i) >= t_rec(counter);
             C = C_hist{counter};

@@ -3,11 +3,11 @@
 clear all
 endstrain = 1.5;
 ramptimevec = logspace(1,2,3);
-Tvec = [0 1 10 100];
-%T = 0;
-etavec = logspace(-1,0,9);
-alphavec = logspace(-1,0,9);
-tend = 200000;
+%Tvec = [0 1 10 100];
+Tvec = 0;
+etavec = logspace(-0.5,0,3);
+alphavec = logspace(-0.5,0,3);
+tend = 200;
 
 
 etavec_augmented = [etavec 1000]; %adds large eta (should be infinity in theory)
@@ -22,7 +22,7 @@ timecell = cell(1,L_2);
 %flagcell = cell(1,L);
 %restoringcell = cell(1,L);
 parfor_progress(L_2);
-parfor i = 1:L_2%index loops over alpha, then eta, then T
+for i = 1:L_2%index loops over alpha, then eta, then T
     counter = i-1;
     T_index = mod(counter,length(Tvec));
     counter = (counter-T_index)/length(Tvec);
@@ -37,9 +37,9 @@ parfor i = 1:L_2%index loops over alpha, then eta, then T
     T = Tvec(T_index+1);
     %converts linear index to alpha,eta,T
     if eta_index == g %if calculating reference stress curve for max and min stresses for calculating endtime, uses no delay as it takes forever to calculate
-        [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,0,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
+        [~, ~,~,stress,trec,stress_index] =strain_vertex(1,1,0,alpha,eta,0,tend,[10,10],ramp(endstrain,1,ramptime),ramptime,inf);
     else
-        [~, ~,~,stress,trec,stress_index] =strain_2d_ode_ramp(alpha,eta,T,tend,ramp(endstrain,1,ramptime),ramptime,inf,[10,10]);
+        [~, ~,~,stress,trec,stress_index] =strain_vertex(1,1,0,alpha,eta,T,tend,[10,10],ramp(endstrain,1,ramptime),ramptime,inf);
     end
     %N = size(Y,2)/4;
     %xvalues = Y(:,1:N);
@@ -57,9 +57,9 @@ stresscell2 = cell(t,g_2,a,length(Tvec));
 timecell2 = cell(t,g_2,a,length(Tvec));
 
 
-save([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/strainerrorvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-load([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/strainerrorvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
 L_2 = t*g_2*a*length(Tvec); L=t*g*a*length(Tvec);
 maxstresscell2 = cell(t,g_2,a,length(Tvec));
@@ -238,9 +238,9 @@ else
     a_temp = a;
     g_temp = g;
 end
-save([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/strainerrorvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
-load([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/strainerrortvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
 
 %%
@@ -284,7 +284,7 @@ for ramptime_index = 1:t
             %axis([0 1 0 1]);
             xlabel('Time')
             ylabel('Stress')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/timestress/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
             close all
         end
     end
@@ -305,7 +305,7 @@ for ramptime_index = 1:t;
     xlabel('\eta');
     ylabel('\alpha');
     title(['equilibriation times, ramptime = ', num2str(ramptimevec(ramptime_index))]);
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
     %SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
 
 end
@@ -353,7 +353,7 @@ for ramptime_index = 1:t
         end
             xlabel('\eta')
             ylabel('Time coefficients')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/lineplot/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-alpha=' num2str(alphavec((alpha_index-1)*a_scale+1))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/lineplot/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-alpha=' num2str(alphavec((alpha_index-1)*a_scale+1))]  , 7, 7/5, 9)
             %legend(h)
     end
 end
@@ -384,7 +384,7 @@ for ramptime_index = 1:t
         end
             xlabel('\alpha')
             ylabel('Time coefficients')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/lineplot/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-eta=' num2str(etavec((eta_index-1)*g_scale+1))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/lineplot/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-eta=' num2str(etavec((eta_index-1)*g_scale+1))]  , 7, 7/5, 9)
             %legend(h)
     end
 end
@@ -476,7 +476,7 @@ for ramptime_index = 1:t
         set(gca, 'XScale', 'log', 'YScale', 'log');
 
         colorbar;
-        SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
+        SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
         close all
     end
 end
@@ -524,7 +524,7 @@ for T_index = 1:length(Tvec)
         plot(Z.*X,Z.*Y,['.'],'markers',2*2^(ramptime_index),'Color',colourvec{ramptime_index})
     end
     legendflex(h,legendcell)
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/relaxation/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
 
 end
 

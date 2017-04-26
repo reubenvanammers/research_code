@@ -1,4 +1,4 @@
-function dxdt = cell_forces_strain_vector(t,x)
+    function dxdt = cell_forces_strain_vector(t,x)
 %implements evolution of system for cell center cell centre spring based
 %model to be fed into inbuilt matlab solver. Used for creep experiment.
 %Done in a vectorized manner, but otherwize same as cell_forces_stress.

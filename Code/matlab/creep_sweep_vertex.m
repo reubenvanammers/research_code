@@ -3,10 +3,10 @@
 clear all
 
 forcevec = logspace(-1,0 ,3);
-%Tvec = [0 1 10 100];
-Tvec = 0;
-etavec = logspace(-1.1,0,3);
-alphavec = logspace(-1.2,0,3);
+Tvec = [0 1 10 100];
+%T = 0;
+etavec = logspace(-1,0,9);
+alphavec = logspace(-1,0,9);
 tend = 200000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a*length(Tvec);
@@ -30,7 +30,7 @@ for i=1:L
     force = forcevec(force_index+1);
     eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
     T = Tvec(T_index+1);
-    params{i} = {alpha,eta,T,tend,[10,10],force,5};
+    params{i} = {1,1,0,alpha,eta,T,tend,[10,10],force,5};
 end
     
 parfor i = 1:L%index loops over alpha, then eta, then T
@@ -46,7 +46,7 @@ parfor i = 1:L%index loops over alpha, then eta, then T
 %     force = forcevec(force_index+1);
 %     eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
 %     T = Tvec(T_index+1);
-    [Time, Y,~,flag] =stress_2d_ode(params{i}{:});
+    [Time, Y,~,flag] =creep_vertex(params{i}{:});
     N = size(Y,2)/4;
     xvalues = Y(:,1:N);
     strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
@@ -164,8 +164,8 @@ for guess_index = 1:3
             for alpha_index = 1:a;
                 for T_index = 1:length(Tvec)
                     vars = {force_index,eta_index,alpha_index,T_index,guess_index};
-                    coef1 = abs(fit2(vars{:},2));
-                    coef2 = abs(fit2(vars{:},4));
+                    coef1 = fit2(vars{:},2);
+                    coef2 = fit2(vars{:},4);
                     coef_scale_vals(vars{:}) = 4*(coef1*coef2)/((coef1+coef2)^2);
                     if coef1 > coef2
                         coef_scale_vals1(vars{:}) = 1;
@@ -188,7 +188,9 @@ end
 clear straincell timecell straincell2 timecell2
 guess_value = 1;
 T_value = 1;
-
+save([pwd '/workspaces/creeperrorvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+%% plots strain-time graphs and exponential fits
+load([pwd '/workspaces/creeperrorvertex' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
@@ -208,11 +210,6 @@ else
     g_temp = g;
 end
 
-save([pwd '/workspaces/creeperrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-%% plots strain-time graphs and exponential fits
-load([pwd '/workspaces/creeperrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
-
-%%
 for force_index = 1:f
     figure
     hold on
@@ -252,9 +249,7 @@ for force_index = 1:f
             title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_value))]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
-            xlabel('Time')
-            ylabel('Strain')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
             close all
         end
     end
@@ -267,16 +262,15 @@ for force_index = 1:f;
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(force_index,:,:,T_value,guess_value)),[g,a])');
     shading interp; 
-    clear alpha
-    alpha(0.5);
+    %alpha(0.5);
     colorbar;
     %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('\eta');
-    ylabel('\alpha');
+    xlabel('eta');
+    ylabel('alpha');
     title(['equilibriation times, force = ', num2str(forcevec(force_index))]);
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/creep/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
     %SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
 
 end
@@ -297,65 +291,53 @@ end
 %     end
 % end
 %%
-for force_index = 1:f
-    for alpha_index = 1:a_temp
+for force_index = 3:3
+    for alpha_index = 1:4:a
         figure
         hold on
-        yyaxis right
-        h(1) = plot(etavec,reshape(error1(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
-        h(2) = plot(etavec,reshape(error2(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
-
+        %yyaxis right
+        plot(etavec,reshape(error1(force_index,:,alpha_index,T_value,guess_value),[g 1]),'m-')
+        plot(etavec,reshape(error2(force_index,:,alpha_index,T_value,guess_value),[g 1]),'g-')
+        %ylabel('L2 error')
         for eta_index = 1:g
-            yyaxis left
-            vars = {force_index,eta_index,(alpha_index-1)*a_scale+1,T_value,guess_value};
-            h(3) = plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
-            h(4) = plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(etavec(eta_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(etavec(eta_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(etavec(eta_index),-fit1(vars{:},2),'rx','markers',5);
-
-            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' \alpha = ' num2str(alphavec((alpha_index-1)*a_scale+1))])
+   %         yyaxis left
+            vars = {force_index,eta_index,alpha_index,T_index,guess_value};
+            plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            plot(etavec(eta_index),fit2(vars{:},2),'kx','markers',20*coef_scale_vals1(vars{:}))
+            plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',20*coef_scale_vals2(vars{:}))
+            plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',20)
+            plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',20)
+            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' alpha = ' num2str(alphavec(alpha_index))])
             set(gca,'XScale','log','YScale','log')
-
-        end
-            xlabel('\eta')
+            xlabel('eta')
             ylabel('Time coefficients')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/lineplot/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-alpha=' num2str(alphavec((alpha_index-1)*a_scale+1))]  , 7, 7/5, 9)
-            %legend(h)
+        end
     end
 end
 %%
-for force_index = 1:f
-    for eta_index = 1:g_temp
+for force_index = 3:3
+    for eta_index = 1:4:g
         figure
         hold on
-        yyaxis right
-        h(1) = plot(alphavec,reshape(error1(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
-        h(2) = plot(alphavec,reshape(error2(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
-
+        %yyaxis right
+        plot(alphavec,reshape(error1(force_index,eta_index,:,T_value,guess_value),[a 1]),'m-')
+        plot(alphavec,reshape(error2(force_index,eta_index,:,T_value,guess_value),[a 1]),'g-')
+        %ylabel('L2 error')
         for alpha_index = 1:a
-            yyaxis left
-            vars = {force_index,(eta_index-1)*g_scale+1,alpha_index,T_value,guess_value};
-            h(3) = plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
-            h(4) = plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(alphavec(alpha_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(alphavec(alpha_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(alphavec(alpha_index),-fit1(vars{:},2),'rx','markers',5);
-
-            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' \eta = ' num2str(etavec((eta_index-1)*g_scale+1))])
+   %         yyaxis left
+            vars = {force_index,eta_index,alpha_index,T_index,guess_value};
+            plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',20*coef_scale_vals1(vars{:}),'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
+            plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',20*coef_scale_vals2(vars{:}),'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
+            plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',20*coef_scale_vals1(vars{:}))
+            plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',20*coef_scale_vals2(vars{:}))
+            plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',20)
+            plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',20)
+            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' eta = ' num2str(etavec(eta_index))])
             set(gca,'XScale','log','YScale','log')
-
-        end
-            xlabel('\alpha')
+            xlabel('alpha')
             ylabel('Time coefficients')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/lineplot/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-eta=' num2str(etavec((eta_index-1)*g_scale+1))]  , 7, 7/5, 9)
-            %legend(h)
+        end
     end
 end
 %%
@@ -439,12 +421,12 @@ for force_index = 1:f
         clearvars alpha
         alpha(0.5)
         contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
-        xlabel('\eta');
-        ylabel('\alpha');
+        xlabel('eta');
+        ylabel('alpha');
         title(['Timedif2, force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_index))])
         set(gca, 'XScale', 'log', 'YScale', 'log');
         colorbar;
-        SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
+        %SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/creep/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
     end
 end
 
@@ -486,14 +468,14 @@ for T_index = 1:length(Tvec)
         xlabel('eta');
         ylabel('alpha');
         title([%'overall relaxation contour, 
-            'Threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
+            'threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',2*1.5^(force_index),'Color',colourvec{force_index})
+
     end
     legendflex(h,legendcell)
-    axis([0.1 1 0.1 1])
 
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertex/creep/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
 
 
 end
