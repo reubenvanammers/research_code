@@ -97,8 +97,8 @@ size_constraint = @(array,minval,maxval) arrayfun(@max,minval,arrayfun(@min,maxv
 % 
 % target_real_cell_areas = size_constraint(target_real_cell_areas,A0_vec/2,A0_vec*2);
 % target_real_cell_circumferences = size_constraint(target_real_cell_circumferences,C0_vec/sqrt(2),C0_vec*sqrt(2));
-target_reference_cell_areas = size_constraint(target_reference_cell_areas,A0_vec/4,A0_vec*4);
-target_reference_cell_circumferences = size_constraint(target_reference_cell_circumferences,C0_vec/2,C0_vec*2);
+%target_reference_cell_areas = size_constraint(target_reference_cell_areas,A0_vec/4,A0_vec*4);
+%target_reference_cell_circumferences = size_constraint(target_reference_cell_circumferences,C0_vec/2,C0_vec*2);
 
 
 real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,target_real_cell_areas,real_cell_areas,target_real_cell_circumferences,real_cell_circumferences);

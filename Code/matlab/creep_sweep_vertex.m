@@ -3,8 +3,8 @@
 clear all
 
 forcevec = logspace(-1,0 ,3);
-Tvec = [0 1 10 100];
-%T = 0;
+%Tvec = [0 1 10 100];
+Tvec = 0;
 etavec = logspace(-1,0,9);
 alphavec = logspace(-1,0,9);
 tend = 200000;
