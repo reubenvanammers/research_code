@@ -33,7 +33,7 @@ Cx = Cx/(6*A);
 Cy = Cy/(6*A);
 Ixx = Ixx/12;
 Iyy = Iyy/12;
-Ixy = -Ixy/24;
+Ixy = Ixy/24;
 
 
 
