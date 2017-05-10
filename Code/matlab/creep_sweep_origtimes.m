@@ -494,7 +494,7 @@ for T_index = 1:length(Tvec)
     for force_index = f:-1:1
         [~,h(force_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{force_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
-        legendcell{(force_index)} =['force = ' , num2str(forcevec(force_index))];
+        %legendcell{(force_index)} =['force = ' , num2str(forcevec(force_index))];
         xlabel('eta');
         ylabel('alpha');
         title([%'overall relaxation contour, 
@@ -502,7 +502,7 @@ for T_index = 1:length(Tvec)
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',2*1.5^(force_index),'Color',colourvec{force_index})
     end
-    legendflex(h,legendcell)
+    legendflex(h,fstring)
     axis([0.1 1 0.1 1])
 
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
@@ -520,7 +520,7 @@ for force_index = 1:f
     for T_index = length(Tvec):-1:1
         [~,h(T_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{T_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
-        legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
+        %legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
         xlabel('eta');
         ylabel('alpha');
         title(['overall relaxation contour, threshold = ' num2str(error_threshold), fstring{force_index}])
@@ -531,6 +531,6 @@ for force_index = 1:f
         %alpha(0.3)
         %shading interp
     end
-    legendflex(h,legendcell)
+    legendflex(h,Tstring)
 
 end
