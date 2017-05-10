@@ -2,11 +2,23 @@
 %subplot.
 clear all
 
-forcevec = logspace(-1,0 ,3);
+
+fbounds = {-1 0.3 5};
+Tbounds = {0 2 5};
+etabounds = {-1 0 21};
+alphabounds = {-1 0 21};
+
+fstring = arrayfun(@(x) [' Force = 10^{' num2str(x,3) '}'], linspace(fbounds{:}),'UniformOutput',false);
+astring = arrayfun(@(x) [' \alpha = 10^{' num2str(x,3) '}'], linspace(alphabounds{:}),'UniformOutput',false);
+estring = arrayfun(@(x) [' \eta = 10^{' num2str(x,3) '}'], linspace(etabounds{:}),'UniformOutput',false);
+Tstring = arrayfun(@(x) [' T = 10^{' num2str(x,3) '}'], linspace(Tbounds{:}),'UniformOutput',false); Tstring = {' T = 0', Tstring{:}}
+
+
+forcevec = logspace(fbounds{:});
 %Tvec = [0 1 10 100];
-Tvec = 0;
-etavec = logspace(-1.1,0,3);
-alphavec = logspace(-1.2,0,3);
+Tvec = [0 logspace(Tbounds{:})];
+etavec = logspace(etabounds{:});
+alphavec = logspace(alphabounds{:});
 tend = 200000;
 f = length(forcevec);g = length(etavec);a = length(alphavec);
 L = f*g*a*length(Tvec);
@@ -189,7 +201,7 @@ clear straincell timecell straincell2 timecell2
 guess_value = 1;
 T_value = 1;
 
-viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 11; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don'f get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -226,7 +238,7 @@ for force_index = 1:f
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_value))]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_index} ]); 
             %axis([0 1 0 1]);
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
 
@@ -249,7 +261,7 @@ for force_index = 1:f
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_value))]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_index} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
             xlabel('Time')
@@ -275,7 +287,7 @@ for force_index = 1:f;
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('\eta');
     ylabel('\alpha');
-    title(['equilibriation times, force = ', num2str(forcevec(force_index))]);
+    title(['equilibriation times,' fstring{force_index}]);
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
     %SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
 
@@ -317,7 +329,7 @@ for force_index = 1:f
             h(7) = plot(etavec(eta_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
             h(8) = plot(etavec(eta_index),-fit1(vars{:},2),'rx','markers',5);
 
-            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' \alpha = ' num2str(alphavec((alpha_index-1)*a_scale+1))])
+            title(['time coefficients,' fstring{force_index} astring{(alpha_index-1)*a_scale+1}])
             set(gca,'XScale','log','YScale','log')
 
         end
@@ -348,7 +360,7 @@ for force_index = 1:f
             h(7) = plot(alphavec(alpha_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
             h(8) = plot(alphavec(alpha_index),-fit1(vars{:},2),'rx','markers',5);
 
-            title(['time coefficients, force = ' num2str(forcevec(force_index)) ' \eta = ' num2str(etavec((eta_index-1)*g_scale+1))])
+            title(['time coefficients,' fstring{force_index} estring{(eta_index-1)*g_scale+1}])
             set(gca,'XScale','log','YScale','log')
 
         end
@@ -365,7 +377,7 @@ for force_index = 1:f
     surf(X,Y,reshape(fit2(force_index,:,:,T_value,guess_value,3),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timescale 1, force = ' num2str(forcevec(force_index))])
+    title(['Timescale 1,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -375,7 +387,7 @@ for force_index = 1:f
     surf(X,Y,reshape(fit2(force_index,:,:,T_value,guess_value,5),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timescale 2, force = ' num2str(forcevec(force_index))])
+    title(['Timescale 2,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -398,7 +410,7 @@ for force_index = 1:f
     surf(X,Y,reshape(time_dif_2(force_index,:,:,T_value,guess_value),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timedif2, force = ' num2str(forcevec(force_index))])
+    title(['Timedif2,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -422,7 +434,7 @@ for force_index = 1:f
     
     xlabel('eta');
     ylabel('alpha');
-    title(['one exponential L2 error, ramptime = ' num2str(forcevec(force_index))])
+    title(['one exponential L2 error,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
@@ -441,7 +453,7 @@ for force_index = 1:f
         contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
         xlabel('\eta');
         ylabel('\alpha');
-        title(['Timedif2, force = ' num2str(forcevec(force_index)), ' T = ' num2str(Tvec(T_index))])
+        title(['Timedif2,' fstring{force_index} Tstring{T_index}])
         set(gca, 'XScale', 'log', 'YScale', 'log');
         colorbar;
         SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
@@ -486,7 +498,7 @@ for T_index = 1:length(Tvec)
         xlabel('eta');
         ylabel('alpha');
         title([%'overall relaxation contour, 
-            'Threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
+            'Threshold = ' num2str(error_threshold), Tstring{T_index}])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',2*1.5^(force_index),'Color',colourvec{force_index})
     end
@@ -511,7 +523,7 @@ for force_index = 1:f
         legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
         xlabel('eta');
         ylabel('alpha');
-        title(['overall relaxation contour, threshold = ' num2str(error_threshold), ' force = ', num2str(forcevec(force_index))])
+        title(['overall relaxation contour, threshold = ' num2str(error_threshold), fstring{force_index}])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
         %surf(Z.*X,Z.*Y,+Z)
