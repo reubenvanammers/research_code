@@ -1,12 +1,25 @@
 %Varies parameters of stra/in_2d_ode, and plots time strain graphs in a
 %subplot.
 clear all
+
+rbounds = {1 2 3};
+Tbounds = {0 2 5};
+etabounds = {-1 0 21};
+alphabounds = {-1 0 21};
+
+fstring = arrayfun(@(x) [' Ramptime = 10^{' num2str(x,3) '}'], linspace(fbounds{:}),'UniformOutput',false);
+astring = arrayfun(@(x) [' \alpha = 10^{' num2str(x,3) '}'], linspace(alphabounds{:}),'UniformOutput',false);
+estring = arrayfun(@(x) [' \eta = 10^{' num2str(x,3) '}'], linspace(etabounds{:}),'UniformOutput',false);
+Tstring = arrayfun(@(x) [' T = 10^{' num2str(x,3) '}'], linspace(Tbounds{:}),'UniformOutput',false); Tstring = {' T = 0', Tstring{:}};
+
+
+
+
 endstrain = 1.5;
-ramptimevec = logspace(1,2,3);
-Tvec = [0 1 10 100];
-%T = 0;
-etavec = logspace(-1,0,9);
-alphavec = logspace(-1,0,9);
+ramptimevec = logspace(rbounds{:});
+Tvec = [0 logspace(Tbounds{:})];
+etavec = logspace(etabounds{:});
+alphavec = logspace(alphabounds{:});
 tend = 200000;
 
 
@@ -257,7 +270,7 @@ for ramptime_index = 1:t
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(ramptime_index)), ' T = ' num2str(Tvec(T_value))]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, rstring{ramptime_index}, Tstring{T_value} ]); 
             legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
         end
@@ -279,7 +292,7 @@ for ramptime_index = 1:t
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title(['\alpha = ', num2str(alphavec_temp(alpha_index)), ' \eta = ', num2str(etavec_temp(eta_index)), ' ramptime = ' num2str(ramptimevec(ramptime_index)), ' T = ' num2str(Tvec(T_value))]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, rstring{ramptime_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
             xlabel('Time')
@@ -291,7 +304,7 @@ for ramptime_index = 1:t
 end
 %%
 %%
-for ramptime_index = 1:t;
+for ramptime_index = 1:t
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
@@ -304,7 +317,7 @@ for ramptime_index = 1:t;
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
     xlabel('\eta');
     ylabel('\alpha');
-    title(['equilibriation times, ramptime = ', num2str(ramptimevec(ramptime_index))]);
+    title(['equilibriation times,' rstring{ramptime_index}]);
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timeendsurface/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
     %SaveAsPngEpsAndFig(-1,[pwd 'asdf']  , 7, 7/5, 9)
 
@@ -347,7 +360,7 @@ for ramptime_index = 1:t
             h(7) = plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
             h(8) = plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',5);
 
-            title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' \alpha = ' num2str(alphavec((alpha_index-1)*a_scale+1))])
+            title(['time coefficients' rstring{ramptime_index} astring{(alpha_index-1)*a_scale+1}])
             set(gca,'XScale','log','YScale','log')
 
         end
@@ -378,7 +391,7 @@ for ramptime_index = 1:t
             h(7) = plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
             h(8) = plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',5);
 
-            title(['time coefficients, ramptime = ' num2str(ramptimevec(ramptime_index)) ' \eta = ' num2str(etavec((eta_index-1)*g_scale+1))])
+            title(['time coefficients,' rstring{ramptime_index} estring{(eta_index-1)*g_scale+1}])
             set(gca,'XScale','log','YScale','log')
 
         end
@@ -395,7 +408,7 @@ for ramptime_index = 1:t
     surf(X,Y,reshape(fit2(ramptime_index,:,:,T_value,guess_value,3),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timescale 1, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    title(['Timescale 1,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -405,7 +418,7 @@ for ramptime_index = 1:t
     surf(X,Y,reshape(fit2(ramptime_index,:,:,T_value,guess_value,5),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timescale 2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    title(['Timescale 2,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -428,7 +441,7 @@ for ramptime_index = 1:t
     surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_value,guess_value),[g,a])')
     xlabel('eta');
     ylabel('alpha');
-    title(['Timedif2, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    title(['Timedif2,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -452,7 +465,7 @@ for ramptime_index = 1:t
     
     xlabel('eta');
     ylabel('alpha');
-    title(['one exponential L2 error, ramptime = ' num2str(ramptimevec(ramptime_index))])
+    title(['one exponential L2 error,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
 
@@ -472,7 +485,7 @@ for ramptime_index = 1:t
 
         xlabel('\eta');
         ylabel('\alpha');
-        title(['Timedif2, ramptime = ' num2str(ramptimevec(ramptime_index)), ' T = ' num2str(Tvec(T_index)) ])
+        title(['Timedif2,'  rstring{ramptime_index} Tstring{T_index} ])
         set(gca, 'XScale', 'log', 'YScale', 'log');
 
         colorbar;
@@ -519,11 +532,11 @@ for T_index = 1:length(Tvec)
         xlabel('\eta');
         ylabel('\alpha');
         title([%'overall relaxation contour, 
-            'Threshold = ' num2str(error_threshold), ' T = ', num2str(Tvec(T_index))])
+            'Threshold = ' num2str(error_threshold), Tstring{T_index}])
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',2*2^(ramptime_index),'Color',colourvec{ramptime_index})
     end
-    legendflex(h,legendcell)
+    legendflex(h,Tstring)
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
 
 end
@@ -541,7 +554,7 @@ for ramptime_index = 1:t
         legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
         xlabel('eta');
         ylabel('alpha');
-        title(['overall relaxation contour, threshold = ' num2str(error_threshold), ' ramptime = ', num2str(ramptimevec(ramptime_index))])
+        title(['overall relaxation contour, threshold = ' num2str(error_threshold), rstring{ramptime_index}])
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
         %surf(Z.*X,Z.*Y,+Z)

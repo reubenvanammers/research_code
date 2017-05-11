@@ -11,7 +11,7 @@ alphabounds = {-1 0 21};
 fstring = arrayfun(@(x) [' Force = 10^{' num2str(x,3) '}'], linspace(fbounds{:}),'UniformOutput',false);
 astring = arrayfun(@(x) [' \alpha = 10^{' num2str(x,3) '}'], linspace(alphabounds{:}),'UniformOutput',false);
 estring = arrayfun(@(x) [' \eta = 10^{' num2str(x,3) '}'], linspace(etabounds{:}),'UniformOutput',false);
-Tstring = arrayfun(@(x) [' T = 10^{' num2str(x,3) '}'], linspace(Tbounds{:}),'UniformOutput',false); Tstring = {' T = 0', Tstring{:}}
+Tstring = arrayfun(@(x) [' T = 10^{' num2str(x,3) '}'], linspace(Tbounds{:}),'UniformOutput',false); Tstring = {' T = 0', Tstring{:}};
 
 
 forcevec = logspace(fbounds{:});
@@ -238,7 +238,7 @@ for force_index = 1:f
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_index} ]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             %axis([0 1 0 1]);
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
 
@@ -261,7 +261,7 @@ for force_index = 1:f
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_index} ]); 
+            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
             xlabel('Time')
