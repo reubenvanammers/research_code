@@ -3,8 +3,8 @@
 clear all
 
 
-fbounds = {-1 0.3 5};
-Tbounds = {0 2 5};
+fbounds = {-1 0 3};
+Tbounds = {1 2 2};
 etabounds = {-1 0 21};
 alphabounds = {-1 0 21};
 
