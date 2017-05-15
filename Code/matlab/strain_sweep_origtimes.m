@@ -233,7 +233,7 @@ for guess_index = 1:3
 end
 guess_value = 1;
 T_value = 1;
-viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 11; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -310,8 +310,8 @@ for ramptime_index = 1:t
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(ramptime_index,:,:,T_value,guess_value)),[g,a])');
     shading interp; 
-    alpha(0.5);
-    colorbar;
+%     alpha(0.5);
+     colorbar;
     %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
@@ -345,18 +345,18 @@ for ramptime_index = 1:t
         close all
         figure
         hold on
-        yyaxis right
-        h(1) = plot(etavec,reshape(error1(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
-        h(2) = plot(etavec,reshape(error2(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(etavec,reshape(error1(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
+%         h(2) = plot(etavec,reshape(error2(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for eta_index = 1:g
-            yyaxis left
+%             yyaxis left
             vars = {ramptime_index,eta_index,(alpha_index-1)*a_scale+1,T_value,guess_value};
             h(3) = plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.');%,'markers',10*coef_scale_vals2(vars{:}));
+            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
 %             h(6) = plot(etavec(eta_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
 %             h(7) = plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
 %             h(8) = plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',5);
@@ -376,18 +376,18 @@ for ramptime_index = 1:t
     for eta_index = 1:g_temp
         figure
         hold on
-        yyaxis right
-        h(1) = plot(alphavec,reshape(error1(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
-        h(2) = plot(alphavec,reshape(error2(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(alphavec,reshape(error1(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
+%         h(2) = plot(alphavec,reshape(error2(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for alpha_index = 1:a
-            yyaxis left
+%             yyaxis left
             vars = {ramptime_index,(eta_index-1)*g_scale+1,alpha_index,T_value,guess_value};
             h(3) = plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.');%,'markers',10*coef_scale_vals2(vars{:}));
+            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
 %             h(6) = plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
 %             h(7) = plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
 %             h(8) = plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',5);
