@@ -1,6 +1,6 @@
 global V C connectivitylist N A0_vec C0_vec lambda beta gamma M included_cell 
 %vertex model without remodelling
-sidelength = 1/sqrt(3)*1.5;
+sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 C0 = 6*sidelength;
 lambda = 1;

@@ -7,7 +7,7 @@ Tbounds = {0 2 5};
 etabounds = {-1 0 21};
 alphabounds = {-1 0 21};
 
-fstring = arrayfun(@(x) [' Ramptime = 10^{' num2str(x,3) '}'], linspace(fbounds{:}),'UniformOutput',false);
+rstring = arrayfun(@(x) [' Ramptime = 10^{' num2str(x,3) '}'], linspace(rbounds{:}),'UniformOutput',false);
 astring = arrayfun(@(x) [' \alpha = 10^{' num2str(x,3) '}'], linspace(alphabounds{:}),'UniformOutput',false);
 estring = arrayfun(@(x) [' \eta = 10^{' num2str(x,3) '}'], linspace(etabounds{:}),'UniformOutput',false);
 Tstring = arrayfun(@(x) [' T = 10^{' num2str(x,3) '}'], linspace(Tbounds{:}),'UniformOutput',false); Tstring = {' T = 0', Tstring{:}};
@@ -233,7 +233,7 @@ for guess_index = 1:3
 end
 guess_value = 1;
 T_value = 1;
-viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 11; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don't get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -310,8 +310,8 @@ for ramptime_index = 1:t
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(ramptime_index,:,:,T_value,guess_value)),[g,a])');
     shading interp; 
-    alpha(0.5);
-    colorbar;
+%     alpha(0.5);
+     colorbar;
     %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
@@ -342,23 +342,24 @@ end
 %%
 for ramptime_index = 1:t
     for alpha_index = 1:a_temp
+        close all
         figure
         hold on
-        yyaxis right
-        h(1) = plot(etavec,reshape(error1(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
-        h(2) = plot(etavec,reshape(error2(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(etavec,reshape(error1(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
+%         h(2) = plot(etavec,reshape(error2(ramptime_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for eta_index = 1:g
-            yyaxis left
+%             yyaxis left
             vars = {ramptime_index,eta_index,(alpha_index-1)*a_scale+1,T_value,guess_value};
             h(3) = plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(etavec(eta_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',5);
+            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
+%             h(6) = plot(etavec(eta_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
+%             h(7) = plot(etavec(eta_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
+%             h(8) = plot(etavec(eta_index),fit1(vars{:},2),'rx','markers',5);
 
             title(['time coefficients' rstring{ramptime_index} astring{(alpha_index-1)*a_scale+1}])
             set(gca,'XScale','log','YScale','log')
@@ -375,21 +376,21 @@ for ramptime_index = 1:t
     for eta_index = 1:g_temp
         figure
         hold on
-        yyaxis right
-        h(1) = plot(alphavec,reshape(error1(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
-        h(2) = plot(alphavec,reshape(error2(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(alphavec,reshape(error1(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
+%         h(2) = plot(alphavec,reshape(error2(ramptime_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for alpha_index = 1:a
-            yyaxis left
+%             yyaxis left
             vars = {ramptime_index,(eta_index-1)*g_scale+1,alpha_index,T_value,guess_value};
             h(3) = plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',5);
+            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
+%             h(6) = plot(alphavec(alpha_index),fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
+%             h(7) = plot(alphavec(alpha_index),fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
+%             h(8) = plot(alphavec(alpha_index),fit1(vars{:},2),'rx','markers',5);
 
             title(['time coefficients,' rstring{ramptime_index} estring{(eta_index-1)*g_scale+1}])
             set(gca,'XScale','log','YScale','log')
@@ -406,8 +407,8 @@ end
 for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(fit2(ramptime_index,:,:,T_value,guess_value,3),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['Timescale 1,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
@@ -416,8 +417,8 @@ end
 for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(fit2(ramptime_index,:,:,T_value,guess_value,5),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['Timescale 2,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
@@ -439,8 +440,8 @@ end
 for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_value,guess_value),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['Timedif2,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
@@ -463,8 +464,8 @@ for ramptime_index = 1:t
     figure
     surf(X,Y,reshape(error1(ramptime_index,:,:,T_value,guess_value),[g,a])')
     
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['one exponential L2 error,' rstring{ramptime_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
@@ -472,6 +473,7 @@ end
 
 %%
 [X,Y] = meshgrid(etavec,alphavec);
+time_dif_2(:,:,a,:,:) = nan*time_dif_2(:,:,a,:,:);
 
 contours = logspace(0,5,61);
 for ramptime_index = 1:t
@@ -480,12 +482,12 @@ for ramptime_index = 1:t
         hold on
         surf(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])')
         clearvars alpha
-        alpha(0.5)
-        contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
+        %alpha(0.5)
+        %contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
 
         xlabel('\eta');
         ylabel('\alpha');
-        title(['Timedif2,'  rstring{ramptime_index} Tstring{T_index} ])
+        title(['CoefRatio,'  rstring{ramptime_index} Tstring{T_index} ])
         set(gca, 'XScale', 'log', 'YScale', 'log');
 
         colorbar;
@@ -548,21 +550,26 @@ for ramptime_index = 1:t
     figure
     hold on
     clear h legendcell
-    for T_index = length(Tvec):-1:1
+    for T_index = [6 4 1]
         [~,h(T_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{T_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
         legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
-        xlabel('eta');
-        ylabel('alpha');
-        title(['overall relaxation contour, threshold = ' num2str(error_threshold), rstring{ramptime_index}])
+        xlabel('\eta');
+        ylabel('\alpha');
+        title(['Threshold = ' num2str(error_threshold), rstring{ramptime_index}])
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
-        plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
+        plot(Z.*X,Z.*Y,['.'],'markers',3*1.2^(T_index),'Color',colourvec{T_index} )
         %surf(Z.*X,Z.*Y,+Z)
         %colormap(colourvec{T_index})
         %alpha(0.3)
         %shading interp
     end
-    legendflex(h,legendcell)
+    
+    h2 = [h(1) h(4) h(6)];
+    Tstring2 ={Tstring{1} Tstring{4} Tstring{6}};
+    legendflex(h2,Tstring2)
+    
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour2/' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
 
 end
 

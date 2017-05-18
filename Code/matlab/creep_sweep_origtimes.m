@@ -279,8 +279,8 @@ for force_index = 1:f;
     hold on;
     surf(X,Y,reshape(cell2mat(timeendcell(force_index,:,:,T_value,guess_value)),[g,a])');
     shading interp; 
-    clear alpha
-    alpha(0.5);
+%     clear alpha
+%     alpha(0.5);
     colorbar;
     %contour(X,Y,reshape(cell2mat(timeendcell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
@@ -311,23 +311,24 @@ end
 %%
 for force_index = 1:f
     for alpha_index = 1:a_temp
+        close all
         figure
         hold on
-        yyaxis right
-        h(1) = plot(etavec,reshape(error1(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
-        h(2) = plot(etavec,reshape(error2(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(etavec,reshape(error1(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'m-');
+%         h(2) = plot(etavec,reshape(error2(force_index,:,(alpha_index-1)*a_scale+1,T_value,guess_value),[g 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for eta_index = 1:g
-            yyaxis left
+%             yyaxis left
             vars = {force_index,eta_index,(alpha_index-1)*a_scale+1,T_value,guess_value};
             h(3) = plot(etavec(eta_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(etavec(eta_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(etavec(eta_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(etavec(eta_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(etavec(eta_index),-fit1(vars{:},2),'rx','markers',5);
+            h(5) = plot(etavec(eta_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
+%             h(6) = plot(etavec(eta_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
+%             h(7) = plot(etavec(eta_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
+%             h(8) = plot(etavec(eta_index),-fit1(vars{:},2),'rx','markers',5);
 
             title(['time coefficients,' fstring{force_index} astring{(alpha_index-1)*a_scale+1}])
             set(gca,'XScale','log','YScale','log')
@@ -342,23 +343,24 @@ end
 %%
 for force_index = 1:f
     for eta_index = 1:g_temp
+        close all
         figure
         hold on
-        yyaxis right
-        h(1) = plot(alphavec,reshape(error1(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
-        h(2) = plot(alphavec,reshape(error2(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
-        ylabel('L2 error')
-        set(gca,'XScale','log','YScale','log')
+%         yyaxis right
+%         h(1) = plot(alphavec,reshape(error1(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'m-');
+%         h(2) = plot(alphavec,reshape(error2(force_index,(eta_index-1)*g_scale+1,:,T_value,guess_value),[a 1]),'g-');
+%         ylabel('L2 error')
+%         set(gca,'XScale','log','YScale','log')
 
         for alpha_index = 1:a
-            yyaxis left
+%             yyaxis left
             vars = {force_index,(eta_index-1)*g_scale+1,alpha_index,T_value,guess_value};
             h(3) = plot(alphavec(alpha_index),fit2(vars{:},3),'k.','markers',10*coef_scale_vals1(vars{:}));%,'MarkerEdgeColor',(1-coef_scale_vals1(vars{:}))*[1 1 1])
             h(4) = plot(alphavec(alpha_index),fit2(vars{:},5),'b.','markers',10*coef_scale_vals2(vars{:}));%z`,'MarkerEdgeColor',[1 1 1] + coef_scale_vals2(vars{:})*[-1 -1 0])
-            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10*coef_scale_vals2(vars{:}));
-            h(6) = plot(alphavec(alpha_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
-            h(7) = plot(alphavec(alpha_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
-            h(8) = plot(alphavec(alpha_index),-fit1(vars{:},2),'rx','markers',5);
+            h(5) = plot(alphavec(alpha_index),fit1(vars{:},3),'r.','markers',10);%*coef_scale_vals2(vars{:}));
+%             h(6) = plot(alphavec(alpha_index),-fit2(vars{:},2),'kx','markers',5);%*coef_scale_vals1(vars{:}))
+%             h(7) = plot(alphavec(alpha_index),-fit2(vars{:},4),'bx','markers',5);%*coef_scale_vals2(vars{:}));
+%             h(8) = plot(alphavec(alpha_index),-fit1(vars{:},2),'rx','markers',5);
 
             title(['time coefficients,' fstring{force_index} estring{(eta_index-1)*g_scale+1}])
             set(gca,'XScale','log','YScale','log')
@@ -375,8 +377,8 @@ end
 for force_index = 1:f
     figure
     surf(X,Y,reshape(fit2(force_index,:,:,T_value,guess_value,3),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['Timescale 1,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
@@ -385,8 +387,8 @@ end
 for force_index = 1:f
     figure
     surf(X,Y,reshape(fit2(force_index,:,:,T_value,guess_value,5),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['Timescale 2,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
@@ -408,9 +410,9 @@ end
 for force_index = 1:f
     figure
     surf(X,Y,reshape(time_dif_2(force_index,:,:,T_value,guess_value),[g,a])')
-    xlabel('eta');
-    ylabel('alpha');
-    title(['Timedif2,' fstring{force_index}])
+    xlabel('\eta');
+    ylabel('\alpha');
+    title(['CoefRatio,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
     colorbar;
 end
@@ -432,8 +434,8 @@ for force_index = 1:f
     figure
     surf(X,Y,reshape(error1(force_index,:,:,T_value,guess_value),[g,a])')
     
-    xlabel('eta');
-    ylabel('alpha');
+    xlabel('\eta');
+    ylabel('\alpha');
     title(['one exponential L2 error,' fstring{force_index}])
     set(gca, 'XScale', 'log', 'YScale', 'log');
 end
@@ -441,6 +443,7 @@ end
 %%
 
 [X,Y] = meshgrid(etavec,alphavec);
+time_dif_2(:,:,a,:,:) = nan*time_dif_2(:,:,a,:,:);
 
 contours = logspace(0,5,61);
 for force_index = 1:f
@@ -449,11 +452,11 @@ for force_index = 1:f
         hold on
         surf(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])')
         clearvars alpha
-        alpha(0.5)
-        contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
+        %alpha(0.5)
+        %contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',contours,'ShowText','on')
         xlabel('\eta');
         ylabel('\alpha');
-        title(['Timedif2,' fstring{force_index} Tstring{T_index}])
+        title(['CoefRatio,' fstring{force_index} Tstring{T_index}])
         set(gca, 'XScale', 'log', 'YScale', 'log');
         colorbar;
         SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
@@ -476,8 +479,8 @@ for T_index = 1:length(Tvec)
         [~,h((T_index-1)*f+force_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{T_index}],'ShowText','off','LineColor',colourvec{force_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
         legendcell{((T_index-1)*f+force_index)} =['T = ', num2str(Tvec(T_index)), ',force = ' , num2str(forcevec(force_index))];
-        xlabel('eta');
-        ylabel('alpha');
+        xlabel('\eta');
+        ylabel('\alpha');
         title(['overall relaxation contour, threshold = ' num2str(error_threshold)])
 
     end
@@ -495,8 +498,8 @@ for T_index = 1:length(Tvec)
         [~,h(force_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{force_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
         %legendcell{(force_index)} =['force = ' , num2str(forcevec(force_index))];
-        xlabel('eta');
-        ylabel('alpha');
+        xlabel('\eta');
+        ylabel('\alpha');
         title([%'overall relaxation contour, 
             'Threshold = ' num2str(error_threshold), Tstring{T_index}])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
@@ -521,16 +524,21 @@ for force_index = 1:f
         [~,h(T_index)] = contour(X,Y,reshape(time_dif_2(force_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{T_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
         %legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
-        xlabel('eta');
-        ylabel('alpha');
-        title(['overall relaxation contour, threshold = ' num2str(error_threshold), fstring{force_index}])
+        xlabel('\eta');
+        ylabel('\alpha');
+        title(['Threshold = ' num2str(error_threshold), fstring{force_index}])
         Z = reshape(two_exp_status(force_index,:,:,T_index,guess_value),[g,a])';
-        plot(Z.*X,Z.*Y,['.'],'markers',5*2^(T_index),'Color',colourvec{T_index} )
+        plot(Z.*X,Z.*Y,['.'],'markers',3*1.2^(T_index),'Color',colourvec{T_index} )
         %surf(Z.*X,Z.*Y,+Z)
         %colormap(colourvec{T_index})
         %alpha(0.3)
         %shading interp
     end
+%     h2 = [h(1) h(4) h(6)];
+%     Tstring2 ={Tstring{1} Tstring{4} Tstring{6}};
     legendflex(h,Tstring)
+    axis([0.1 1 0.1 1])
+
+    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/biexpcontour2/' num2str(forcevec(force_index))]  , 7, 7/5, 9)
 
 end
