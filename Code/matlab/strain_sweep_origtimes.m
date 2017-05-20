@@ -559,7 +559,7 @@ for ramptime_index = 1:t
         legendcell{(T_index)} =['T = ' , num2str(Tvec(T_index))];
         xlabel('\eta');
         ylabel('\alpha');
-        title(['overall relaxation contour, threshold = ' num2str(error_threshold), rstring{ramptime_index}])
+        title(['Threshold = ' num2str(error_threshold), rstring{ramptime_index}])
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',3*1.2^(T_index),'Color',colourvec{T_index} )
         %surf(Z.*X,Z.*Y,+Z)

@@ -3,7 +3,7 @@ function [length1, direction, chosen_vertices] = cell_axes(l,C,V)
 vertex_list = C{l};
 nk = length(vertex_list);
 
-A = inf*ones(nk);
+A = -inf*ones(nk);
 
 for i = 1:nk
     for j = 1:i-1
@@ -11,7 +11,7 @@ for i = 1:nk
     end
 end
 
-length1 = min(min(A));
+length1 = max(max(A));
 
 [row, col] = find(A==length1,1); % pick one closest to x axis?
 direction = V(vertex_list(row),:)-V(vertex_list(col),:);

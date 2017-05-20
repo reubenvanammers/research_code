@@ -1,4 +1,4 @@
-function vertex_force = vertex_internal_force_calc_axis2(C,V,included_cell,lambda,beta,gamma,A_target,A_current,C_target,C_current,axis_target,current_axis)
+function vertex_force = vertex_internal_force_calc_axis2(C,V,included_cell,lambda,beta,gamma,A_target,A_current,C_target,C_current,axis_target,axis_current)
 %calculates the internal forces felt by vertices on connectivity and target
 %parameters. Used for both real and reference cells. 
 %A_target(i),C_target(i) should be vectors for each cell
@@ -29,7 +29,7 @@ for  i= 1:N;%i is vertex number
         vertex_force(i,:) = vertex_force(i,:) +...
             2*lambda*(A_current(l)-A_target(l))*grad_A_vec+...
             2*beta*(C_current(l)-C_target(l))*(grad_d_vec)+...
-            gamma*(grad_d_vec);
+            0*gamma*(grad_d_vec); %removing this from the equation 
     end
 end
 
@@ -38,6 +38,24 @@ for l = 1:M
         direction_target = axis_target{l}{2};
         
         
-        l_current = axis_current{l}{1}
+        l_current = axis_current{l}{1};
+        v1 = V(axis_current{l}{3}(1),:);
+        v2 = V(axis_current{l}{3}(2),:);
+        
+        vlen = norm(v1-v2);
+        
+        length_force = 2*(l_current-l_target)*(v1-v2)/vlen;
+        
+        angle_force = ((v1(1)-v2(1))*direction_target(1)+(v1(2)-v2(2))*direction_target(2))*(v1-v2)/(-vlen^3) +...
+            direction_target/vlen;
+        
+        total_force = length_force+angle_force;
+        %total_force = angle_force;
+        
+        vertex_force(axis_current{l}{3}(1),:) = vertex_force(axis_current{l}{3}(1),:) + gamma*total_force;
+        vertex_force(axis_current{l}{3}(2),:) = vertex_force(axis_current{l}{3}(2),:) - gamma*total_force;
+end
+       
+        
         
 vertex_force = -vertex_force;
