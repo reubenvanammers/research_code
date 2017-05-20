@@ -290,14 +290,16 @@ for ramptime_index = 1:t
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+            time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
+            plot(time(1:10:end),stress(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--','MarkerSize',4)
+%             plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, rstring{ramptime_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
             xlabel('Time')
             ylabel('Stress')
             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
+            %pause
             close all
         end
     end
@@ -491,6 +493,7 @@ for ramptime_index = 1:t
         set(gca, 'XScale', 'log', 'YScale', 'log');
 
         colorbar;
+        caxis([1 5])
         SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
         close all
     end

@@ -259,8 +259,11 @@ for force_index = 1:f
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+            time = timecell3{vars{:}}; strain = straincell3{vars{:}};
+            plot(time(1:10:end),strain(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--','MarkerSize',4)
+
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+%             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
@@ -459,6 +462,7 @@ for force_index = 1:f
         title(['CoefRatio,' fstring{force_index} Tstring{T_index}])
         set(gca, 'XScale', 'log', 'YScale', 'log');
         colorbar;
+        caxis([1,3])
         SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timedifsurface/' num2str(Tvec(T_index)) '-' num2str(forcevec(force_index))]  , 7, 7/5, 9)
     end
 end
