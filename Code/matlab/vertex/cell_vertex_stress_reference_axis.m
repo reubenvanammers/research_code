@@ -29,7 +29,8 @@ real_cell_areas = zeros(1,M);
 real_cell_circumferences = zeros(1,M);
 reference_cell_areas = zeros(1,M);
 reference_cell_circumferences = zeros(1,M);
-
+real_axis = cell(1,M);
+reference_axis = cell(1,M);
 
 
 for i = 1:M
@@ -37,6 +38,12 @@ for i = 1:M
     real_cell_circumferences(i) = cell_circumference(i,C,V);
     reference_cell_areas(i) = cell_area(i,C,V_ref);
     reference_cell_circumferences(i) = cell_circumference(i,C,V_ref);
+    [len,direction,vertices] = cell_axes(i,C,V);
+    real_axis{i} = {len,direction,vertices};
+    [len,direction,vertices] = cell_axes(i,C,V_ref);
+    reference_axis{i} = {len,direction,vertices};
+
+
 end
 
 C_rec = [C_rec;real_cell_circumferences];
@@ -101,9 +108,9 @@ size_constraint = @(array,minval,maxval) arrayfun(@max,minval,arrayfun(@min,maxv
 %target_reference_cell_circumferences = size_constraint(target_reference_cell_circumferences,C0_vec/2,C0_vec*2);
 
 
-real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,target_real_cell_areas,real_cell_areas,target_real_cell_circumferences,real_cell_circumferences);
-follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,target_reference_cell_areas,reference_cell_areas,target_reference_cell_circumferences,reference_cell_circumferences);
-fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A0_vec,reference_cell_areas,C0_vec,reference_cell_circumferences);
+real_force = vertex_internal_force_calc_axis2(C,V,included_cell,lambda,beta,gamma,target_real_cell_areas,real_cell_areas,target_real_cell_circumferences,real_cell_circumferences,reference_axis,real_axis);
+follow_force = (1-alpha).*vertex_internal_force_calc_axis2(C,V_ref,included_cell,lambda,beta,gamma,target_reference_cell_areas,reference_cell_areas,target_reference_cell_circumferences,reference_cell_circumferences,real_axis,reference_axis);
+fix_force = alpha*vertex_internal_force_calc_axis2(C,V_ref,included_cell,lambda,beta,0,A0_vec,reference_cell_areas,C0_vec,reference_cell_circumferences,real_axis,reference_axis);%since gamma = 0, there is not contribution from the attempting to mathch axis
 
 
 
