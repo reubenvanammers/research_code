@@ -23,21 +23,25 @@ end
 
 length1 = max(max(A));
 if stickyvertices ~= []
-    if abs(A(stickyvertices(1),stickyvertices(2)) - length1) < stickiness_value;
+    if abs(A(stickyvertices(1),stickyvertices(2)) - length1) < stickiness_value
         row = stickyvertices(1);
         col = stickyvertices(2);
         length1 = norm(V(stickyvertices(1),:),V(stickyvertices(2),:));
     end
 
 else
+    V;
+    A;
+    length1;
     [rowvec, colvec] = find(A-length1<= x_axis_priority); % pick one closest to x axis?
     possible_vectors = V(vertex_list(rowvec),:)-V(vertex_list(colvec),:);
-    vector_angle = possible_vectors(:,1)./possible_vectors(:,2);
+    vector_angle = abs(possible_vectors(:,1)./possible_vectors(:,2));
     [~,index] = min(vector_angle);
     row = rowvec(index);
     col = colvec(index);
     length1 = A(row,col);
 end
+
 direction = V(vertex_list(row),:)-V(vertex_list(col),:);
 chosen_vertices = [vertex_list(row) vertex_list(col)];
 if direction(1) < 0
