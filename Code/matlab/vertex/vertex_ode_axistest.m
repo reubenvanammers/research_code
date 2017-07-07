@@ -5,23 +5,26 @@ A0=sqrt(27)/2*(sidelength.^2);
 C0 = 6*sidelength;
 lambda = 1;
 beta = 1;
-gamma = 0.0; %length force
-delta = 0.0; %angle force    
-[V,C,connectivitylist] = hexgrid_voronoi([5,5],sidelength);
-%V(1,:) = V(1,:)*1.1;
+gamma = 0.5; %length force
+delta = 0.3; %angle force    
+[V,C,connectivitylist] = hexgrid_voronoi([1,2],sidelength);
+V(:,1) = V(:,1)*1.1;
 V_init = V;
 N= length(V);
 M = length(C);
 for i = 1:M
-    x = rand(1,2);
-    axis_target{i} = {3.5*sidelength,x/norm(x),[1 2]};
+    x = [1 0.5];
+    axis_target{i} = {3.5*sidelength,x/norm(x),[1 2]}; %length,direction, and some dummy axis values
+    %(last entry is used to keep track of which vertices is used in length
+    %and angle calculations, but is currently unused without a reference
+    %state
 end
 A0_vec = ones(1,M)*A0;
 C0_vec = ones(1,M)*C0;
 V_ref = V;
 V_vec = columnize(V,V_ref);
 V_vec = V_vec(2*N+1:end);%ignore reference cells for now
-tend = 20;
+tend = 50;
 included_cell = cell_inclusion(V,C);
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
