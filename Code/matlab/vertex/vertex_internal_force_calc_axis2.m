@@ -42,14 +42,13 @@ for l = 1:M
         v1 = V(axis_current{l}{3}(1),:);
         v2 = V(axis_current{l}{3}(2),:);
         
-        vlen = norm(v1-v2);
-        
+        vlen = norm(v1-v2); %same as l_current?
         length_force = 2*(l_current-l_target)*(v1-v2)/vlen;
         
         angle_force = ((v1(1)-v2(1))*direction_target(1)+(v1(2)-v2(2))*direction_target(2))*(v1-v2)/(-vlen^3) +...
             direction_target/vlen;
         
-        total_force = gamma*length_force+delta*angle_force;
+        total_force = gamma*length_force-delta*angle_force;
         %total_force = angle_force;
         
         vertex_force(axis_current{l}{3}(1),:) = vertex_force(axis_current{l}{3}(1),:) + total_force;

@@ -5,6 +5,8 @@ nk = length(vertex_list);
 
 A = -inf*ones(nk);
 
+
+
 for i = 1:nk
     for j = 1:i-1
         A(i,j) = norm(V(vertex_list(i),:)-V(vertex_list(j),:));
@@ -18,6 +20,7 @@ direction = V(vertex_list(row),:)-V(vertex_list(col),:);
 chosen_vertices = [vertex_list(row) vertex_list(col)];
 if direction(1) < 0
     direction = -direction;
+    chosen_vertices = fliplr(chosen_vertices);
 end
 
 direction = direction/length1;

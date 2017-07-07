@@ -1,6 +1,6 @@
 function dxdt = cell_vertex_stress_axistest(t,x);
 %used in simulation without remodelling.
-global C N A0_vec C0_vec lambda beta gamma delta M included_cell V axis_target
+global C N A0_vec C0_vec lambda beta gamma delta M included_cell V axis_target fixed_vertices
 t
 dxdt = zeros(2*N,1);
 vertex_force = zeros(N,2);
@@ -13,7 +13,7 @@ axis_current = cell(1,M);
 for i = 1:M
     real_cell_areas(i) = cell_area(i,C,V);
     real_cell_circumferences(i) = cell_circumference(i,C,V);
-    [len,direction,vertices] = cell_axes(i,C,V); % give stickingess?
+    [len,direction,vertices] = cell_axes_fix(i,C,V,fixed_vertices{i}); % give stickingess?
     axis_current{i} = {len,direction,vertices};
 end
 

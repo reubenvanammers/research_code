@@ -1,4 +1,4 @@
-global V C connectivitylist N A0_vec C0_vec lambda beta gamma delta M included_cell axis_target
+global V C connectivitylist N A0_vec C0_vec lambda beta gamma delta M included_cell axis_target fixed_vertices
 %vertex model without remodelling
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
@@ -6,9 +6,9 @@ C0 = 6*sidelength;
 lambda = 1;
 beta = 1;
 gamma = 0.5; %length force
-delta = 0.3; %angle force    
-[V,C,connectivitylist] = hexgrid_voronoi([1,2],sidelength);
-V(:,1) = V(:,1)*1.1;
+delta = 1; %angle force    
+[V,C,connectivitylist] = hexgrid_voronoi([5,5],sidelength);
+V(:,1) = V(:,1)*1.01;
 V_init = V;
 N= length(V);
 M = length(C);
@@ -18,13 +18,15 @@ for i = 1:M
     %(last entry is used to keep track of which vertices is used in length
     %and angle calculations, but is currently unused without a reference
     %state
+    [~,~,fixed_vertices{i}] = cell_axes(i,C,V);
 end
+
 A0_vec = ones(1,M)*A0;
 C0_vec = ones(1,M)*C0;
 V_ref = V;
 V_vec = columnize(V,V_ref);
 V_vec = V_vec(2*N+1:end);%ignore reference cells for now
-tend = 50;
+tend = 100;
 included_cell = cell_inclusion(V,C);
 
 options = odeset('RelTol',1e-3,'AbsTol',1e-6);
