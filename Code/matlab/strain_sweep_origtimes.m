@@ -541,9 +541,11 @@ for T_index = 1:length(Tvec)
         Z = reshape(two_exp_status(ramptime_index,:,:,T_index,guess_value),[g,a])';
         plot(Z.*X,Z.*Y,['.'],'markers',2*2^(ramptime_index),'Color',colourvec{ramptime_index})
     end
-    legendflex(h,Tstring)
+    legendflex(fliplr(h),fliplr(rstring))
+    
     SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
-
+    %pause
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour/' num2str(Tvec(T_index))]  , 7, 7/5, 9)
 end
 
 
@@ -572,7 +574,7 @@ for ramptime_index = 1:t
     Tstring2 ={Tstring{1} Tstring{4} Tstring{6}};
     legendflex(h2,Tstring2)
     
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour2/' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/biexpcontour2/' num2str(ramptimevec(ramptime_index))]  , 7, 7/5, 9)
 
 end
 
