@@ -1,4 +1,4 @@
-function [ one_exp_params, one_exp_ave_error ,two_exp_params, two_exp_ave_error, error_fit,infinity_error] = CalculateExponentialFits(time,data,exponential_sign,guesstype)
+function [ one_exp_params, one_exp_ave_error ,two_exp_params, two_exp_ave_error, error_fit,infinity_error,three_exp_params] = CalculateExponentialFits(time,data,exponential_sign,guesstype)
 %CalculateExponentialFits Calclate the fit and error to exponential models
 %exponential sign is posiitve if fits are such that exponentials should be
 %increasing, 0 either way, and -1 if exponential should be decreasing
@@ -38,7 +38,7 @@ end
 
 %initial_1 = [temp_fit(1),temp_fit(2),temp_fit(3)];
 %options_1 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Levenberg-Marquardt','Start',initial,'TolFun',1e-9);
-options_1 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_1,'TolFun',1e-9);
+options_1 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_1,'TolFun',1e-9,'Lower',[-Inf -Inf 0],'Upper',[Inf Inf Inf]);
 
 oneexpfit = fittype('a + b*exp(-x/c)','dependent',{'y'},'independent',{'x'},'coefficients',{'a','b','c'})
 [f,error] = fit( time', data', oneexpfit,options_1);
@@ -96,6 +96,26 @@ C1 = one_exp_params(1);A1 = one_exp_params(2); B1 = one_exp_params(3); C2 = two_
 %   -1).*A2.*B2.*exp(1).^((-1).*B2.^(-1)).*(B2+G2).^(-1)));
 
 infinity_error = max(abs(one_exp_curve-two_exp_curve));
+
+if exponential_sign == -1
+    lower_bounds = [-Inf 0 0 0 0 0 0 ];
+    upper_bounds = [Inf Inf Inf Inf Inf Inf Inf];
+elseif exponential_sign ==0
+    lower_bounds = [-Inf -Inf 0 -Inf 0 0 -Inf];
+    upper_bounds = [Inf Inf Inf Inf Inf Inf Inf];
+elseif exponential_sign == 1
+    lower_bounds = [-Inf -Inf 0 -Inf 0 -Inf 0];
+    upper_bounds = [Inf 0 Inf 0 Inf 0 Inf];
+end
+initial_3 = [temp_fit(1),temp_fit(2),temp_fit(3),rand,rand,rand,rand];
+options_3 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_3,'TolFun',1e-9,'Lower',lower_bounds,'Upper',upper_bounds)
+
+threeexpfit = fittype('a + b*exp(-x/c) + d*exp(-x/e)+f*exp(-x/g)','dependent',{'y'},'independent',{'x'},'coefficients',{'a','b','c','d','e','f','g'});
+[fit_data,error] = fit( time', data', threeexpfit,options_3);
+three_exp_params = [fit_data.a,fit_data.b,fit_data.c,fit_data.d,fit_data.e,fit_data.f,fit_data.g];
+three_exp_ave_error = error.sse/length(time);
+three_exp_curve = three_exp_params(1)+three_exp_params(2).*exp(-time./three_exp_params(3))+three_exp_params(4).*exp(-time./three_exp_params(5))+three_exp_params(6).*exp(-time./three_exp_params(7));
+
 
 end
 
