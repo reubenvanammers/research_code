@@ -101,13 +101,13 @@ if exponential_sign == -1
     lower_bounds = [-Inf 0 0 0 0 0 0 ];
     upper_bounds = [Inf Inf Inf Inf Inf Inf Inf];
 elseif exponential_sign ==0
-    lower_bounds = [-Inf -Inf 0 -Inf 0 0 -Inf];
+    lower_bounds = [-Inf -Inf 0 -Inf 0 -Inf 0];
     upper_bounds = [Inf Inf Inf Inf Inf Inf Inf];
 elseif exponential_sign == 1
     lower_bounds = [-Inf -Inf 0 -Inf 0 -Inf 0];
     upper_bounds = [Inf 0 Inf 0 Inf 0 Inf];
 end
-initial_3 = [temp_fit(1),temp_fit(2),temp_fit(3),rand,rand,rand,rand];
+initial_3 = [rand,-rand,rand,-rand,rand,-rand,rand];
 options_3 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_3,'TolFun',1e-9,'Lower',lower_bounds,'Upper',upper_bounds)
 
 threeexpfit = fittype('a + b*exp(-x/c) + d*exp(-x/e)+f*exp(-x/g)','dependent',{'y'},'independent',{'x'},'coefficients',{'a','b','c','d','e','f','g'});

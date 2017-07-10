@@ -550,7 +550,7 @@ end
 
 %%
 vars = {force_index,eta_index,alpha_index,T_value,guess_value};
-[~,~,~,~,~,~,three_exp_fit] = CalculateExponentialFits(timecell3{vars{1:end-1}}',stresscell3{vars{1:end-1}}',0,guess_index);
+[~,~,~,~,~,~,three_exp_fit] = CalculateExponentialFits(timecell3{vars{1:end-1}}',straincell3{vars{1:end-1}}',1,guess_index);
 
 
 figure
@@ -562,9 +562,9 @@ exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:
 exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
 exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
 
-time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
-plot(time(1:10:end),stress(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
-%plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+time = timecell3{vars{:}}; strain = straincell3{vars{:}};
+plot(time(1:10:end),strain(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
+%plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
 title([astring{alpha_index}, estring{eta_index}, fstring{force_index}, Tstring{T_value} ]); 
 %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
 %axis([0 1 0 1]);
@@ -582,9 +582,9 @@ exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:
 exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
 exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
 
-time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
-plot(timecell3{vars{:}},stress-exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},stress-exp2(timecell3{vars{:}}),'b--','MarkerSize',4)
-%plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+time = timecell3{vars{:}}; strain = straincell3{vars{:}};
+plot(timecell3{vars{:}},strain-exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},strain-exp2(timecell3{vars{:}}),'b--','MarkerSize',4)
+%plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
 title([astring{alpha_index}, estring{eta_index}, fstring{force_index}, Tstring{T_value} ]); 
 %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
 %axis([0 1 0 1]);
@@ -592,3 +592,5 @@ xlabel('Time')
 ylabel('Strain')
 SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestrain_diff/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
 %pause
+
+three_exp_fit

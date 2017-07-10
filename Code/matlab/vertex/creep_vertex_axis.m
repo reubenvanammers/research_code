@@ -3,11 +3,10 @@ function [Time,Y,C2,flag] = creep_vertex_axis(lambda0,beta0,gamma0,alpha0,eta0,T
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
 global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force maxlength
-global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag delta
-global reference_axis_target fixed_vertices
+global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 1;
+circ_area_conversion = 3;
 strainflag = false;
 
 if nargin < 8
@@ -27,13 +26,9 @@ C0 = 6*sidelength;
 %this gives the type of interplay between the circumference and the area
 %see cell_vertex_stress_reference_nocirc for details
 
-lambda = lambda0;beta=beta0;alpha=alpha0;T=T0;
+lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-gamma = 0.5; %length force
-delta = 1; %angle force    
-%gamma=gamma0;
 [V,C] = hexgrid_voronoi(gridsize);
-V(:,1) = V(:,1)*1.01;
 included_cell = cell_inclusion(V,C);
 %external_force = 0.2;
 N= length(V);
@@ -43,14 +38,7 @@ C0_vec = ones(1,M)*C0;
 V(3,1) = V(3,1)+0;
 ref_V = V;
 V_vec = columnize(V,ref_V);
-for i = 1:M
-    x = [1 0.5];
-    reference_axis_target{i} = cell_axes(i,C,V); %length,direction, and some dummy axis values
-    %(last entry is used to keep track of which vertices is used in length
-    %and angle calculations, but is currently unused without a reference
-    %state
-    %[~,~,fixed_vertices{i}] = cell_axes(i,C,V);
-end
+
 
 initial_min = min(V(:,1));
 fixlist = V(:,1) <initial_min+0.1;
@@ -66,7 +54,7 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
-[Time,Y] = ode15s(@cell_vertex_stress_reference_axis,0:0.2:tend,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.2:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
