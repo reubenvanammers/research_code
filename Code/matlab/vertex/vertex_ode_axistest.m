@@ -8,17 +8,19 @@ beta = 1;
 gamma = 0.5; %length force
 delta = 1; %angle force    
 [V,C,connectivitylist] = hexgrid_voronoi([5,5],sidelength);
-V(:,1) = V(:,1)*1.01;
+V(:,1) = V(:,1)*1.00001;
 V_init = V;
 N= length(V);
 M = length(C);
 for i = 1:M
     x = [1 0.5];
-    axis_target{i} = {3.5*sidelength,x/norm(x),[1 2]}; %length,direction, and some dummy axis values
+    axis_target{i} = {3*sidelength,x/norm(x),[1 2]}; %length,direction, and some dummy axis values
     %(last entry is used to keep track of which vertices is used in length
     %and angle calculations, but is currently unused without a reference
     %state
-    [~,~,fixed_vertices{i}] = cell_axes(i,C,V);
+    [~,~,fixed_vertices{i}] = cell_axes(i,C,V); %fixing vertices to calculate from simplifies matters, 
+    % and prevents solver from stalling when going below default target
+    % length
 end
 
 A0_vec = ones(1,M)*A0;

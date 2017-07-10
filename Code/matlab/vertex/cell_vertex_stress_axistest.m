@@ -1,4 +1,4 @@
-function dxdt = cell_vertex_stress_axistest(t,x);
+function dxdt = cell_vertex_stress_axistest(t,x)
 %used in simulation without remodelling.
 global C N A0_vec C0_vec lambda beta gamma delta M included_cell V axis_target fixed_vertices
 t

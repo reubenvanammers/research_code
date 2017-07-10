@@ -27,6 +27,7 @@ chosen_vertices = [vertex_list(row) vertex_list(col)];
 
 if direction(1) < 0
     direction = -direction;
+    chosen_vertices = fliplr(chosen_vertices);
 end
 
 direction = direction/length1;
