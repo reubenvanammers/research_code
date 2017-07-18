@@ -1,8 +1,8 @@
-function dxdt = cell_vertex_stress_axis_reference(t,x)
+function dxdt = cell_vertex_stress_axis_reference_stretch(t,x)
 %ode describing how the system evolves for the vertex based reference model
 global C N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
 global fixlist movelist eta restoring_rec counter included_cell external_force
-global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec
+global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec stretch_value
 
 t
 while t_rec(end) > t;
@@ -47,7 +47,7 @@ for i = 1:M
     reference_cell_areas(i) = cell_area(i,C,V_ref);
     reference_cell_circumferences(i) = cell_circumference(i,C,V_ref);
     [len,direction,vertices] = cell_axes_fix(i,C,V_ref,fixed_vertices{i}); % give stickingess?
-    reference_axis_current{i} = {len,direction,vertices};
+    reference_axis_current{i} = {stretch_value*len,direction,vertices};
 end
 
 C_rec = [C_rec;real_cell_circumferences];

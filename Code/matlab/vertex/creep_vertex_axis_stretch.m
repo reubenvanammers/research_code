@@ -1,15 +1,16 @@
-function [Time,Y,C2,flag] = creep_vertex_axis(lambda0,beta0,gamma0,delta0,alpha0,eta0,T0,tend,gridsize,ext_force,maxstrain)
+function [Time,Y,C2,flag] = creep_vertex_axis_stretch(lambda0,beta0,gamma0,delta0,alpha0,eta0,T0,tend,gridsize,ext_force,maxstrain)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
 global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force maxlength
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag
-global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec
+global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec stretch_value
+
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 circ_area_conversion = 3;
 strainflag = false;
-
+stretch_value = 2
 if nargin < 9
     gridsize = [7,8]; %default size of monolayer
 end
@@ -83,11 +84,11 @@ end
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
 
-[Time,Y] = ode15s(@cell_vertex_stress_axis_reference,0:0.2:tend,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_stress_axis_reference_stretch,0:0.2:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
-hex_vis_2(Time,Y,C);
+%hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);
