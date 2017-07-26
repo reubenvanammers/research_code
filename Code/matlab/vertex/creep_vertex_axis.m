@@ -91,7 +91,7 @@ hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);
-% cell_circumferences = zeros(1,M);
+% cell_circumferences = zeros(1,M);*
 % for i = 1:M
 %     cell_areas(i) = cell_area(i,C,V);
 %     cell_circumferences(i) = cell_circumference(i,C,V);
