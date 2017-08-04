@@ -623,3 +623,57 @@ xlabel('Time')
 ylabel('Stress Approximation Difference')
 SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
 %pause
+
+
+%%
+for T_index = 1:length(Tvec)
+    for ramptime_index = 1:t
+        for alpha_index = 1:a
+            for  eta_index = 1:g
+             %   figure
+             %   hold on
+                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
+                vars = {ramptime_index,eta_index,alpha_index,T_index,guess_value};
+             %   figure
+             %   hold on
+                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
+                exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
+                exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+                exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
+                exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+    %            exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
+
+    %             time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
+    %             plot(time(1:10:end),stress(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
+    %             %plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+    %             title([astring{alpha_index}, estring{eta_index}, rstring{ramptime_index}, Tstring{T_index} ]); 
+    %             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
+    %             %axis([0 1 0 1]);
+    %             xlabel('Time')
+    %             ylabel('Stress')
+    %             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestress_threeexp/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
+    %             %pause
+
+                figure
+                hold on
+                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
+                exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
+                exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+                exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
+                exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+                exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
+
+                time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
+                plot(timecell3{vars{:}},stress-exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},stress-exp2(timecell3{vars{:}}),'b',timecell3{vars{:}},zeros(size(timecell3{vars{:}})),'r--')%,timecell3{vars{:}},stress-exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)            %plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+                title([astring{alpha_index}, estring{eta_index}, rstring{ramptime_index}, Tstring{T_index} ]); 
+                %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
+                %axis([0 1 0 1]);
+                xlabel('Time')
+                ylabel('Stress Approximation Difference')
+                SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress_diff2/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
+                %pause
+                close all
+            end
+        end
+    end
+end
