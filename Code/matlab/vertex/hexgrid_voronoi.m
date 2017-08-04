@@ -54,10 +54,12 @@ for i = 1:length(C)%makes all hexagons counter clockwise
         C{i} = fliplr(C{i});
     end
 end
-
+initial_min = min(V(:,1));
+V(:,1) = V(:,1)-initial_min;
 
 
 N = length(C);%number of cells
+
 
 
 % figure
@@ -65,7 +67,7 @@ N = length(C);%number of cells
 %     patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
 % end
 % title('Initial Hexagons')
-% 
+
 end
 %connectivitylist(:,2:end);%removes point at infinity
 

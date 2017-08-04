@@ -87,11 +87,11 @@ options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
-hex_vis_2(Time,Y,C);
+%hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);
-% cell_circumferences = zeros(1,M);
+% cell_circumferences = zeros(1,M);*
 % for i = 1:M
 %     cell_areas(i) = cell_area(i,C,V);
 %     cell_circumferences(i) = cell_circumference(i,C,V);
