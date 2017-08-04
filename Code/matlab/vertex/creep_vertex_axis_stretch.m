@@ -1,4 +1,4 @@
-function [Time,Y,C2,flag] = creep_vertex_axis_stretch(lambda0,beta0,gamma0,delta0,alpha0,eta0,T0,tend,gridsize,ext_force,maxstrain)
+function [Time,Y,C2,flag] = creep_vertex_axis_stretch(lambda0,beta0,gamma0,delta0,stretch_value0,alpha0,eta0,T0,tend,gridsize,ext_force,maxstrain)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
@@ -10,11 +10,11 @@ sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 circ_area_conversion = 3;
 strainflag = false;
-stretch_value = 2
-if nargin < 9
+stretch_value = stretch_value0;
+if nargin < 10
     gridsize = [7,8]; %default size of monolayer
 end
-if nargin < 10
+if nargin < 11
     external_force = 0.2;
 else
     external_force = ext_force;
@@ -65,7 +65,7 @@ initial_min = min(V(:,1));
 fixlist = V(:,1) <initial_min+0.1
 initial_max = max(V(:,1));
 movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
-if nargin == 11    
+if nargin == 12    
     maxlength = maxstrain*(initial_max-initial_min);
 end
 

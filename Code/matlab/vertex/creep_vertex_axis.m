@@ -87,7 +87,7 @@ options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
-hex_vis_2(Time,Y,C);
+%hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);
