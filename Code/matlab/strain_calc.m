@@ -5,4 +5,4 @@ N = size(Y,2)/4;
 xvalues = Y(:,1:N);
 strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));
 figure
-plot(Time,strain)
+plot(Time,strain,'r')

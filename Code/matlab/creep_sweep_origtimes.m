@@ -251,10 +251,11 @@ end
 for force_index = 1:f
     for alpha_index = 1:a_temp 
         for  eta_index = 1:g_temp
-            figure
-            hold on
+
             %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
             vars = {force_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1,T_value,guess_value};
+            figure
+            hold on
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
@@ -264,9 +265,9 @@ for force_index = 1:f
 
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
 %             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
+%            title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
-            %axis([0 1 0 1]);
+            axis([0 450 0 1]);
             xlabel('Time')
             ylabel('Strain')
             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
@@ -471,7 +472,7 @@ end
 time_dif_2(:,:,a,:,:) = nan*time_dif_2(:,:,a,:,:);
 stylevec = {'-','--','-.',':'};
 colourvec = {[1 0 0],[0 0 1],[0 0 0],[0 1 0],[1 1 0],[1 0 1],[0 1 1],[1 0 0],[0 0 1],[0 0 0],[0 1 0]};%need to stop reuse of colours, temp measure
-error_threshold = 1.75;
+error_threshold = 1.5;
 figure
 hold on;
 [X,Y] = meshgrid(etavec,alphavec);
@@ -494,7 +495,7 @@ legendflex(h,legendcell)
 
 %%
 clear legendcell h
-for T_index = 1:length(Tvec)
+for T_index = 1:1%3:length(Tvec)
     figure
     hold on
     clear h legendcell
@@ -520,7 +521,7 @@ end
 
 %%
 clear legendcell h
-for force_index = 1:f
+for force_index = 2:2%1:f
     figure
     hold on
     clear h legendcell

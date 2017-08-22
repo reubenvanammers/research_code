@@ -6,7 +6,7 @@ global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 3;
+circ_area_conversion = 1;
 strainflag = false;
 
 if nargin < 8
@@ -54,7 +54,7 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
-[Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.2:tend,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.02:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
