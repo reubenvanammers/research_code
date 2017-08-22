@@ -33,7 +33,7 @@ eta = eta0;
 gamma=gamma0;
 delta = delta0;
 [V,C] = hexgrid_voronoi(gridsize);
-V(:,1) = V(:,1)*1.001;%slightly stretches x direction so that preferred direction is along x axis
+V(:,1) = V(:,1)*1.000000001;%slightly stretches x direction so that preferred direction is along x axis
 
 included_cell = cell_inclusion(V,C);
 %external_force = 0.2;
