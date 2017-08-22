@@ -7,7 +7,7 @@ A0=sqrt(27)/2*(sidelength.^2);
 %C0 = 2*sqrt(pi*A0);
 C0 = 6*sidelength;
 
-external_force = 7.57;
+external_force = 0.2;
 
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
