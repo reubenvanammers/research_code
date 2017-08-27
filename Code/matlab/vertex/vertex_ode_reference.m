@@ -11,7 +11,7 @@ external_force = 0.2;
 
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi([1,2]);
+[V,C] = hexgrid_voronoi([10,10]);
 
 included_cell = cell_inclusion(V,C);
 N= length(V);

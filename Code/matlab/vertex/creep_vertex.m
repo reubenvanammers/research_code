@@ -54,17 +54,12 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
-<<<<<<< HEAD
 [Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
-=======
-[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.02:tend,V_vec,options);
->>>>>>> 753b593a4cb4b160bfba743d33c8c0c709430509
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
 
-%hex_vis_2(Time,Y,C);
-
+hex_vis_2(Time,Y,C);
 
 % cell_areas = zeros(1,M);
 % cell_circumferences = zeros(1,M);
