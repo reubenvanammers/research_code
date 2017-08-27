@@ -24,8 +24,21 @@
 %
 % Edited by Ozzy on 11/08/2011
 
-function SaveAsPngEpsandFig(h,filename, pdfwidth, widthheightratio,pdflabelsize)
+function SaveAsPngEpsAndFig(filename,h, pdfwidth, widthheightratio,pdflabelsize)
 
+if nargin < 2
+    h = -1;
+end
+
+if nargin < 3
+    pdfwidth = 7;
+end
+if nargin < 4
+    widthheightratio = 7/5;
+end
+if nargin < 5
+    pdflabelsize = 9;
+end
 
 linewidth = 0.8;                              % line width in ? (between 1 and 3)
 % markersize = 6;                             % size of markers in pt (1-20)
