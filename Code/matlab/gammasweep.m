@@ -9,7 +9,7 @@ for gamma_index = 1:length(gamma_vec)
         timecell{gamma_index,length_index} = Time;
     end
 end
-
+%%
 
 figure
 hold on
@@ -24,20 +24,24 @@ for length_index = 1:length(target_length_vec)
     ylabel('End Strain')
     strain;
     plot(gamma_vec,strain,colourvec{length_index})
-    legendcell{length_index} = num2str(target_length_vec(length_index));
+    legendcell{length_index} = ['L_0 = ',num2str(target_length_vec(length_index))];
     %title(num2str(target_length_vec(length_index)))
 end
 legendflex(legendcell)
-
+%%
 k = 5;
 for length_index = 3:3
+    j = 1;
     figure
     hold on
     for gamma_index = 1:k:length(gamma_vec) 
         plot(timecell{gamma_index,length_index},straincell{gamma_index,length_index},colourvec{ceil(gamma_index/k)});
+        legendcell{j} = ['\gamma = ',num2str(gamma_vec(gamma_index))]; 
+        j = j+1;
     end
     title(['Target Length = ' num2str(target_length_vec(length_index))])
     xlabel('Time')
     ylabel('Strain')
+    legendflex(legendcell)
 end
         
