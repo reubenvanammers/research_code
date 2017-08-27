@@ -6,7 +6,7 @@ global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 3;
+circ_area_conversion = 1;
 strainflag = false;
 
 if nargin < 8
@@ -41,9 +41,9 @@ V_vec = columnize(V,ref_V);
 
 
 initial_min = min(V(:,1));
-fixlist = V(:,1) <initial_min+0.1;
+fixlist = V(:,1) <initial_min+0.4;
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.1 is for minor discrepancies
 if nargin == 10    
     maxlength = maxstrain*(initial_max-initial_min);
 end
@@ -58,6 +58,7 @@ options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
+
 %hex_vis_2(Time,Y,C);
 
 

@@ -45,7 +45,7 @@ for i=1:L
     params{i} = {100,10,5,0,alpha,eta,T,tend,[10,10],force,5};
 end
     
-parfor i = 1:L%index loops over alpha, then eta, then T
+for i = 1:L%index loops over alpha, then eta, then T
 %     counter = i-1;
 %     T_index = mod(counter,length(Tvec));
 %     counter = (counter-T_index)/length(Tvec);
@@ -58,7 +58,7 @@ parfor i = 1:L%index loops over alpha, then eta, then T
 %     force = forcevec(force_index+1);
 %     eta = etavec(eta_index+1);%converts linear index to alpha,eta,T
 %     T = Tvec(T_index+1);
-    [Time, Y,~,flag] =stress_2d_ode(params{i}{:});
+    [Time, Y,~,flag] =creep_vertex_axis(params{i}{:});
     N = size(Y,2)/4;
     xvalues = Y(:,1:N);
     strain = (max(xvalues,[],2)-min(xvalues(1,:)))/(max(xvalues(1,:))-min(xvalues(1,:)));

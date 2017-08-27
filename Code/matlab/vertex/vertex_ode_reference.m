@@ -7,11 +7,11 @@ A0=sqrt(27)/2*(sidelength.^2);
 %C0 = 2*sqrt(pi*A0);
 C0 = 6*sidelength;
 
-external_force = 7.57;
+external_force = 0.2;
 
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi([10,10]);
+[V,C] = hexgrid_voronoi([1,2]);
 
 included_cell = cell_inclusion(V,C);
 N= length(V);
@@ -24,9 +24,9 @@ V_vec = columnize(V,ref_V);
 
 
 m = min(V(:,1));
-fixlist = V(:,1) <m+0.1;
+fixlist = V(:,1) <m+0.4;
 m = max(V(:,1));
-movelist =  V(:,1) >m-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >m-0.4;%plus minus 0.1 is for minor discrepancies
 
 
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
