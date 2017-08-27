@@ -201,7 +201,7 @@ clear straincell timecell straincell2 timecell2
 guess_value = 1;
 T_value = 1;
 
-viewscale = 11; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don'f get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -239,7 +239,7 @@ for force_index = 1:f
             %plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
-            %axis([0 1 0 1]);
+            axis([0 timecell3{vars{1:end-1}}(end) 0 1]);
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
 
         end
@@ -251,10 +251,11 @@ end
 for force_index = 1:f
     for alpha_index = 1:a_temp 
         for  eta_index = 1:g_temp
-            figure
-            hold on
+
             %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
             vars = {force_index,(eta_index-1)*g_scale+1,(alpha_index-1)*a_scale+1,T_value,guess_value};
+            figure
+            hold on
             exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
@@ -266,7 +267,7 @@ for force_index = 1:f
 %             plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
-            %axis([0 1 0 1]);
+            axis([0 timecell3{vars{1:end-1}}(end) 0 1]);
             xlabel('Time')
             ylabel('Strain')
             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertexaxis/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
