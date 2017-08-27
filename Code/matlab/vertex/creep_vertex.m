@@ -41,9 +41,9 @@ V_vec = columnize(V,ref_V);
 
 
 initial_min = min(V(:,1));
-fixlist = V(:,1) <initial_min+0.1;
+fixlist = V(:,1) <initial_min+0.4;
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.1 is for minor discrepancies
 if nargin == 10    
     maxlength = maxstrain*(initial_max-initial_min);
 end
@@ -54,10 +54,15 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
+<<<<<<< HEAD
 [Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
+=======
+[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.02:tend,V_vec,options);
+>>>>>>> 753b593a4cb4b160bfba743d33c8c0c709430509
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
+
 %hex_vis_2(Time,Y,C);
 
 

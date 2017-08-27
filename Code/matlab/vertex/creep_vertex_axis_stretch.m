@@ -62,9 +62,9 @@ end
 
 
 initial_min = min(V(:,1));
-fixlist = V(:,1) <initial_min+0.1
+fixlist = V(:,1) <initial_min+0.4
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.1 is for minor discrepancies
 if nargin == 12    
     maxlength = maxstrain*(initial_max-initial_min);
 end
