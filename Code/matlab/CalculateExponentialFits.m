@@ -1,4 +1,4 @@
-function [ one_exp_params, one_exp_ave_error ,two_exp_params, two_exp_ave_error, error_fit,infinity_error,three_exp_params] = CalculateExponentialFits(time,data,exponential_sign,guesstype)
+function [ one_exp_params, one_exp_ave_error ,two_exp_params, two_exp_ave_error, error_fit,infinity_error,three_exp_params,stretched_params] = CalculateExponentialFits(time,data,exponential_sign,guesstype)
 %CalculateExponentialFits Calclate the fit and error to exponential models
 %exponential sign is posiitve if fits are such that exponentials should be
 %increasing, 0 either way, and -1 if exponential should be decreasing
@@ -108,7 +108,7 @@ elseif exponential_sign == 1
     upper_bounds = [Inf 0 Inf 0 Inf 0 Inf];
 end
 initial_3 = [rand,-rand,rand,-rand,rand,-rand,rand];
-options_3 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_3,'TolFun',1e-9,'Lower',lower_bounds,'Upper',upper_bounds)
+options_3 = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',initial_3,'TolFun',1e-9,'Lower',lower_bounds,'Upper',upper_bounds);
 
 threeexpfit = fittype('a + b*exp(-x/c) + d*exp(-x/e)+f*exp(-x/g)','dependent',{'y'},'independent',{'x'},'coefficients',{'a','b','c','d','e','f','g'});
 [fit_data,error] = fit( time', data', threeexpfit,options_3);
@@ -116,6 +116,16 @@ three_exp_params = [fit_data.a,fit_data.b,fit_data.c,fit_data.d,fit_data.e,fit_d
 three_exp_ave_error = error.sse/length(time);
 three_exp_curve = three_exp_params(1)+three_exp_params(2).*exp(-time./three_exp_params(3))+three_exp_params(4).*exp(-time./three_exp_params(5))+three_exp_params(6).*exp(-time./three_exp_params(7));
 
+%stretched exponential
+
+
+stretchedoptions = fitoptions('Method', 'NonLinearLeastSquares','Algorithm','Trust-Region','Start',[0 -1 1 1],'TolFun',1e-9,'Lower',[-Inf -Inf 0 0],'Upper',[Inf Inf Inf 5]);
+
+stretchedfit = fittype('a + b*exp(-x^p/c)','dependent',{'y'},'independent',{'x'},'coefficients',{'a','b','c','p'});
+[fit_data,error] = fit( time', data',stretchedfit,stretchedoptions);
+stretched_params = [fit_data.a,fit_data.b,fit_data.c,fit_data.p];
+
 
 end
 
+    
