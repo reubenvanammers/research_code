@@ -29,6 +29,7 @@ C0 = 6*sidelength;
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
 [V,C] = hexgrid_voronoi(gridsize);
+
 included_cell = cell_inclusion(V,C);
 %external_force = 0.2;
 N= length(V);
