@@ -641,7 +641,9 @@ for force_index = 1:f
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
             %axis([0 1 0 1]);
             xlabel('Time')
-            ylabel('Strain Approximation Difference')
+            t = ylabel('Strain Approx Difference','FontSize',6);
+            t.FontSize = 8;
+            ylim([-0.2,0.05])
             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestrain_diff2/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
             %pause
             close all

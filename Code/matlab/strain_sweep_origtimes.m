@@ -626,8 +626,8 @@ SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress_diff/' num2st
 
 
 %%
-for T_index = 1:length(Tvec)
-    for ramptime_index = 1:t
+for T_index = 1
+    for ramptime_index = 2
         for alpha_index = 1:a
             for  eta_index = 1:g
              %   figure
@@ -669,7 +669,8 @@ for T_index = 1:length(Tvec)
                 %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
                 %axis([0 1 0 1]);
                 xlabel('Time')
-                ylabel('Stress Approximation Difference')
+                ylabel('Stress Approx Difference')
+                ylim([-0.1 0.4])
                 SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/relaxation/timestress_diff2/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
                 %pause
                 close all
