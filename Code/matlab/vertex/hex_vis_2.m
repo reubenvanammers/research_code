@@ -23,10 +23,10 @@ for i = 1:1:length(Time);
     subplot(2,1,1);
     title(['t = ', num2str(Time(i))])
     
-    for j = 1:length(C)
-        patch(V(C{j},1),V(C{j},2),j,'FaceColor','w'); % draws hexagons
-    end
-    
+        for j = 1:length(C)
+            patch(V(C{j},1),V(C{j},2),j,'FaceColor','w'); % draws hexagons
+        end
+
     subplot(2,1,2);
     %title(['t = ', num2str(Time(i))])
     

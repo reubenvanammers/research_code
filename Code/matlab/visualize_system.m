@@ -1,7 +1,7 @@
 function [Time,Y,strain,restoring,F] = visualize_system(fhandle,varargin)
 
 global restoring_rec t_rec
-[~,C] = hexgrid_voronoi();
+[~,C] = hexgrid_voronoi([10 10]);
 [Time,Y]=fhandle(varargin{:});
 l = length(t_rec)-length(restoring_rec);
 t_rec = t_rec(l+1:end);

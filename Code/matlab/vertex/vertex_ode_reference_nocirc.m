@@ -9,15 +9,15 @@ A0=sqrt(27)/2*(sidelength.^2);
 
 C0 = 6*sidelength;
 
-circ_area_conversion = 2;
+circ_area_conversion = 3;
 %this gives the type of interplay between the circumference and the area
 %see cell_vertex_stress_reference_nocirc for details
 
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi();
+[V,C] = hexgrid_voronoi([10 10]);
 included_cell = cell_inclusion(V,C);
-external_force = 0.2;
+external_force = 1;
 N= length(V);
 M = length(C);
 A0_vec = ones(1,M)*A0;
@@ -28,9 +28,9 @@ V_vec = columnize(V,ref_V);
 
 
 m = min(V(:,1));
-fixlist = V(:,1) <m+0.1;
+fixlist = V(:,1) <m+0.4;
 m = max(V(:,1));
-movelist =  V(:,1) >m-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >m-0.4;%plus minus 0.1 is for minor discrepancies
 
 
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
@@ -43,7 +43,7 @@ options = odeset('RelTol',1e-5,'AbsTol',1e-8);
 [Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.2:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
-%hex_vis_2(Time,Y,C);
+hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);

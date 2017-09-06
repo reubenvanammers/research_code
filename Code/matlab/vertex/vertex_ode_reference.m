@@ -24,9 +24,9 @@ V_vec = columnize(V,ref_V);
 
 
 m = min(V(:,1));
-fixlist = V(:,1) <m+0.1;
+fixlist = V(:,1) <m+0.4;
 m = max(V(:,1));
-movelist =  V(:,1) >m-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >m-0.4;%plus minus 0.1 is for minor discrepancies
 
 
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge

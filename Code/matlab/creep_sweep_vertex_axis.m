@@ -45,7 +45,7 @@ for i=1:L
     params{i} = {100,10,5,0,alpha,eta,T,tend,[10,10],force,5};
 end
     
-parfor i = 1:L%index loops over alpha, then eta, then T
+for i = 1:L%index loops over alpha, then eta, then T
 %     counter = i-1;
 %     T_index = mod(counter,length(Tvec));
 %     counter = (counter-T_index)/length(Tvec);
@@ -201,7 +201,7 @@ clear straincell timecell straincell2 timecell2
 guess_value = 1;
 T_value = 1;
 
-viewscale = 5; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 3; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don'f get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -236,8 +236,8 @@ for force_index = 1:f
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            %plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
-            plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+            plot(timecell3{vars{:}},straincell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
+            %plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
             title([astring{(alpha_index-1)*a_scale+1}, estring{(eta_index-1)*g_scale+1}, fstring{force_index}, Tstring{T_value} ]); 
             axis([0 timecell3{vars{1:end-1}}(end) 0 1]);
             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 

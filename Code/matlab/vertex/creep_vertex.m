@@ -29,6 +29,7 @@ C0 = 6*sidelength;
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
 [V,C] = hexgrid_voronoi(gridsize);
+
 included_cell = cell_inclusion(V,C);
 %external_force = 0.2;
 N= length(V);
@@ -41,9 +42,9 @@ V_vec = columnize(V,ref_V);
 
 
 initial_min = min(V(:,1));
-fixlist = V(:,1) <initial_min+0.1;
+fixlist = V(:,1) <initial_min+0.4;
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.1 is for minor discrepancies
 if nargin == 10    
     maxlength = maxstrain*(initial_max-initial_min);
 end
@@ -54,12 +55,12 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@stress_event);
-[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.02:tend,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_stress_reference,0:0.2:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
 flag = strainflag;
-%hex_vis_2(Time,Y,C);
 
+%hex_vis_2(Time,Y,C);
 
 % cell_areas = zeros(1,M);
 % cell_circumferences = zeros(1,M);
