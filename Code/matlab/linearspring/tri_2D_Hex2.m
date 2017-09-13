@@ -66,8 +66,14 @@ warning('off','MATLAB:triangulation:PtsNotInTriWarnId')
 DT = triangulation(T,P);
 
 E = edges(DT);
-%triplot(DT);
-
+figure
+hold on
+triplot(DT);
+for i = 1:length(A)
+%    axis off
+    plot(A(i),B(i),'r.','MarkerSize',10)
+%    circle(A(i),B(i),0.65*c)
+end
 
 
 end

@@ -9,7 +9,7 @@ A0=sqrt(27)/2*(sidelength.^2);
 
 C0 = 6*sidelength;
 
-circ_area_conversion = 3;
+circ_area_conversion = 2;
 %this gives the type of interplay between the circumference and the area
 %see cell_vertex_stress_reference_nocirc for details
 
@@ -39,11 +39,11 @@ C_rec = C0*ones(100,M);
 A_rec = A0*ones(100,M);
 restoring_rec = [];
 
-options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.2:tend,V_vec,options);
+options = odeset('RelTol',1e-5,'AbsTol',1e-8,'Events',@intersect_event);
+[Time,Y] = ode15s(@cell_vertex_stress_reference_nocirc,0:0.001:tend,V_vec,options);
 %final_hex = Y(end,:)';
 C2 = C;
-hex_vis_2(Time,Y,C);
+%hex_vis_2(Time,Y,C);
 
 
 % cell_areas = zeros(1,M);

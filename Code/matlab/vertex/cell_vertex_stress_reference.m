@@ -56,6 +56,7 @@ else
 end %calculates average Area and Circumference
 
 
+
 real_force = vertex_internal_force_calc(C,V,included_cell,lambda,beta,gamma,reference_cell_areas,real_cell_areas,reference_cell_circumferences,real_cell_circumferences);
 follow_force = (1-alpha).*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A_av,reference_cell_areas,C_av,reference_cell_circumferences);
 fix_force = alpha*vertex_internal_force_calc(C,V_ref,included_cell,lambda,beta,gamma,A0_vec,reference_cell_areas,C0_vec,reference_cell_circumferences);

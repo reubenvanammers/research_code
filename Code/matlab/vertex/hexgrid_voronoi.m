@@ -1,4 +1,4 @@
-function [V,C,connectivitylist] = hexgrid_voronoi(gridsize,c)
+function [V,C,connectivitylist] = hexgrid_voronoi(gridsize,sidelength)
 %creates hexagonal list of vertices V, cell of cells C, and matrix of
 %connetivity between the two. Neighbouring cells is list of neighbouring
 %cells for each
@@ -11,14 +11,14 @@ else
     xsize = gridsize(1);
     ysize = gridsize(2);
 end
-if nargin <3
-    c = sqrt(3) / 2;
+if nargin <2
+    sidelength = 1/sqrt(3);
 end
 xsize = xsize +2;
 ysize = ysize +1;%These two lines make the x and y sizes consisten with
 %what one would expect: some cells get stripped away in order for symmetry
 %and this accounts for that
-
+c = sqrt(3)/2;
 [X,Y] = meshgrid(0:1:xsize,0:1:ysize);
 n = size(X);
 X = c * X;
@@ -54,11 +54,13 @@ for i = 1:length(C)%makes all hexagons counter clockwise
         C{i} = fliplr(C{i});
     end
 end
+V = sqrt(3)*sidelength*V;
+
 initial_min = min(V(:,1));
 V(:,1) = V(:,1)-initial_min;
 
 
-N = length(C);%number of cells
+%N = length(C);%number of cells
 
 
 
