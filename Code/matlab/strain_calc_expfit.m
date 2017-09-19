@@ -26,3 +26,14 @@ plot(Time,strain,'r',Time,exp1(Time),'k',Time,exp2(Time),'b-',Time,exp2_1(Time),
 figure
 plot(Time,strain,'r',Time,stretched(Time),'g--')
 stretched_params
+
+figure
+global restoring_rec t_rec
+l = length(t_rec)-length(restoring_rec);
+t_rec = t_rec(l+1:end);
+restoring_temp = restoring_rec;
+[t_rec,ia,~] = unique(t_rec);
+restoring_temp = restoring_temp(ia);%deletes duplicate time entries for interpolation
+restoring = interp1(t_rec,restoring_temp,Time);%interpolates restoring force to be same size as time vector
+plot(Time(2:end),restoring(2:end))
+
