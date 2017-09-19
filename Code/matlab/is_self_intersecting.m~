@@ -1,0 +1,4 @@
+function b = is_self_intersecting(C,V)
+b = false;
+for i = size(V,1(
+x = V(C{

@@ -9,7 +9,7 @@ A0=sqrt(27)/2*(sidelength.^2);
 
 C0 = 6*sidelength;
 
-circ_area_conversion = 2;
+circ_area_conversion = 3;
 %this gives the type of interplay between the circumference and the area
 %see cell_vertex_stress_reference_nocirc for details
 
