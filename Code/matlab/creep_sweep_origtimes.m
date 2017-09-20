@@ -260,7 +260,7 @@ for force_index = 1:f
             exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
             exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
             exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-            time = timecell3{vars{:}}; strain = straincell3{vars{:}};
+            time = timecell3{vars{1:end-1}}; strain = straincell3{vars{1:end-1}};
             plot(time(1:10:end),strain(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--','MarkerSize',4)
 
             %plot(timecell3{vars{:}},stresscell3{vars{:}},'r',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k--',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--')
