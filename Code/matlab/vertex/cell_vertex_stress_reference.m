@@ -3,7 +3,7 @@ function dxdt = cell_vertex_stress_reference(t,x)
 global C N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
 global fixlist movelist eta restoring_rec counter included_cell external_force
 
-t
+
 while t_rec(end) > t;
     while t_rec(counter)+T > t;
         counter = counter-1;
