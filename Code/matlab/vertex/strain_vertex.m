@@ -7,7 +7,7 @@ global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_c
 global stress_rec restoring_t_rec
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 3;
+circ_area_conversion = 1;
 
 
 
@@ -71,7 +71,7 @@ C2 = C;
 l = length(t_rec)-length(stress_rec);
 t_rec
 l
-length(t_rec)
+length(t_rec);
 length(stress_rec);
 t_rec2 = t_rec(l+1:end);
 stress_rec2 = stress_rec;

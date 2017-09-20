@@ -5,6 +5,7 @@ function [Time,Y,C2,flag] = creep_vertex(lambda0,beta0,gamma0,alpha0,eta0,T0,ten
 global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force maxlength
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell strainflag
 sidelength = 1/sqrt(3);
+%sidelength = sqrt(2/sqrt(27));
 A0=sqrt(27)/2*(sidelength.^2);
 circ_area_conversion = 1;
 strainflag = false;
@@ -28,7 +29,7 @@ C0 = 6*sidelength;
 
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi(gridsize);
+[V,C] = hexgrid_voronoi(gridsize,sidelength);
 
 included_cell = cell_inclusion(V,C);
 %external_force = 0.2;
