@@ -215,7 +215,6 @@ for force_index = 1:1;
     hold on;
     mesh(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])');
     shading interp;
-    alpha(0.5);
     colorbar;
     contour(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
