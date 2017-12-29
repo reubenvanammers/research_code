@@ -213,18 +213,18 @@ for force_index = 1:1;
     figure
     [X,Y] = meshgrid(etavec,alphavec);
     hold on;
-    mesh(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])');
+    surf(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:,T_value,guess_value)),[g,a])');
     shading interp;
     colorbar;
-    contour(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])',contours,'ShowText','on');
+    %contour(X,Y,reshape(cell2mat(maxstraincell(force_index,:,:)),[g,a])',contours,'ShowText','on');
 
     set(gca, 'XScale', 'log', 'YScale', 'log','ZScale','log');
-    xlabel('eta');
-    ylabel('alpha');
-    title('max strain')
-    view([90 0])
+    xlabel('\eta');
+    ylabel('\alpha');
+    %title('Max Strain')
+    %view([90 0])
 
-    SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationlenghs-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
+    %SaveAsPngEpsAndFig(-1,[pwd '/pictures/creepfitting/equilibriationlenghs-' num2str(T) '-' strrep(num2str(forcevec(force_index)),'.','')]  , 7, 7/5, 9)
 end
 
 %%
