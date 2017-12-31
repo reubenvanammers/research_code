@@ -9,7 +9,7 @@ global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec
 
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 3;
+circ_area_conversion = 1;
 
 
 
@@ -87,10 +87,10 @@ for i = 1:M
 end
 
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_vertex_strain_reference_nocirc,0:0.2:t_ramp_end,V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_strain_axis_reference,0:0.2:t_ramp_end,V_vec,options);
 stress_index = length(stress_rec);
 V_vec = Y(end,:)';
-[Time2,Y2] = ode15s(@cell_vertex_strain_reference_nocirc,t_ramp_end:0.2:tend,V_vec,options);
+[Time2,Y2] = ode15s(@cell_vertex_strain_axis_reference,t_ramp_end:0.2:tend,V_vec,options);
 %final_hex = Y(end
 Time = [Time; Time2(2:end)];
 Y = [Y; Y2(2:end,:)];
