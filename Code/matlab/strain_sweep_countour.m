@@ -1,3 +1,5 @@
+%Does a compound contour plot over saved creep sweeps, displaying both
+%different time averaging and different force contours
 clear all;
 ramptimevec = [10 15 20];
 Tvec = [ 0 1 10];

@@ -1,5 +1,8 @@
+%calculates stress for fnhandle with arguments varargin, and then fits and
+%plots with various potential fits, such as one, two, stretched
+%exponentials etc.
+
 function [Time,stress,Y] = stress_calc_expfit(fnhandle,varargin)
-%calculatse stress for fnhandle with arguments varargin.
 [Time,Y,~,stress,t_rec,stress_index]=fnhandle(varargin{:});
 
 stress

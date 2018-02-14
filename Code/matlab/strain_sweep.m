@@ -1,4 +1,4 @@
-%Varies parameters of stra/in_2d_ode, and plots time strain graphs in a
+%Varies parameters of strain_2d_ode, and plots time strain graphs in a
 %subplot.
 clear all
 endstrain = 1.5;

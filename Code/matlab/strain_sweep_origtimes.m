@@ -1,5 +1,6 @@
 %Varies parameters of stra/in_2d_ode, and plots time strain graphs in a
-%subplot.
+%subplot, with the original times being kept so thhat they can be used for
+%additional analysis.
 clear all
 
 rbounds = {1 2 3};
