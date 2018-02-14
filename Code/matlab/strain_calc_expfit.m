@@ -43,7 +43,19 @@ stretched_params
 
 
 figure
+global restoring_rec t_rec
+l = length(t_rec)-length(restoring_rec);
+t_rec = t_rec(l+1:end);
+restoring_temp = restoring_rec;
+[t_rec,ia,~] = unique(t_rec);
+restoring_temp = restoring_temp(ia);%deletes duplicate time entries for interpolation
+restoring = interp1(t_rec,restoring_temp,Time);%interpolates restoring force to be same size as time vector
+plot(Time(2:end),restoring(2:end))
+
+
+figure
 plot(Time,strain-exp1(Time),'k-',Time,strain-exp2(Time),'b',Time,zeros(size(Time)),'r--')%,Time,strain-exp3(Time),'g-.','MarkerSize',4)            %plot(timecell3{vars{1:end-1}},straincell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
 xlabel('Time')
 ylabel('Strain Approx Difference')
+
 

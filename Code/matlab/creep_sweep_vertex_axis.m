@@ -201,7 +201,7 @@ clear straincell timecell straincell2 timecell2
 guess_value = 1;
 T_value = 1;
 
-viewscale = 3; %Makes subplot display viewscale*viewscale for easier viewing
+viewscale = 6; %Makes subplot display viewscale*viewscale for easier viewing
 
 viewscale = viewscale-1;
 if mod(a,viewscale)==1 && mod(g,viewscale)==1 && a>1 && g>1 %reduces amount of graphs plotted so they don'f get too small: 9*9,13*13 etc creates 5*5 subplot
@@ -270,7 +270,7 @@ for force_index = 1:f
             axis([0 timecell3{vars{1:end-1}}(end) 0 1]);
             xlabel('Time')
             ylabel('Strain')
-            SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfitvertexaxis/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))]  , 7, 7/5, 9)
+            SaveAsPngEpsAndFig([pwd '/pictures/expfitvertexaxis/creep/timestrain/' num2str(Tvec(T_value)) '-' num2str(forcevec(force_index)) '-' num2str(etavec_temp(eta_index)) '-' num2str(alphavec_temp(alpha_index))])
             close all
         end
     end
