@@ -37,6 +37,6 @@ options = odeset('RelTol',1e-3,'AbsTol',1e-6);
 final_hex = Y(end,:)';
 cell_history2 =cell_history;
 cell_t_history2 = cell_t_history;
-%hex_vis_2(Time,Y,C);
+hex_vis_2(Time,Y,cell_history,cell_t_history);
 monoflag2 = monoflag;
 

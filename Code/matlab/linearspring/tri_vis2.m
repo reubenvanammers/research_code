@@ -10,10 +10,12 @@ for i = 1:length(Time);
     hold on
     TR = triangulation(Tri,R);
     plot(12.6584*ones(1,100),linspace(-5,5),'r')
+    plot(0*ones(1,100),linspace(-5,5),'k--')
+    plot(7.7942*ones(1,100),linspace(-5,5),'k--')
     triplot(TR);
     hold off
 
-    axis([-3 15 -5 5])
+    axis([-3 18 -5 5])
     %annotation('line',[12.6584 -3],[12.6584 -3])
     axis off
 
@@ -22,8 +24,12 @@ for i = 1:length(Time);
 %    title(['t = ', num2str(Time(i))])
     subplot(2,1,2);
     TR = triangulation(Tri,P);
+    hold on
     triplot(TR);
-    axis([-3 15 -5 5])
+    plot(0*ones(1,100),linspace(-5,5),'k--')
+    plot(7.7942*ones(1,100),linspace(-5,5),'k--')
+    hold off
+    axis([-3 18 -5 5])
     axis off
     title('Reference Cell Centres')
 

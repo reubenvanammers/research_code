@@ -4,10 +4,15 @@ filename = 'pictures\expfit\creeploop\realcreep';
 h =figure;
 for i = 1:length(Time);
 %    subplot(2,1,1);
+    clf
     current_points = Y(i,:);
     [R,P] = matricize(current_points);%real and reference points
     TR = triangulation(Tri,R);
+    hold on;
     triplot(TR);
+    plot(0*ones(1,100),linspace(-5,5),'k--')
+    plot(7.7942*ones(1,100),linspace(-5,5),'k--')
+    hold off
     axis([0 13 -5 5])
     axis off
 

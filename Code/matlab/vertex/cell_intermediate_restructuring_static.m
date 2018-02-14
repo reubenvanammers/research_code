@@ -3,7 +3,7 @@ global cell_history C included_cell cell_t_history  monoflag
 cell_history = {C};
 cell_t_history = 0;
 restructuring_time = 1; %How often algo checks if need to swap
-h = 0.02; %delta t
+h = 0.2; %delta t
 Y = v0';
 Time = 0;
 v = v0;
@@ -11,10 +11,10 @@ N = size(Y,2)/4;
 xvalues = Y(:,1:N);
 monolayer_length = max(xvalues);
 dmin = 0.15;
-dsep = dmin*1.1;
+dsep = dmin*1.01;
 monoflag = 'timeout';
 for i = 0:restructuring_time:(tend-restructuring_time)
-    if mod(i,10) ==0
+    if mod(i,1) ==0
         i
     end
 
@@ -41,7 +41,7 @@ for i = 0:restructuring_time:(tend-restructuring_time)
     end
     monolayer_length = monolayer_length2;
     if ~connected_cells(C,V);
-        monoflag = 'break';
-        break
+        %monoflag = 'break';
+        %break
     end
 end

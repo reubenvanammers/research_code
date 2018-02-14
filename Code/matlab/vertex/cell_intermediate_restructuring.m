@@ -9,7 +9,7 @@ Time = 0;
 v = v0;
 
 dmin = 0.18;
-dsep = dmin*1.1;
+dsep = dmin*1.01;
 
 for i = 0:restructuring_time:(tend-restructuring_time)
     i
