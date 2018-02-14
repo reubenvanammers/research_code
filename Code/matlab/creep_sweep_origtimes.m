@@ -1,5 +1,6 @@
 %Varies parameters of stress_2d_ode, and plots time strain graphs in a
-%subplot.
+%subplot (plus other graphs). Keeps original times without scaling so that
+%analysis can be done.
 clear all
 
 

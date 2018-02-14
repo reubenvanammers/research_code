@@ -1,3 +1,5 @@
+%Checks to see whether or not a certain cell intersects with itself so that
+%the simulation can stop.
 function b = is_self_intersecting(C,V)
 b = false;
 for i = 1:size(C,1)

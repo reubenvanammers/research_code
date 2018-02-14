@@ -1,3 +1,5 @@
+%Does an example of the cyclic loading experiment using the ramp function,
+%and plots stress strain curves.
 strain_min = 1.2;
 strain_max = 1.6;
 tend = 200;

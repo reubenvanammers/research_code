@@ -1,3 +1,4 @@
+%Draws Hexagonal cell
 function hex_show(V,C)
 
 for i = 1:length(C)

@@ -1,3 +1,5 @@
+%Varies strength of axial parameter, to see effect on strain plots
+
 gamma_vec = 0:0.5:10;
 target_length_vec = 1:0.1:1.6;
 straincell= cell(length(gamma_vec),length(target_length_vec));

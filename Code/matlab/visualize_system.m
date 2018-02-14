@@ -1,3 +1,6 @@
+%Takes a function handle of a given simulation, and its parameters, and
+%displays a movie with progression strain, cells, restoring force for
+%visualisation purposes.
 function [Time,Y,strain,restoring,F] = visualize_system(fhandle,varargin)
 
 global restoring_rec t_rec

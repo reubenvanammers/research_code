@@ -1,3 +1,4 @@
+%Similar function to ramp, but adds a minimum strain instead of simply 1
 function k = ramp2(strainmin,strainmax,reps,reptime)
 
 

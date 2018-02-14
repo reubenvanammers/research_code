@@ -1,3 +1,5 @@
+%Does a compound contour plot over saved creep sweeps, displaying both
+%different time averaging and different force contours
 clear all;
 forcevec = logspace(-1,-0.5 ,3);
 Tvec = [ 0 1 10];

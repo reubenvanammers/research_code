@@ -1,5 +1,5 @@
 %Varies parameters of stress_2d_ode, and plots time strain graphs in a
-%subplot.
+%subplot for the vertex model. 
 clear all
 
 forcevec = logspace(-1,0 ,3);
