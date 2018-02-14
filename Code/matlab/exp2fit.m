@@ -1,4 +1,5 @@
 function [s,a]=exp2fit(t,f,caseval,lsq_val,options)
+%Credit goes to Per Sundqvist; not my code
 
 %  exp2fit solves the non-linear least squares problem exact
 %  and using it as a start guess in a least square method 
