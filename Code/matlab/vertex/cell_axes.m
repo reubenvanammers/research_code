@@ -1,5 +1,5 @@
 function [length1, direction, chosen_vertices] = cell_axes(l,C,V)
-
+%Calculates axial direction based upon distance between furthest vertices.
 vertex_list = C{l};
 nk = length(vertex_list);
 

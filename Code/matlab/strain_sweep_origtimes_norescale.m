@@ -85,9 +85,9 @@ stresscell2 = cell(t,g_2,a,length(Tvec));
 timecell2 = cell(t,g_2,a,length(Tvec));
 
 
-save([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/strainerrortimeorignorescale' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %%
-load([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/strainerrortimeorignorescale' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 t = length(ramptimevec);g_2 = length(etavec_augmented);a = length(alphavec);g = length(etavec);
 L_2 = t*g_2*a*length(Tvec); L=t*g*a*length(Tvec);
 maxstresscell2 = cell(t,g_2,a,length(Tvec));
@@ -155,8 +155,8 @@ for i = 1:L
     end
     
     time_scaled = timecell2{vars{:}};%/timeendcell{vars{:}};
-%    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(maxstresscell{vars{:}}-endstresscell{vars{:}});
-    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(rampmaxstress(alpha_index+1,ramptime_index+1)-endstresscell{vars{:}});
+    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(maxstresscell{vars{:}}-endstresscell{vars{:}});
+%    stress_scaled = (stresscell2{vars{:}}-endstresscell{vars{:}})/(rampmaxstress(alpha_index+1,ramptime_index+1)-endstresscell{vars{:}});
     
     
     timecell3{vars{:}} = linspace(0,timeendcell{vars{:}},1001)';
@@ -266,9 +266,9 @@ else
     a_temp = a;
     g_temp = g;
 end
-save([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+save([pwd '/workspaces/strainerrortimeorignorescale' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 %% plots strain-time graphs and exponential fits
-load([pwd '/workspaces/strainerrortimeorig' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
+load([pwd '/workspaces/strainerrortimeorignorescale' num2str(Tvec(1)) '_' num2str(Tvec(end)) '_' num2str(etavec(1)) '-' num2str(etavec(end)) '_' num2str(alphavec(1)) '-' num2str(alphavec(end)) '.mat']);
 
 
 %%
@@ -294,16 +294,9 @@ for ramptime_index = 1:t
 end
 
 %%
-%for ramptime_index = 1:t
-%    for alpha_index = 1:a_temp 
-%        for  eta_index = 1:g_temp
-        for i = 1:length(k)
-            vars = k{i}
-            ramptime_index = vars{1};
-            eta_index = vars{2};
-            alpha_index = vars{3};
-            T_index = vars{4};
-            guess_index = vars{5};
+for ramptime_index = 1:t
+    for alpha_index = 1:a_temp 
+        for  eta_index = 1:g_temp
             figure
             hold on
             %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
@@ -323,12 +316,12 @@ end
             %axis([0 1 0 1]);
             xlabel('Time')
             ylabel('Stress')
-            SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))])
+            SaveAsPngEpsAndFig(['E:\matlabpics/pictures/expfit/relaxation/timestress/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))])
             %pause
             close all
         end
-%    end
-%end
+    end
+end
 %%
 %%
 for ramptime_index = 1:t
@@ -656,17 +649,10 @@ SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(T
 
 
 %%
-%for T_index = 1
-%    for ramptime_index = 1:t
-%        for alpha_index = 1:a
-%            for  eta_index = 1:g
-            for i = 1:length(k)
-                vars = k{i}
-                ramptime_index = vars{1};
-                eta_index = vars{2};
-                alpha_index = vars{3};
-                T_index = vars{4};
-                guess_index = vars{5};
+for T_index = 1:length(Tvec)
+    for ramptime_index = 1:t
+        for alpha_index = 1:a
+            for  eta_index = 1:g
              %   figure
              %   hold on
                 %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
@@ -710,10 +696,10 @@ SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(T
                 xlabel('Time')
                 ylabel('Error')
                 ylim([-0.1 0.4])
-                SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff2/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  ,-1, 7, 7/5, 9)
+                SaveAsPngEpsAndFig(['E:\matlabpics/pictures/expfit/relaxation/timestress_diff2/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  ,-1, 7, 7/5, 9)
                 %pause
                 close all
             end
-%        end
-%    end
-%end
+        end
+    end
+end

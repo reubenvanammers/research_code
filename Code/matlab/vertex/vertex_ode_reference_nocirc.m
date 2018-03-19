@@ -1,7 +1,7 @@
 function [Time,Y,C2] = vertex_ode_reference_nocirc(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
-%instead of circumference. 
+%instead of circumference, or vice versa
 global C N A0_vec C0_vec lambda beta gamma M alpha circ_area_conversion external_force
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell
 sidelength = 1/sqrt(3);

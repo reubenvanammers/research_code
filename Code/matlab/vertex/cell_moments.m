@@ -1,5 +1,5 @@
 function [Ixx, Iyy, Ixy,Cx,Cy,A,circumference] = cell_moments(l,C,V)
-
+%Calculates 2nd, 1st moments of inertia. Ended up not being used due to singularity issues
 vertex_list = C{l};
 
 Ixx = 0;

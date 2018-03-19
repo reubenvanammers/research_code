@@ -1,5 +1,5 @@
 function circularity_vec = circularity(C,V)
-
+%Calculates circularities of cells; used to check for cell behaviours
 M = length(C);
 real_cell_areas = zeros(1,M);
 real_cell_circumferences = zeros(1,M);

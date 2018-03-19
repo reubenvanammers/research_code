@@ -1,5 +1,6 @@
 function [length1, direction, chosen_vertices] = cell_axes_sticky(l,C,V,stickyvertices)
-
+%Calculates axial direction based upon distance between furthest vertices.
+%keeps direction based upon previous result if difference is small
 
 stickiness_value = 0.1; %How resilient a matrix is to retaining old axes
 %rather than choosing new ones; higher values mean will retain old values

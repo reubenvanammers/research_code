@@ -1,5 +1,6 @@
 function dxdt = cell_vertex_stress_axis_reference(t,x)
 %ode describing how the system evolves for the vertex based reference model
+%for stress relaxation experiment with additional axial components
 global C N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T 
 global fixlist movelist eta restoring_rec counter included_cell external_force
 global delta axis_0 fixed_vertices length_rec angle_x_proj_rec angle_y_proj_rec

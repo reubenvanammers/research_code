@@ -1,4 +1,7 @@
 function [Time,Y] = cell_intermediate_restructuring_static(fhandle, tend, v0, varargin)
+%Restructures cells when seperation greater than some amount 
+%stops calculation after a certain period of time if the cells become
+%disconnected from eachother or there is no cell movement
 global cell_history C included_cell cell_t_history  monoflag 
 cell_history = {C};
 cell_t_history = 0;

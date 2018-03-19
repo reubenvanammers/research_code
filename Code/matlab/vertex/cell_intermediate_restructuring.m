@@ -1,4 +1,5 @@
 function [Time,Y] = cell_intermediate_restructuring(fhandle, tend, v0, varargin)
+%Restructures cells when seperation greater than some amount 
 global cell_history C included_cell cell_t_history
 cell_history = {C};
 cell_t_history = 0;

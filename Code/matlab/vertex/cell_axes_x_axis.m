@@ -1,4 +1,7 @@
 function [length1, direction, chosen_vertices] = cell_axes_x_axis(l,C,V)
+%Calculates axial direction based upon distance between furthest vertices.
+%Preferentially chooses directions close to x axis, as this is direction
+%of external movement
 x_axis_priority = 0.1; %How much angles close to x axis will be preferred
 
 vertex_list = C{l};
