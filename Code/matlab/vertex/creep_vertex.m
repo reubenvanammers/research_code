@@ -7,14 +7,16 @@ global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_c
 sidelength = 1/sqrt(3);
 %sidelength = sqrt(2/sqrt(27));
 A0=sqrt(27)/2*(sidelength.^2);
-circ_area_conversion = 1;
+circ_area_conversion = 1; % relates method that information gets passed between
+%real and ref statesshould generally be set to 1, as other values can have
+%singular behaviour
 strainflag = false;
 
 if nargin < 8
     gridsize = [7,8]; %default size of monolayer
 end
 if nargin < 9
-    external_force = 0.2;
+    external_force = 0.1;
 else
     external_force = ext_force;
 end
@@ -45,7 +47,7 @@ V_vec = columnize(V,ref_V);
 initial_min = min(V(:,1));
 fixlist = V(:,1) <initial_min+0.4;
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.4;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.4 is for first two layers of cells
 if nargin == 10    
     maxlength = maxstrain*(initial_max-initial_min);
 end

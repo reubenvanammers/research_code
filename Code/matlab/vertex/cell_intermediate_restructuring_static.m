@@ -44,7 +44,7 @@ for i = 0:restructuring_time:(tend-restructuring_time)
     end
     monolayer_length = monolayer_length2;
     if ~connected_cells(C,V);
-        %monoflag = 'break';
-        %break
+        monoflag = 'break';
+        break
     end
 end

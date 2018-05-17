@@ -1,7 +1,7 @@
 function dxdt = cell_vertex_strain_reference_nocirc(t,x)
 %ode describing how the system evolves for the vertex based reference model
-%tries to match real(reference) circumference with reference (real) area
-%instead of circumference. 
+%potentially tries to match real(reference) circumference with reference (real) area
+%instead of circumference, depending on the value of circ_area_conversion
 global C F N A0_vec C0_vec lambda beta gamma M alpha t_rec C_rec A_rec T fixlist stress_rec
 global movelist eta restoring_rec counter included_cell circ_area_conversion strain_function initial_length t_strain_end
 t

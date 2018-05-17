@@ -1,4 +1,4 @@
-function [Time,Y,C2,stress_rec2,t_rec2,stress_index] = strain_vertex_axis(lambda0,beta0,gamma0,delta0,alpha0,eta0,T0,tend,gridsize,strainfunc,t_ramp_end,t_strain_end2)
+function [Time,Y,C2,stress_rec2,t_rec2,stress_index] = strain_vertex_axis(lambda0,beta0,gamma0,delta0,alpha0,eta0,T0,tend,strainfunc,gridsize,t_ramp_end,t_strain_end2)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
@@ -18,8 +18,10 @@ if nargin < 12
 else
     t_strain_end = t_strain_end2;
 end
-
-if nargin < 9
+if nargin < 11
+    t_ramp_end = tend;
+end
+if nargin < 10
     gridsize = [7,8]; %default size of monolayer
 end
 

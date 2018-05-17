@@ -1,4 +1,4 @@
-function [Time,Y,C2,stress_rec2,t_rec2,stress_index] = strain_vertex(lambda0,beta0,gamma0,alpha0,eta0,T0,tend,gridsize,strainfunc,t_ramp_end,t_strain_end2)
+function [Time,Y,C2,stress_rec2,t_rec2,stress_index] = strain_vertex(lambda0,beta0,gamma0,alpha0,eta0,T0,tend,strainfunc,gridsize,t_ramp_end,t_strain_end2)
 %implements vertex model with remodelling
 %tries to match real(reference) circumference with reference (real) area
 %instead of circumference. 
@@ -16,8 +16,10 @@ if nargin < 11
 else
     t_strain_end = t_strain_end2;
 end
-
-if nargin < 8
+if nargin < 10
+    t_ramp_end = tend;
+end
+if nargin < 9
     gridsize = [7,8]; %default size of monolayer
 end
 
@@ -45,9 +47,9 @@ V_vec = columnize(V,ref_V);
 
 
 initial_min = min(V(:,1));
-fixlist = V(:,1) <initial_min+0.1;
+fixlist = V(:,1) <initial_min+0.4;
 initial_max = max(V(:,1));
-movelist =  V(:,1) >initial_max-0.1;%plus minus 0.1 is for minor discrepancies
+movelist =  V(:,1) >initial_max-0.4;%plus minus 0.4 is for first two layers of cells
 initial_length = initial_max-initial_min;
 
 t_rec = linspace(-T,0)';%sets up averaging vector for each edge
@@ -58,19 +60,18 @@ restoring_rec = [];
 stress_rec = [];
 restoring_t_rec = [];
 options = odeset('RelTol',1e-5,'AbsTol',1e-8);
-[Time,Y] = ode15s(@cell_vertex_strain_reference_nocirc,[0,t_ramp_end],V_vec,options);
+[Time,Y] = ode15s(@cell_vertex_strain_reference_nocirc,0:0.2:t_ramp_end,V_vec,options);
 stress_index = length(stress_rec);
 V_vec = Y(end,:)';
-[Time2,Y2] = ode15s(@cell_vertex_strain_reference_nocirc,[t_ramp_end,tend],V_vec,options);
-%final_hex = Y(end
-Time = [Time; Time2(2:end)];
-Y = [Y; Y2(2:end,:)];
-
+if t_ramp_end ~= tend
+    [Time2,Y2] = ode15s(@cell_vertex_strain_reference_nocirc,t_ramp_end:tend,V_vec,options);
+    %final_hex = Y(end)
+    Time = [Time; Time2(2:end)];
+    Y = [Y; Y2(2:end,:)];
+end;
 C2 = C;
 
 l = length(t_rec)-length(stress_rec);
-t_rec
-l
 length(t_rec);
 length(stress_rec);
 t_rec2 = t_rec(l+1:end);
