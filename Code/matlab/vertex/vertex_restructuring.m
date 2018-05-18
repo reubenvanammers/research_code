@@ -1,15 +1,24 @@
-function [Time,Y,cell_history2,cell_t_history2] = vertex_restructuring(lambda0,beta0,gamma0,alpha0,eta0,T0,tend)
-%implements vertex model with remodelling
+function [Time,Y,cell_history2,cell_t_history2] = vertex_restructuring(lambda0,beta0,gamma0,alpha0,eta0,T0,tend,gridsize,ext_force)
+%implements vertex model with cell restructuring behaviour via T1 swaps.
+%Pass output arguments into hex_vis_2 in order to view
 global C N A0_vec C0_vec lambda beta gamma M alpha cell_history cell_t_history
 global t_rec C_rec A_rec T fixlist movelist eta restoring_rec counter included_cell external_force
 sidelength = 1/sqrt(3);
 A0=sqrt(27)/2*(sidelength.^2);
 C0 = 6*sidelength;
 
+if nargin < 9
+    gridsize = [7,8]; %default size of monolayer
+end
+if nargin < 9
+    external_force = 0.1;
+else
+    external_force = ext_force;
+end
+
 lambda = lambda0;beta=beta0;gamma=gamma0;alpha=alpha0;T=T0;
 eta = eta0;
-[V,C] = hexgrid_voronoi();
-external_force = 0.2;
+[V,C] = hexgrid_voronoi(gridsize);
 included_cell = cell_inclusion(V,C);
 N= length(V);
 M = length(C);

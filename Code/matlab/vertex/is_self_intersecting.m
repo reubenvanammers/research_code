@@ -8,7 +8,7 @@ for i = 1:size(C,1)
     [~,~,segments] = selfintersect(x,y);
     if ~(isequal(segments,double.empty(0,2))||isequal(segments,[]))
         b = true;
-        segments
+        segments %outputs which cells have self intersection happening
         i
     end
 end

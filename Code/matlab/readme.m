@@ -1,8 +1,18 @@
 %% Cellular Remodelling Code
 % This Matlab code repository is to run dynamic discrete cell simulations
 % with remodelling via the use of a reference state. This is implemented in
-% various ways for both cell centre and vertex based modelsl. 
+% various ways for both cell centre and vertex based models.
 
+%% Folder Structure
+%The linearSpring and vertex folders contain code for running simulations
+%for cell centre and linear spring models respectively. shared code that is
+%used for both in order to run simulations for both of these is located in
+%the generalHelperFunctions folder. The sweeps folder contains a set of
+%files to run multiple simulations and create plots of the relevant data.
+%Files in the graphFunctions folder are used to work with plots, either
+%as useful plot manipulation tools to save to latex, calculate fits of data
+%for plotting, or to produce plots by passing in simulation functions as
+%arguments and plotting the results. 
 
 %% Cell Centre Models
 %Cellular Remodelling has been implemented via cell centre linear spring
@@ -72,7 +82,7 @@ tri_vis(Time,Y,Tri);
 %for both the creep and strain relaxation experiments.
 
 %For the creep experiment, this is located in the file
-%creep_sweep_origtimes.m file. This will run the the simulations, and save
+%creep_sweep_origtimes.m. This will run the the simulations, and save
 %the time-strain data for each parameter combination in a high dimensional
 %matlab cell. The data is then fitted with a variety of fits (via the
 %CalculateExponentialFits function, and then this information is then used
@@ -92,6 +102,7 @@ tri_vis(Time,Y,Tri);
 %value is the number of points to sample between these (inclusive) bounds
 %in an exponential spacing. Such a sweep is computationally expensive, so
 %running this sweep on multiple threads is recommended.
+
 %The indices of the cells of the various data is arranged in the order
 %(F_ext,eta,alpha,T_mem), with the index value being the location of the
 %given value in the above bound values. 
@@ -100,7 +111,8 @@ tri_vis(Time,Y,Tri);
 %for recording the time-stress values, in the file strain_sweep_origtimes.m.
 %This has similar lines for choosing bounds, but with fbounds being
 %replaced with 
-%Tbounds = {0 2 3}, with the same syntax as previously.
+%Tbounds = {0 2 3}
+%with the same syntax as previously.
 %Again, various plots, such as for the coefficient ratio for plots
 %regarding the time-stress values for the simulations can then be run
 %further down in the file.
@@ -116,14 +128,15 @@ tri_vis(Time,Y,Tri);
 %circumference coupled, simulations for the creep experiment can be run as
 %follows:
 
-%[Time,Y,C,flag] =
-%creep_vertex(lambda,beta,gamma,alpha,eta,T_mem,tend,gridsize,ext_force,maxstrain)
-%Many fo the arguments are similar to the cell centre model described
+%[Time,Y,C,flag] = creep_vertex(lambda,beta,gamma,alpha,eta,T_mem,tend,gridsize,ext_force,maxstrain)
+
+%Many of the arguments are similar to the cell centre model described
 %above, but the extra complexity of the vertex model requires additional
 %parameters to be used; lambda, beta and gamma.
 %(Implementing vertex dynamics models of cell populations in biology within
 %a consistent computational framework, Progress in Biophysics and Molecular
-%Biology) lambda gives the strenght of the volume target constraint, beta
+%Biology).
+%lambda gives the strenght of the volume target constraint, beta
 %the circumference based constraint, and gamma the strength of the
 %conribution from cell-cell adhesion energy. For this model with the
 %reference state, gamma should generally be set to 0 to have physically
@@ -156,7 +169,9 @@ hex_vis_2(Time,Y,C);
 %direction of cell movement in the positive x direction. All remodelling
 %goes through this component, while area and circumference components have
 %a static component. 
+
 %[Time,Y,C] = creep_vertex_axis(lambda,beta,gamma,delta,alpha,eta,T,tend,gridsize,ext_force,maxstrain);
+
 %In this model, gamma now represents the strength of this directional component,
 %and delta represents the strength of a rotational componenent whose effects
 %that hasn't been fully tested, and so generally set this value to 0. 
@@ -185,7 +200,11 @@ hex_vis_2(Time,Y,C);
 
 %[Time,Y,cell_history,cell_t_history] = vertex_restructuring(lambda,beta,gamma,alpha,eta,T,tend)
 
-%This can then be inputted into  hex_vis_2 to visualise the results
+%This can then be inputted into  hex_vis_2 to visualise the results, where
+%we can see the t1 swaps in action. 
 
-[Time,Y,cell_history,cell_t_history] = vertex_restructuring(1,1,0,1,0,0,5); %find an example which changes cell connectivity
+[Time,Y,cell_history,cell_t_history] = vertex_restructuring(1,1,0,1,0,0,50); 
 hex_vis_2(Time,Y,cell_history,cell_t_history);
+
+%Only t1swaps have been implemented in this codebase, but other operations
+%such as cell division have the capacity to be added in the future. 

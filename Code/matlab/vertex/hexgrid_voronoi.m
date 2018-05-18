@@ -32,8 +32,8 @@ end
 X = X(:,1:end-1);
 Y = Y(:,1:end-1);
 
-X
-Y
+X;
+Y;
 [V,C] = voronoin([X(:),Y(:)]);
 
 C=C(cellfun(@hex_check,C));
@@ -65,11 +65,11 @@ V = sqrt(3)*sidelength*V;
 
 
 
-figure
-for i = 1:length(C)
-    patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
-end
-title('Initial Hexagons')
+% figure
+% for i = 1:length(C)
+%     patch(V(C{i},1),V(C{i},2),i,'FaceColor','w'); % draws hexagons
+% end
+% title('Initial Hexagons')
 
 end
 %connectivitylist(:,2:end);%removes point at infinity

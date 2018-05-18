@@ -367,7 +367,7 @@ end
 % end
 
 %%
-for ramptime_index = 1:t
+for ramptime_index = 1:t %creates line plots in order to view differing coefficient values for eta and alpha
     for alpha_index = 1:a
         figure
         hold on
@@ -398,7 +398,7 @@ for ramptime_index = 1:t
     end
 end
 %%
-for ramptime_index = 1:t
+for ramptime_index = 1:t %creates line plots in order to view differing coefficient values for eta and alpha
     for eta_index = 1:g_temp
         figure
         hold on
@@ -502,7 +502,7 @@ end
 time_dif_2(:,:,a,:,:) = nan*time_dif_2(:,:,a,:,:);
 
 contours = logspace(0,5,61);
-for ramptime_index = 1:t
+for ramptime_index = 1:t %view the difference between coefficients for one and two exp fits as a surface plot
     for T_index = 1:1%length(Tvec)
         figure
         hold on
@@ -534,7 +534,7 @@ hold on;
 
 two_exp_status = time_dif_2 > error_threshold;
 
-for T_index = 1:length(Tvec)
+for T_index = 1:length(Tvec)%view compound contour plot - generally too messy to use
     for ramptime_index = 1:t
         [~,h((T_index-1)*t+ramptime_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{T_index}],'ShowText','off','LineColor',colourvec{ramptime_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
@@ -556,6 +556,7 @@ for T_index = 1
     figure
     hold on
     clear h legendcell
+        %view regions of two exponential bejaviour for varying ramptimes
     for ramptime_index = t:-1:1
         [~,h(ramptime_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{ramptime_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
@@ -584,6 +585,8 @@ for ramptime_index = 2:2
     figure
     hold on
     clear h legendcell
+        %view regions of two exponential bejaviour for varying T_mem
+        %averaging values
     for T_index = [6 4 1]
         [~,h(T_index)] = contour(X,Y,reshape(time_dif_2(ramptime_index,:,:,T_index,guess_value),[g,a])',[error_threshold,error_threshold],[stylevec{1}],'ShowText','off','LineColor',colourvec{T_index});
         set(gca, 'XScale', 'log', 'YScale', 'log');
@@ -609,96 +612,13 @@ end
 
 
 %%
-vars = {ramptime_index,eta_index,alpha_index,T_value,guess_value};
-[~,~,~,~,~,~,three_exp_fit] = CalculateExponentialFits(timecell3{vars{1:end-1}}',stresscell3{vars{1:end-1}}',0,guess_index);
-
-
-figure
-hold on
-%subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
-exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
-exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
-
-time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
-1
-plot(time(1:10:end),stress(1:10:end),'k.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'r-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b-',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
-%plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-%title([astring{alpha_index}, estring{eta_index}, rstring{ramptime_index}, Tstring{T_value} ]); 
-%legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
-%axis([0 1 0 1]);
-xlabel('Time')
-ylabel('Stress')
-SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_threeexp/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))])
-%pause
-2
-figure
-hold on
-%subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
-exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
-exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
-
-time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
-
-plot(timecell3{vars{:}},stress-exp1(timecell3{vars{:}}),'r-',timecell3{vars{:}},stress-exp2(timecell3{vars{:}}),'b-',timecell3{vars{:}},zeros(size(timecell3{vars{:}})),'k--',timecell3{vars{:}},stress-exp3(timecell3{vars{:}}),'g-.')
-plot(0,stress(1)-exp1(timecell3{vars{:}}(1)),'rx',0,stress(1)-exp2(timecell3{vars{:}}(1)),'bx',0,stress(1)-exp3(timecell3{vars{:}}(1)),'gx')
-
-xlabel('Time')
-ylabel('Error')
-ylim([-0.1 0.35])
-SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))])
-%pause
-
-
-%%
-%for T_index = 1
-%    for ramptime_index = 1:t
-%        for alpha_index = 1:a
-%            for  eta_index = 1:g
-            for i = 1:length(k)
-                vars = k{i}
-                ramptime_index = vars{1};
-                eta_index = vars{2};
-                alpha_index = vars{3};
-                T_index = vars{4};
-                guess_index = vars{5};
-             %   figure
-             %   hold on
-                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-                vars = {ramptime_index,eta_index,alpha_index,T_index,guess_value};
-             %   figure
-             %   hold on
-                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-%                 exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
-%                 exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-%                 exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
-%                 exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-    %            exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
-
-    %             time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
-    %             plot(time(1:10:end),stress(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
-    %             %plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
-    %             title([astring{alpha_index}, estring{eta_index}, rstring{ramptime_index}, Tstring{T_index} ]); 
-    %             %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
-    %             %axis([0 1 0 1]);
-    %             xlabel('Time')
-    %             ylabel('Stress')
-    %             SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestress_threeexp/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
-    %             %pause
-
+%% Plots error values of one and two exponential fits
+for T_index = 1
+   for ramptime_index = 1:t
+       for alpha_index = 1:a
+           for  eta_index = 1:g
                 figure
                 hold on
-                %subplot(a_temp,g_temp,eta_index-g_temp*(alpha_index)+a_temp*g_temp)
-                exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
-                exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-                exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
-                exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
-                exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
 
                 time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
                 plot(timecell3{vars{:}},stress-exp1(timecell3{vars{:}}),'r-',timecell3{vars{:}},stress-exp2(timecell3{vars{:}}),'b-',timecell3{vars{:}},zeros(size(timecell3{vars{:}})),'k--')%,timecell3{vars{:}},stress-exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)            %plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
@@ -710,10 +630,51 @@ SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(T
                 xlabel('Time')
                 ylabel('Error')
                 ylim([-0.1 0.4])
-                SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff2/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  ,-1, 7, 7/5, 9)
+                SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_diff/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  ,-1, 7, 7/5, 9)
                 %pause
                 close all
             end
-%        end
-%    end
-%end
+       end
+   end
+end
+%%
+%Calculates a three exponential fit. Uses these to plot exponential fits
+%and error plots
+for T_index = 1
+   for ramptime_index = 1:t
+       for alpha_index = 1:a
+           for  eta_index = 1:g
+
+                vars = {ramptime_index,eta_index,alpha_index,T_index,guess_value};
+                figure
+                hold on
+                exp1 = @(x) fit1(vars{:},1) + fit1(vars{:},2)*exp(-x/fit1(vars{:},3));
+                exp2 = @(x) fit2(vars{:},1) + fit2(vars{:},2)*exp(-x/fit2(vars{:},3))+ fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+                exp2_1 = @(x) fit2(vars{:},1)+fit2(vars{:},4)+fit2(vars{:},2)*exp(-x/fit2(vars{:},3));
+                exp2_2 = @(x) fit2(vars{:},1) + fit2(vars{:},4)*exp(-x/fit2(vars{:},5));
+                exp3 = @(x) three_exp_fit(1) + three_exp_fit(2)*exp(-x/three_exp_fit(3))+ three_exp_fit(4)*exp(-x/three_exp_fit(5))+three_exp_fit(6)*exp(-x/three_exp_fit(7));
+ 
+                time = timecell3{vars{:}}; stress = stresscell3{vars{:}};
+                plot(time(1:10:end),stress(1:10:end),'r.',timecell3{vars{:}},exp1(timecell3{vars{:}}),'k-',timecell3{vars{:}},exp2(timecell3{vars{:}}),'b--',timecell3{vars{:}},exp3(timecell3{vars{:}}),'g-.','MarkerSize',4)
+                %plot(timecell3{vars{1:end-1}},stresscell3{vars{1:end-1}},'r',timecell3{vars{1:end-1}},exp1(timecell3{vars{1:end-1}}),'k--',timecell3{vars{1:end-1}},exp2(timecell3{vars{1:end-1}}),'b--',timecell3{vars{1:end-1}},exp2_1(timecell3{vars{1:end-1}}),'g-.',timecell3{vars{1:end-1}},exp2_2(timecell3{vars{1:end-1}}),'y-.')
+                title([astring{alpha_index}, estring{eta_index}, rstring{ramptime_index}, Tstring{T_index} ]); 
+                %legend('Data','Single Exp', 'Two Exp', 'Short Time', 'Long Time') 
+                %axis([0 1 0 1]);
+                xlabel('Time')
+                ylabel('Stress')
+                SaveAsPngEpsAndFig(-1,[pwd '/pictures/expfit/creep/timestress_threeexp/' num2str(Tvec(T_index)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))]  , 7, 7/5, 9)
+                %pause
+                figure
+                hold on
+                plot(timecell3{vars{:}},stress-exp1(timecell3{vars{:}}),'r-',timecell3{vars{:}},stress-exp2(timecell3{vars{:}}),'b-',timecell3{vars{:}},zeros(size(timecell3{vars{:}})),'k--',timecell3{vars{:}},stress-exp3(timecell3{vars{:}}),'g-.')
+                plot(0,stress(1)-exp1(timecell3{vars{:}}(1)),'rx',0,stress(1)-exp2(timecell3{vars{:}}(1)),'bx',0,stress(1)-exp3(timecell3{vars{:}}(1)),'gx')
+
+                xlabel('Time')
+                ylabel('Error')
+                ylim([-0.1 0.35])
+                SaveAsPngEpsAndFig([pwd '/pictures/expfit/relaxation/timestress_threeexp_diff/' num2str(Tvec(T_value)) '-' num2str(ramptimevec(ramptime_index)) '-' num2str(etavec(eta_index)) '-' num2str(alphavec(alpha_index))])
+
+            end
+       end
+   end
+end

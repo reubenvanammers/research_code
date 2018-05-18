@@ -1,6 +1,7 @@
+%Ramp function, largely to be used as an argument to the strainfunc
+%argument in solvers for applied strain such as for the stress relaxation
+%experiment. 
 function k = ramp(strainmax,reps,reptime)
-
-
     function ms = rampfn(xs)
     for i = 1:length(xs)
         x = xs(i);

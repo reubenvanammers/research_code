@@ -4,7 +4,7 @@ global cell_history C included_cell cell_t_history
 cell_history = {C};
 cell_t_history = 0;
 restructuring_time = 1; %How often algo checks if need to swap
-h = 0.02; %delta t
+h = 0.2; %delta t
 Y = v0';
 Time = 0;
 v = v0;
