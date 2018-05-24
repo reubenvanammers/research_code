@@ -1,4 +1,6 @@
-%Varies strength of axial parameter, to see effect on strain plots
+%Varies strength of axial parameter, to see effect on strain plots. Only
+%has a real state, with varying default axial length - this is normally
+%encoded in the reference state
 
 gamma_vec = 0:0.5:10;
 target_length_vec = 1:0.1:1.6;
