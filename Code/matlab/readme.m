@@ -131,11 +131,17 @@ further down in the file.
 
 
 
-% Vertex based models
+# Vertex based models
 There is also a significant amount of code to run simulations for vertex
 based models, with a similar format to the cell centre based simulations
 for both the stress relaxation and creep experiments, all based on a
-Nagai-Honda model of force. With a reference state that has area and
+Nagai-Honda model of force. The baseVertex folder contains code for the simplest
+method of interactions between the real and reference state, vertexDirectionality
+contains some code for adding directional components to the vertex model and 
+vertexRestructuring contains code for cell rearrangements with the reference state.
+
+
+With a reference state that has area and
 circumference coupled, simulations for the creep experiment can be run as
 follows:
 ```
